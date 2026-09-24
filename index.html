@@ -3,966 +3,916 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VioKrista: Приключения Вио</title>
+<title>Хроники Тихого Света — Глава 1</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-  html,body{height:100%;overflow:hidden}
-  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;touch-action:manipulation;position:relative}
-  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 60% 70%,#fff,transparent),radial-gradient(1px 1px at 80% 20%,#fff,transparent),radial-gradient(2px 2px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 90% 50%,#fff,transparent),radial-gradient(1px 1px at 15% 65%,#fff,transparent),radial-gradient(2px 2px at 75% 85%,#fff,transparent);opacity:.5;animation:twinkle 4s infinite alternate}
-  @keyframes twinkle{from{opacity:.3}to{opacity:.7}}
-  .screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:1;overflow-y:auto}
-  .screen.active{display:flex;animation:fadeIn .4s ease}
-  @keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
-  .logo{font-size:clamp(28px,8vw,48px);font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#ffd93d,#ff6b6b,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;text-align:center}
-  .subtitle{font-size:clamp(14px,4vw,20px);opacity:.8;margin-bottom:40px;text-align:center;color:#C4B5FD}
-  .btn{padding:16px 40px;font-size:clamp(16px,4.5vw,20px);font-weight:700;border:none;border-radius:50px;background:linear-gradient(90deg,#8B5CF6,#A78BFA);color:#fff;cursor:pointer;box-shadow:0 8px 25px rgba(139,92,246,.4);transition:transform .15s ease,box-shadow .15s ease;font-family:inherit}
-  .btn:active{transform:scale(.95)}
-  .btn:hover{box-shadow:0 10px 30px rgba(139,92,246,.6)}
-  .btn-gold{background:linear-gradient(90deg,#FBBF24,#F59E0B);color:#1a1a2e;box-shadow:0 8px 25px rgba(251,191,36,.4)}
-  .btn-gold:hover{box-shadow:0 10px 30px rgba(251,191,36,.6)}
-  .lang-switch{position:fixed;top:15px;right:15px;z-index:100;padding:8px 16px;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.3);border-radius:20px;background:rgba(26,26,46,.7);color:#fff;cursor:pointer;backdrop-filter:blur(10px);font-family:inherit;transition:all .2s}
-  .lang-switch:hover{background:rgba(139,92,246,.5);border-color:#8B5CF6}
-  .menu-title{font-size:clamp(20px,6vw,32px);font-weight:800;margin-bottom:20px;text-align:center;background:linear-gradient(90deg,#ffd93d,#ff6b6b,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .dragon-wrap{width:min(40vw,200px);height:min(40vw,200px);margin-bottom:20px;cursor:pointer;animation:float 3s infinite ease-in-out;filter:drop-shadow(0 10px 30px rgba(139,92,246,.6))}
-  .dragon-wrap svg{width:100%;height:100%}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:500px;margin-bottom:20px}
-  .menu-card{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:20px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s ease;display:flex;flex-direction:column;align-items:center;gap:8px}
-  .menu-card:hover,.menu-card:active{background:rgba(139,92,246,.35);border-color:#A78BFA;transform:scale(1.03)}
-  .menu-card .icon{font-size:clamp(28px,8vw,40px)}
-  .menu-card .label{font-size:clamp(12px,3.5vw,15px);font-weight:700;color:#E9D5FF}
-  .world-header{width:100%;max-width:600px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-  .btn-back{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:50px;color:#fff;padding:10px 20px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
-  .btn-back:hover{background:rgba(255,255,255,.2)}
-  .world-title{font-size:clamp(16px,4.5vw,22px);font-weight:800;color:#FBBF24}
-  .achievements{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
-  .badge{width:45px;height:45px;border-radius:50%;background:rgba(139,92,246,.2);border:2px solid rgba(139,92,246,.4);display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.4;transition:all .3s ease}
-  .badge.earned{opacity:1;background:linear-gradient(135deg,#FBBF24,#F59E0B);border-color:#FBBF24;box-shadow:0 0 20px rgba(251,191,36,.6);animation:pop .4s ease}
-  @keyframes pop{0%{transform:scale(.5)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
-  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(90deg,#FBBF24,#F59E0B);color:#1a1a2e;padding:14px 28px;border-radius:50px;font-weight:800;font-size:16px;box-shadow:0 10px 30px rgba(251,191,36,.5);z-index:200;opacity:0;transition:all .4s ease;pointer-events:none;text-align:center;max-width:90vw}
-  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-  .loader-dragon{width:min(50vw,250px);height:min(50vw,250px);animation:float 2s infinite ease-in-out;filter:drop-shadow(0 0 40px rgba(139,92,246,.8));margin-bottom:30px}
-  .loader-dragon svg{width:100%;height:100%}
-  .loading-hint{font-size:clamp(14px,4vw,18px);color:#C4B5FD;margin-top:20px;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-  .world1-container{width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;gap:20px}
-  .task-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
-  .task-card{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:18px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative}
-  .task-card:hover{background:rgba(139,92,246,.3)}
-  .task-card.done{background:rgba(34,197,94,.2);border-color:#22C55E}
-  .task-card.done::after{content:'✓';position:absolute;top:-8px;right:-8px;width:28px;height:28px;border-radius:50%;background:#22C55E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px}
-  .task-card .icon{font-size:32px;margin-bottom:6px}
-  .task-card .label{font-size:12px;font-weight:700;color:#E9D5FF;line-height:1.3}
-  .progress-bar{width:100%;height:12px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-top:10px}
-  .progress-fill{height:100%;background:linear-gradient(90deg,#FBBF24,#F59E0B);transition:width .5s ease;border-radius:10px}
-  .progress-text{font-size:14px;color:#C4B5FD;margin-top:6px;text-align:center}
-  .task-screen{position:fixed;inset:0;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:50}
-  .task-screen.active{display:flex}
-  .task-top{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:center}
-  .task-score{font-size:16px;font-weight:800;color:#FBBF24;text-align:right}
-  .task-hint{font-size:clamp(14px,4vw,18px);color:#C4B5FD;margin-bottom:15px;text-align:center;max-width:90%;padding-top:40px}
-  .feed-dragon{position:relative;width:min(60vw,220px);height:min(60vw,220px);margin-bottom:20px}
-  .feed-dragon svg{width:100%;height:100%}
-  .food-item{position:absolute;font-size:40px;cursor:pointer;transition:transform .5s ease,opacity .5s ease;z-index:10;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
-  .food-item.eaten{transform:translate(0,100px) scale(.3);opacity:0}
-  .food-item.spawn{animation:foodPop .4s ease}
-  @keyframes foodPop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
-  .catch-area{position:relative;width:100%;max-width:500px;height:60vh;max-height:500px;background:rgba(139,92,246,.1);border:2px solid rgba(139,92,246,.3);border-radius:24px;overflow:hidden;cursor:crosshair}
-  .star{position:absolute;font-size:36px;cursor:pointer;animation:starPop .3s ease;user-select:none;filter:drop-shadow(0 0 10px rgba(251,191,36,.6))}
-  @keyframes starPop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
-  .star.caught{animation:starCaught .3s ease forwards}
-  @keyframes starCaught{0%{transform:scale(1);opacity:1}100%{transform:scale(2);opacity:0}}
-  .path-area{display:flex;flex-direction:column;align-items:center;gap:15px;width:100%;max-width:500px}
-  .path-step{width:100%;padding:20px;background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:18px;text-align:center;cursor:pointer;font-size:18px;font-weight:700;transition:all .2s ease;color:#E9D5FF}
-  .path-step:hover{background:rgba(139,92,246,.35);transform:scale(1.02)}
-  .path-step.done{background:rgba(34,197,94,.2);border-color:#22C55E;cursor:default}
-  .path-step.locked{opacity:.4;cursor:not-allowed}
-  .castle-final{font-size:80px;margin-top:10px;animation:float 2s infinite ease-in-out;filter:drop-shadow(0 0 20px rgba(251,191,36,.6))}
-  .win-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:300;padding:20px}
-  .win-modal.show{display:flex}
-  .win-content{background:linear-gradient(135deg,#1a1a2e,#16213e);border:3px solid #FBBF24;border-radius:30px;padding:40px 30px;text-align:center;max-width:400px;animation:pop .5s ease;box-shadow:0 0 60px rgba(251,191,36,.5)}
-  .win-emoji{font-size:80px;margin-bottom:15px}
-  .win-title{font-size:24px;font-weight:900;color:#FBBF24;margin-bottom:10px}
-  .win-text{font-size:16px;color:#C4B5FD;margin-bottom:20px;line-height:1.5}
-  /* ===== РАСКРАСКА ===== */
-  .color-area{display:flex;flex-direction:column;align-items:center;gap:15px;width:100%;max-width:600px}
-  .color-canvas-wrap{position:relative;background:#fff;border-radius:20px;padding:10px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
-  #colorCanvas{touch-action:none;display:block;border-radius:12px;cursor:crosshair}
-  .palette{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:500px}
-  .color-swatch{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;box-shadow:0 4px 10px rgba(0,0,0,.3)}
-  .color-swatch:hover{transform:scale(1.1)}
-  .color-swatch.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 20px rgba(255,255,255,.6)}
-  .color-tools{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .tool-btn{padding:12px 22px;border-radius:50px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:15px;transition:all .2s}
-  .tool-btn:hover{background:rgba(255,255,255,.2)}
-  .tool-btn.active{background:linear-gradient(90deg,#8B5CF6,#A78BFA);border-color:#A78BFA}
-  /* ===== ИСТОРИЯ ===== */
-  .story-area{width:100%;max-width:600px;display:flex;flex-direction:column;gap:20px;align-items:center}
-  .story-text{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:24px;padding:30px;font-size:clamp(16px,4.5vw,20px);line-height:1.6;text-align:center;color:#E9D5FF;animation:fadeIn .5s ease}
-  .story-choices{display:flex;flex-direction:column;gap:12px;width:100%}
-  .choice-btn{padding:18px 24px;background:rgba(139,92,246,.2);border:2px solid rgba(139,92,246,.5);border-radius:18px;color:#fff;font-size:clamp(14px,4vw,17px);font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;text-align:left}
-  .choice-btn:hover{background:rgba(139,92,246,.4);transform:translateX(5px);border-color:#A78BFA}
-  /* ===== КВЕСТ ===== */
-  .quest-area{width:100%;max-width:600px;display:flex;flex-direction:column;gap:20px;align-items:center}
-  .quest-map{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
-  .wall-card{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:20px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
-  .wall-card:hover{background:rgba(139,92,246,.35);transform:scale(1.03)}
-  .wall-card.found{background:rgba(34,197,94,.2);border-color:#22C55E}
-  .wall-card.found::after{content:'✓';position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:#22C55E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
-  .wall-card .wall-icon{font-size:36px;margin-bottom:6px}
-  .wall-card .wall-label{font-size:12px;font-weight:700;color:#E9D5FF}
-  .hero-found{text-align:center;padding:30px;background:rgba(139,92,246,.15);border-radius:24px;border:2px solid rgba(139,92,246,.4);animation:pop .5s ease}
-  .hero-found .big{font-size:80px;margin-bottom:15px;animation:float 2s infinite ease-in-out}
-  .hero-found .name{font-size:22px;font-weight:900;color:#FBBF24;margin-bottom:10px}
-  .hero-found .desc{font-size:15px;color:#C4B5FD;line-height:1.5}
-  @media (max-width:400px){.menu-grid,.task-menu,.quest-map{gap:8px}.menu-card,.task-card{padding:14px 6px}}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a14;color:#fff}
+#game{position:fixed;inset:0;overflow:hidden}
+
+/* === ФОН И СЛОИ === */
+.bg-layer{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity 1.2s ease, transform 2s ease;opacity:0}
+.bg-layer.active{opacity:1}
+.bg-layer.zoomed{transform:scale(1.08)}
+
+/* Частицы */
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;pointer-events:none;opacity:.7}
+
+/* Затемнение кадра */
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.7) 100%);z-index:5}
+
+/* Мерцание света */
+.flicker{animation:flicker 3s infinite alternate}
+@keyframes flicker{0%,100%{opacity:.6}50%{opacity:1}}
+
+/* === ДИАЛОГ === */
+.dialogue-box{position:absolute;left:0;right:0;bottom:0;padding:20px;z-index:20;
+  background:linear-gradient(to top,rgba(10,10,20,.98) 0%,rgba(10,10,20,.9) 70%,transparent 100%);
+  transform:translateY(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);padding-bottom:30px}
+.dialogue-box.show{transform:translateY(0)}
+
+.speaker{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-left:5px}
+.speaker-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#A78BFA);
+  display:flex;align-items:center;justify-content:center;font-size:26px;border:2px solid #FBBF24;
+  box-shadow:0 0 20px rgba(251,191,36,.5);flex-shrink:0}
+.speaker-name{font-size:17px;font-weight:800;color:#FBBF24;letter-spacing:.5px}
+.speaker-name.thought{color:#A78BFA;font-style:italic}
+
+.dialogue-text{font-size:clamp(15px,4.2vw,18px);line-height:1.55;color:#E9D5FF;
+  min-height:70px;max-width:700px;margin:0 auto;padding:0 5px;letter-spacing:.2px}
+.dialogue-text.thought{color:#C4B5FD;font-style:italic;opacity:.9}
+
+/* Индикатор "дальше" */
+.next-arrow{position:absolute;right:25px;bottom:15px;color:#FBBF24;font-size:22px;
+  animation:bounceDown 1.2s infinite;opacity:0;transition:opacity .3s;pointer-events:none}
+.next-arrow.show{opacity:1}
+@keyframes bounceDown{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+/* === ВЫБОРЫ === */
+.choices{position:absolute;left:0;right:0;bottom:0;padding:20px;z-index:25;
+  display:none;flex-direction:column;gap:12px;max-width:700px;margin:0 auto;
+  transform:translateY(20px);opacity:0;transition:all .4s ease}
+.choices.show{display:flex;transform:translateY(0);opacity:1}
+
+.choice-btn{padding:16px 22px;background:rgba(26,26,46,.95);border:2px solid rgba(139,92,246,.6);
+  border-radius:16px;color:#fff;font-size:clamp(14px,4vw,17px);font-weight:700;cursor:pointer;
+  font-family:inherit;text-align:left;transition:all .2s ease;backdrop-filter:blur(10px);
+  box-shadow:0 5px 20px rgba(0,0,0,.3)}
+.choice-btn:hover,.choice-btn:active{background:rgba(139,92,246,.4);border-color:#FBBF24;
+  transform:translateX(6px);box-shadow:0 5px 25px rgba(251,191,36,.3)}
+.choice-btn .tag{font-size:11px;color:#FBBF24;font-weight:600;display:block;margin-top:4px;opacity:.8}
+
+/* === ПЕРСОНАЖИ (SVG) === */
+.character{position:absolute;bottom:0;height:75vh;max-height:600px;width:auto;
+  opacity:0;transition:opacity .8s ease, transform 1.5s ease;pointer-events:none;z-index:10;
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,.6))}
+.character.show{opacity:1}
+.character.left{left:5%;transform:translateX(-20px)}
+.character.right{right:5%;transform:translateX(20px)}
+.character.left.show{transform:translateX(0)}
+.character.right.show{transform:translateX(0)}
+.character.center{left:50%;transform:translateX(-50%) translateY(20px)}
+.character.center.show{transform:translateX(-50%) translateY(0)}
+
+/* Рот персонажа (lip-sync имитация) */
+.mouth{transform-origin:center;transition:transform .12s ease}
+.character.talking .mouth{animation:talkMouth .25s infinite alternate}
+@keyframes talkMouth{0%{transform:scaleY(1)}100%{transform:scaleY(1.8)}}
+
+/* === HUD === */
+.hud-top{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;
+  align-items:center;z-index:30;pointer-events:none}
+.chapter-label{padding:8px 16px;background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);
+  border-radius:20px;font-size:13px;font-weight:700;color:#FBBF24;backdrop-filter:blur(10px)}
+.lang-btn{padding:8px 14px;background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);
+  border-radius:20px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);pointer-events:auto;transition:all .2s}
+.lang-btn:hover{background:rgba(139,92,246,.4);border-color:#FBBF24}
+
+/* Кнопка меню */
+.menu-btn{position:absolute;top:15px;left:15px;z-index:30;padding:8px 14px;
+  background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);border-radius:20px;
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);transition:all .2s;display:none}
+.menu-btn.show{display:block}
+.menu-btn:hover{background:rgba(139,92,246,.4);border-color:#FBBF24}
+
+/* Прогресс-бар главы */
+.progress-dots{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;z-index:30;pointer-events:none}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s}
+.dot.active{background:#FBBF24;width:24px;border-radius:4px}
+
+/* === ЭКРАН КОНЦА ГЛАВЫ === */
+.end-screen{position:absolute;inset:0;background:radial-gradient(ellipse at center,#1a1a2e,#0a0a14);
+  display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:30px;
+  text-align:center;opacity:0;transition:opacity 1.5s ease}
+.end-screen.show{display:flex;opacity:1}
+.end-title{font-size:clamp(28px,7vw,48px);font-weight:900;margin-bottom:20px;
+  background:linear-gradient(90deg,#FBBF24,#F472B6,#A78BFA);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}
+.end-sub{font-size:clamp(14px,4vw,18px);color:#C4B5FD;margin-bottom:30px;line-height:1.6;max-width:500px}
+.end-btn{padding:16px 40px;font-size:17px;font-weight:700;border:none;border-radius:50px;
+  background:linear-gradient(90deg,#FBBF24,#F59E0B);color:#0a0a14;cursor:pointer;
+  font-family:inherit;box-shadow:0 10px 30px rgba(251,191,36,.5);transition:transform .15s}
+.end-btn:active{transform:scale(.95)}
+
+/* === ЭКРАН ЗАГРУЗКИ === */
+.loader{position:absolute;inset:0;background:#0a0a14;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:200;transition:opacity 1s ease;gap:20px}
+.loader.hide{opacity:0;pointer-events:none}
+.loader-title{font-size:clamp(24px,7vw,44px);font-weight:900;letter-spacing:3px;
+  background:linear-gradient(90deg,#FBBF24,#F472B6,#A78BFA);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;text-align:center;padding:0 20px}
+.loader-sub{font-size:clamp(12px,3.5vw,16px);color:#C4B5FD;text-align:center;padding:0 20px;line-height:1.5}
+.loader-btn{margin-top:20px;padding:16px 40px;font-size:17px;font-weight:700;border:none;
+  border-radius:50px;background:linear-gradient(90deg,#8B5CF6,#A78BFA);color:#fff;cursor:pointer;
+  font-family:inherit;box-shadow:0 10px 30px rgba(139,92,246,.5);transition:transform .15s}
+.loader-btn:active{transform:scale(.95)}
+
+/* Заголовок сцены (кинематографичная подпись) */
+.scene-caption{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:clamp(18px,5vw,28px);font-weight:700;color:#FBBF24;text-align:center;
+  opacity:0;transition:opacity 1.5s ease;pointer-events:none;z-index:15;padding:0 30px;
+  text-shadow:0 0 30px rgba(251,191,36,.8);letter-spacing:2px}
+.scene-caption.show{opacity:1}
+
+/* Тряска камеры */
+.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-5px,3px)}
+  50%{transform:translate(5px,-3px)}75%{transform:translate(-3px,-5px)}}
+
+/* Пульс для интерактивных объектов */
+.pulse{animation:pulseObj 2s infinite}
+@keyframes pulseObj{0%,100%{filter:drop-shadow(0 0 0 rgba(251,191,36,0))}
+  50%{filter:drop-shadow(0 0 20px rgba(251,191,36,.9))}}
 </style>
 </head>
 <body>
-<div class="stars"></div>
-<button class="lang-switch" id="langSwitch" onclick="toggleLang()">🌐 RU</button>
+<div id="game">
 
-<!-- ЗАГРУЗКА -->
-<div class="screen active" id="screen-load">
-  <div class="loader-dragon">
-    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
-      <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
-      <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
-      <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
-      <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
-      <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
-      <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
-      <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
-      <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-      <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-      <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-      <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-      <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
-      <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
-      <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
-      <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
-      <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
-      <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
-      <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
-      <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
-      <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
-      <circle cx="133" cy="99" r="4" fill="#fff"/>
-      <circle cx="177" cy="99" r="4" fill="#fff"/>
-      <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
-      <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
-      <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
-      <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
-      <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity=".8"/>
-      <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity=".8"/>
-    </svg>
+  <!-- ЭКРАН ЗАГРУЗКИ -->
+  <div class="loader" id="loader">
+    <div class="loader-title">ХРОНИКИ<br>ТИХОГО СВЕТА</div>
+    <div class="loader-sub" id="loaderSub">Некоторые двери открываются только для тех,<br>кто потерял что-то важное.</div>
+    <button class="loader-btn" id="startBtn">Начать историю</button>
   </div>
-  <div class="logo">VioKrista</div>
-  <div class="subtitle" data-i18n="welcome">Приключения Вио</div>
-  <button class="btn btn-gold" onclick="goTo('screen-menu')" data-i18n="start">Начать</button>
-  <div class="loading-hint" data-i18n="tap">Тапни, чтобы начать ✨</div>
-</div>
 
-<!-- МЕНЮ -->
-<div class="screen" id="screen-menu">
-  <div class="menu-title" data-i18n="menu_title">Выбери приключение</div>
-  <div class="dragon-wrap" onclick="dragonSpeak()">
-    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
-      <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
-      <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
-      <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
-      <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
-      <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
-      <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
-      <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
-      <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-      <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-      <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-      <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-      <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
-      <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
-      <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
-      <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
-      <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
-      <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
-      <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
-      <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
-      <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
-      <circle cx="133" cy="99" r="4" fill="#fff"/>
-      <circle cx="177" cy="99" r="4" fill="#fff"/>
-      <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
-      <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
-      <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
-      <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
-      <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity=".8"/>
-      <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity=".8"/>
-    </svg>
-  </div>
-  <div class="menu-grid">
-    <div class="menu-card" onclick="goTo('screen-world1')"><div class="icon">🌟</div><div class="label" data-i18n="world1">Оживи стену</div></div>
-    <div class="menu-card" onclick="goTo('screen-world2')"><div class="icon">🎨</div><div class="label" data-i18n="world2">Раскрась стену</div></div>
-    <div class="menu-card" onclick="goTo('screen-world3')"><div class="icon">📖</div><div class="label" data-i18n="world3">Продолжи историю</div></div>
-    <div class="menu-card" onclick="goTo('screen-world4')"><div class="icon">🗺️</div><div class="label" data-i18n="world4">Найди героев</div></div>
-  </div>
-  <div class="achievements">
-    <div class="badge" data-ach="start">🌟</div>
-    <div class="badge" data-ach="world1">🐉</div>
-    <div class="badge" data-ach="world2">🎨</div>
-    <div class="badge" data-ach="world3">📖</div>
-    <div class="badge" data-ach="world4">🗺️</div>
-  </div>
-  <div style="font-size:13px;opacity:.5;margin-top:15px;text-align:center" data-i18n="hint_dragon">Нажми на Вио, чтобы он заговорил 👆</div>
-</div>
+  <!-- ФОНОВЫЕ СЛОИ -->
+  <div class="bg-layer" id="bg1"></div>
+  <div class="bg-layer" id="bg2"></div>
+  <div class="particles" id="particles"></div>
+  <div class="vignette"></div>
 
-<!-- МИР 1 -->
-<div class="screen" id="screen-world1">
-  <div class="world-header">
-    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-    <div class="world-title" data-i18n="world1">Оживи стену</div>
-    <div style="width:70px"></div>
+  <!-- ПОДПИСЬ СЦЕНЫ -->
+  <div class="scene-caption" id="sceneCaption"></div>
+
+  <!-- ПЕРСОНАЖИ -->
+  <div id="charLayer"></div>
+
+  <!-- HUD -->
+  <div class="hud-top">
+    <div class="chapter-label" id="chapterLabel">Глава 1</div>
+    <button class="lang-btn" id="langBtn">🌐 RU</button>
   </div>
-  <div class="world1-container">
-    <div class="task-menu">
-      <div class="task-card" id="task-feed" onclick="startTask('feed')"><div class="icon">🍎</div><div class="label" data-i18n="task_feed">Покорми Вио</div></div>
-      <div class="task-card" id="task-catch" onclick="startTask('catch')"><div class="icon">⭐</div><div class="label" data-i18n="task_catch">Поиграй с Вио</div></div>
-      <div class="task-card" id="task-path" onclick="startTask('path')"><div class="icon">🏰</div><div class="label" data-i18n="task_path">Доберись до замка</div></div>
+  <button class="menu-btn" id="menuBtn">☰ Меню</button>
+
+  <!-- ДИАЛОГ -->
+  <div class="dialogue-box" id="dialogueBox">
+    <div class="speaker">
+      <div class="speaker-avatar" id="speakerAvatar">👤</div>
+      <div class="speaker-name" id="speakerName">Герой</div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-text" id="progressText">Прогресс: 0/3</div>
-    <div style="font-size:13px;opacity:.5;text-align:center;margin-top:10px" data-i18n="world1_hint">Пройди все 3 задания, чтобы завершить мир!</div>
+    <div class="dialogue-text" id="dialogueText"></div>
+    <div class="next-arrow" id="nextArrow">▼</div>
   </div>
-</div>
 
-<!-- МИР 2: РАСКРАСКА -->
-<div class="screen" id="screen-world2">
-  <div class="world-header">
-    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-    <div class="world-title" data-i18n="world2">Раскрась стену</div>
-    <div style="width:70px"></div>
-  </div>
-  <div class="color-area">
-    <div class="color-canvas-wrap">
-      <canvas id="colorCanvas" width="500" height="400"></canvas>
-    </div>
-    <div class="palette" id="palette"></div>
-    <div class="color-tools">
-      <button class="tool-btn active" id="toolBrush" onclick="setTool('brush')" data-i18n="brush">🖌 Кисть</button>
-      <button class="tool-btn" id="toolEraser" onclick="setTool('eraser')" data-i18n="eraser">🧽 Ластик</button>
-      <button class="tool-btn" onclick="saveDrawing()" data-i18n="save">💾 Сохранить</button>
-      <button class="tool-btn" onclick="clearDrawing()" data-i18n="clear">🗑 Очистить</button>
-    </div>
-  </div>
-</div>
+  <!-- ВЫБОРЫ -->
+  <div class="choices" id="choices"></div>
 
-<!-- МИР 3: ИСТОРИЯ -->
-<div class="screen" id="screen-world3">
-  <div class="world-header">
-    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-    <div class="world-title" data-i18n="world3">Продолжи историю</div>
-    <div style="width:70px"></div>
-  </div>
-  <div class="story-area" id="storyArea"></div>
-</div>
+  <!-- ПРОГРЕСС -->
+  <div class="progress-dots" id="progressDots"></div>
 
-<!-- МИР 4: КВЕСТ -->
-<div class="screen" id="screen-world4">
-  <div class="world-header">
-    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-    <div class="world-title" data-i18n="world4">Найди героев</div>
-    <div style="width:70px"></div>
+  <!-- ЭКРАН КОНЦА -->
+  <div class="end-screen" id="endScreen">
+    <div class="end-title" id="endTitle">Конец главы 1</div>
+    <div class="end-sub" id="endSub"></div>
+    <button class="end-btn" id="endBtn">Продолжить путь</button>
   </div>
-  <div class="quest-area">
-    <div style="text-align:center;color:#C4B5FD;font-size:15px" data-i18n="quest_hint">Найди всех 6 героев на стенах города!</div>
-    <div class="quest-map" id="questMap"></div>
-    <div class="progress-bar" style="max-width:500px"><div class="progress-fill" id="questFill" style="width:0%"></div></div>
-    <div class="progress-text" id="questText">0/6</div>
-  </div>
-</div>
 
-<!-- ЭКРАН ЗАДАНИЯ -->
-<div class="task-screen" id="taskScreen">
-  <div class="task-top">
-    <button class="btn-back" onclick="closeTask()">← <span data-i18n="back">Назад</span></button>
-    <div class="task-score" id="taskScore"></div>
-  </div>
-  <div class="task-hint" id="taskHint"></div>
-  <div id="taskContent"></div>
 </div>
-
-<!-- МОДАЛКА ПОБЕДЫ -->
-<div class="win-modal" id="winModal">
-  <div class="win-content">
-    <div class="win-emoji" id="winEmoji">🎉</div>
-    <div class="win-title" id="winTitle"></div>
-    <div class="win-text" id="winText"></div>
-    <button class="btn btn-gold" onclick="closeWin()" data-i18n="continue">Продолжить</button>
-  </div>
-</div>
-
-<!-- МОДАЛКА ГЕРОЯ -->
-<div class="win-modal" id="heroModal">
-  <div class="win-content" style="border-color:#8B5CF6;box-shadow:0 0 60px rgba(139,92,246,.5)">
-    <div class="hero-found" style="background:transparent;border:none">
-      <div class="big" id="heroEmoji">🦊</div>
-      <div class="name" id="heroName"></div>
-      <div class="desc" id="heroDesc"></div>
-    </div>
-    <button class="btn btn-gold" onclick="closeHero()" data-i18n="continue">Продолжить</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-/* ============ ЗВУК (Web Audio) ============ */
-let audioCtx = null;
-function initAudio(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
-function playTone(freq, dur, type='sine', vol=0.15){
+/* ============ АУДИО ============ */
+let audioCtx=null;
+function initAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}}
+function playTone(f,d,t='sine',v=.08){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+function sfxClick(){playTone(700,.06,'square',.08);}
+function sfxChoice(){playTone(900,.12,'sine',.1);setTimeout(()=>playTone(1200,.1,'sine',.08),100);}
+function sfxPage(){playTone(500,.08,'sine',.06);}
+function sfxMagic(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.3,'sine',.08),i*120));}
+function sfxWind(){playTone(180,1.2,'sine',.04);}
+function playAmbient(type){
+  // Фоновый гул через Web Audio
   if(!audioCtx) return;
   try{
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type; osc.frequency.value = freq;
-    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + dur);
+    if(window.ambientOsc){window.ambientOsc.stop();window.ambientOsc=null;}
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='sine';
+    o.frequency.value = type==='night'?90:type==='magic'?140:type==='train'?70:110;
+    g.gain.value=.015;
+    o.connect(g);g.connect(audioCtx.destination);o.start();
+    window.ambientOsc=o;
   }catch(e){}
 }
-function sfxClick(){ playTone(600, .08, 'square', .1); }
-function sfxPop(){ playTone(880, .1, 'sine', .15); }
-function sfxWin(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.2,'sine',.2),i*100)); }
-function sfxEat(){ playTone(440, .08, 'triangle', .15); }
-function sfxCatch(){ playTone(1200, .06, 'sine', .12); }
 
 /* ============ ЧАСТИЦЫ ============ */
-function burstParticles(x, y, color='#FBBF24', count=12){
-  for(let i=0;i<count;i++){
-    const p = document.createElement('div');
-    p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:8px;height:8px;border-radius:50%;background:${color};pointer-events:none;z-index:999;transition:transform .8s ease,opacity .8s ease`;
-    document.body.appendChild(p);
-    const angle = Math.random()*Math.PI*2;
-    const dist = 50 + Math.random()*100;
-    const dx = Math.cos(angle)*dist, dy = Math.sin(angle)*dist;
-    requestAnimationFrame(()=>{
-      p.style.transform = `translate(${dx}px,${dy}px) scale(0)`;
-      p.style.opacity = '0';
-    });
-    setTimeout(()=>p.remove(), 900);
+function startParticles(type){
+  const cont=document.getElementById('particles');
+  cont.innerHTML='';
+  const colors={night:'#A78BFA',magic:'#FBBF24',train:'#C4B5FD',house:'#FBBF24',void:'#8B5CF6'};
+  const c=colors[type]||'#A78BFA';
+  for(let i=0;i<25;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const size=2+Math.random()*4;
+    p.style.width=size+'px';p.style.height=size+'px';
+    p.style.background=c;p.style.boxShadow='0 0 8px '+c;
+    p.style.left=Math.random()*100+'%';
+    p.style.top=(100+Math.random()*20)+'%';
+    p.style.animation=`floatUp ${8+Math.random()*10}s linear infinite`;
+    p.style.animationDelay=(-Math.random()*10)+'s';
+    cont.appendChild(p);
   }
 }
-function burstConfetti(){
-  const colors = ['#FBBF24','#F472B6','#8B5CF6','#22C55E','#38BDF8','#FF6B6B'];
-  for(let i=0;i<60;i++){
-    const c = document.createElement('div');
-    const color = colors[Math.floor(Math.random()*colors.length)];
-    const size = 6+Math.random()*8;
-    c.style.cssText = `position:fixed;top:-20px;left:${Math.random()*100}vw;width:${size}px;height:${size}px;background:${color};pointer-events:none;z-index:999;border-radius:${Math.random()>.5?'50%':'2px'};transition:transform 3s linear,opacity 3s linear`;
-    document.body.appendChild(c);
-    requestAnimationFrame(()=>{
-      c.style.transform = `translateY(${window.innerHeight+50}px) rotate(${Math.random()*720}deg)`;
-      c.style.opacity = '0.3';
-    });
-    setTimeout(()=>c.remove(), 3200);
-  }
+const style=document.createElement('style');
+style.textContent=`@keyframes floatUp{0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.7}90%{opacity:.4}100%{transform:translateY(-110vh) translateX(${Math.random()*40-20}px);opacity:0}}`;
+document.head.appendChild(style);
+
+/* ============ ФОНЫ (SVG как data-URI) ============ */
+function svgBg(svg){return 'url("data:image/svg+xml;utf8,'+encodeURIComponent(svg)+'")';}
+
+const BGs = {
+  car: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FFB88C"/><stop offset="50%" stop-color="#DE6262"/>
+        <stop offset="100%" stop-color="#3A1C71"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#sky1)"/>
+    <circle cx="650" cy="150" r="60" fill="#FFEAA7" opacity=".9"/>
+    <circle cx="650" cy="150" r="90" fill="#FFEAA7" opacity=".3"/>
+    <rect y="380" width="800" height="220" fill="#2D1B4E"/>
+    <rect y="380" width="800" height="10" fill="#1A0F2E"/>
+    <!-- дома -->
+    <rect x="50" y="300" width="80" height="90" fill="#3D2A5C"/>
+    <rect x="150" y="270" width="100" height="120" fill="#4A3269"/>
+    <rect x="270" y="320" width="70" height="70" fill="#3D2A5C"/>
+    <rect x="360" y="250" width="120" height="140" fill="#4A3269"/>
+    <rect x="500" y="290" width="90" height="100" fill="#3D2A5C"/>
+    <rect x="610" y="260" width="110" height="130" fill="#4A3269"/>
+    <!-- окна -->
+    <g fill="#FFEAA7" opacity=".9">
+      <rect x="70" y="320" width="15" height="20"/><rect x="100" y="320" width="15" height="20"/>
+      <rect x="180" y="300" width="18" height="22"/><rect x="220" y="300" width="18" height="22"/>
+      <rect x="390" y="280" width="20" height="25"/><rect x="430" y="280" width="20" height="25"/>
+      <rect x="530" y="320" width="18" height="22"/><rect x="640" y="290" width="20" height="25"/>
+    </g>
+  </svg>`),
+  house: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1A0F2E"/><stop offset="60%" stop-color="#2D1B4E"/>
+        <stop offset="100%" stop-color="#0F0820"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#sky2)"/>
+    <circle cx="650" cy="120" r="40" fill="#E9D5FF" opacity=".9"/>
+    <circle cx="650" cy="120" r="70" fill="#E9D5FF" opacity=".2"/>
+    <!-- дом -->
+    <polygon points="200,300 400,180 600,300" fill="#5B3E7A"/>
+    <rect x="220" y="300" width="360" height="250" fill="#4A3269"/>
+    <rect x="240" y="320" width="60" height="70" fill="#FFEAA7" opacity=".8"/>
+    <rect x="500" y="320" width="60" height="70" fill="#FFEAA7" opacity=".8"/>
+    <rect x="370" y="420" width="60" height="130" fill="#2D1B4E"/>
+    <!-- окно со светом -->
+    <rect x="500" y="320" width="60" height="70" fill="#FBBF24" opacity=".95"/>
+    <rect x="500" y="320" width="60" height="70" fill="none" stroke="#2D1B4E" stroke-width="4"/>
+    <line x1="530" y1="320" x2="530" y2="390" stroke="#2D1B4E" stroke-width="4"/>
+    <line x1="500" y1="355" x2="560" y2="355" stroke="#2D1B4E" stroke-width="4"/>
+    <!-- деревья -->
+    <ellipse cx="120" cy="450" rx="60" ry="80" fill="#2D1B4E"/>
+    <ellipse cx="690" cy="470" rx="70" ry="90" fill="#2D1B4E"/>
+  </svg>`),
+  room: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <rect width="800" height="600" fill="#2D1B4E"/>
+    <rect x="0" y="0" width="800" height="400" fill="#3D2A5C"/>
+    <rect x="0" y="400" width="800" height="200" fill="#1A0F2E"/>
+    <!-- окно -->
+    <rect x="550" y="100" width="180" height="240" fill="#1A0F2E"/>
+    <rect x="550" y="100" width="180" height="240" fill="none" stroke="#5B3E7A" stroke-width="8"/>
+    <line x1="640" y1="100" x2="640" y2="340" stroke="#5B3E7A" stroke-width="6"/>
+    <line x1="550" y1="220" x2="730" y2="220" stroke="#5B3E7A" stroke-width="6"/>
+    <circle cx="680" cy="160" r="30" fill="#E9D5FF" opacity=".7"/>
+    <!-- кровать -->
+    <rect x="80" y="380" width="300" height="100" fill="#5B3E7A" rx="10"/>
+    <rect x="80" y="350" width="300" height="40" fill="#8B5CF6" rx="10"/>
+    <rect x="100" y="330" width="80" height="40" fill="#E9D5FF" rx="10"/>
+    <!-- стол -->
+    <rect x="420" y="420" width="120" height="80" fill="#5B3E7A"/>
+    <rect x="420" y="410" width="120" height="15" fill="#8B5CF6"/>
+    <!-- тетрадь на столе -->
+    <rect x="450" y="400" width="60" height="20" fill="#FBBF24" transform="rotate(-10 480 410)"/>
+  </svg>`),
+  void: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <radialGradient id="voidg" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#4C1D95"/>
+        <stop offset="50%" stop-color="#2D1B4E"/>
+        <stop offset="100%" stop-color="#0A0A14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#voidg)"/>
+    <g fill="#FBBF24">
+      <circle cx="100" cy="80" r="2"/><circle cx="250" cy="150" r="3"/>
+      <circle cx="400" cy="60" r="2"/><circle cx="600" cy="120" r="3"/>
+      <circle cx="700" cy="200" r="2"/><circle cx="150" cy="300" r="2"/>
+      <circle cx="500" cy="250" r="3"/><circle cx="680" cy="400" r="2"/>
+      <circle cx="200" cy="500" r="3"/><circle cx="550" cy="480" r="2"/>
+    </g>
+    <g fill="#A78BFA" opacity=".5">
+      <circle cx="350" cy="400" r="4"/><circle cx="620" cy="300" r="4"/>
+      <circle cx="80" cy="450" r="3"/><circle cx="450" cy="150" r="3"/>
+    </g>
+    <!-- силуэты домов на заднем плане -->
+    <rect x="50" y="400" width="100" height="200" fill="#1A0F2E" opacity=".6"/>
+    <rect x="200" y="350" width="80" height="250" fill="#1A0F2E" opacity=".5"/>
+    <rect x="320" y="420" width="120" height="180" fill="#1A0F2E" opacity=".6"/>
+    <rect x="480" y="380" width="90" height="220" fill="#1A0F2E" opacity=".5"/>
+    <rect x="620" y="440" width="140" height="160" fill="#1A0F2E" opacity=".6"/>
+  </svg>`),
+  train: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0F0820"/><stop offset="70%" stop-color="#2D1B4E"/>
+        <stop offset="100%" stop-color="#4C1D95"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#sky3)"/>
+    <circle cx="150" cy="100" r="35" fill="#E9D5FF" opacity=".8"/>
+    <!-- поезд -->
+    <rect x="100" y="350" width="600" height="150" fill="#2D1B4E" rx="10"/>
+    <rect x="100" y="350" width="600" height="20" fill="#5B3E7A"/>
+    <g fill="#FBBF24" opacity=".9">
+      <rect x="140" y="380" width="60" height="50" rx="5"/>
+      <rect x="240" y="380" width="60" height="50" rx="5"/>
+      <rect x="340" y="380" width="60" height="50" rx="5"/>
+      <rect x="440" y="380" width="60" height="50" rx="5"/>
+      <rect x="540" y="380" width="60" height="50" rx="5"/>
+    </g>
+    <circle cx="180" cy="510" r="25" fill="#1A0F2E"/>
+    <circle cx="620" cy="510" r="25" fill="#1A0F2E"/>
+    <!-- рельсы -->
+    <rect x="0" y="550" width="800" height="8" fill="#5B3E7A"/>
+    <rect x="0" y="570" width="800" height="8" fill="#5B3E7A"/>
+  </svg>`)
+};
+
+function setBg(name){
+  const bgs=[document.getElementById('bg1'),document.getElementById('bg2')];
+  const current=bgs.find(b=>b.classList.contains('active'));
+  const next=current===bgs[0]?bgs[1]:bgs[0];
+  next.style.backgroundImage=BGs[name]||BGs.void;
+  next.classList.add('active');
+  if(current){current.classList.remove('active');current.classList.remove('zoomed');}
+  // лёгкий zoom-in для кинематографичности
+  setTimeout(()=>next.classList.add('zoomed'),100);
 }
 
-/* ============ ЯЗЫКИ ============ */
-const translations = {
-  ru:{
-    welcome:'Приключения Вио', start:'Начать', tap:'Тапни, чтобы начать ✨', menu_title:'Выбери приключение',
-    world1:'Оживи стену', world2:'Раскрась стену', world3:'Продолжи историю', world4:'Найди героев',
-    back:'Назад', continue:'Продолжить',
-    hint_dragon:'Нажми на Вио, чтобы он заговорил 👆',
-    task_feed:'Покорми Вио', task_catch:'Поиграй с Вио', task_path:'Доберись до замка',
-    world1_hint:'Пройди все 3 задания, чтобы завершить мир!', progress:'Прогресс',
-    feed_hint:'Тапай по еде, чтобы покормить Вио!', feed_score:'Съедено: {n}/{max}',
-    feed_win_title:'Вио наелся!', feed_win_text:'Вио говорит спасибо! Он больше не голоден 🍎',
-    catch_hint:'Лови звёзды пальцем!', catch_score:'Поймано: {n}',
-    catch_time:'Время: {t}с', catch_win_title:'Отличная игра!', catch_win_text:'Вио наловил звёзд и очень доволен ⭐',
-    path_hint:'Тапай по шагам, чтобы дойти до замка', path_win_title:'Ты добрался до замка!',
-    path_win_text:'Замок открыт! Вио гордится тобой 🏰', path_step:'Шаг {n}',
-    world_complete:'Мир 1 пройден!', world_complete_text:'Ты прошёл все задания и оживил стену! 🎉',
-    brush:'🖌 Кисть', eraser:'🧽 Ластик', save:'💾 Сохранить', clear:'🗑 Очистить',
-    color_hint:'Выбери цвет и раскрась картинку пальцем!',
-    color_win_title:'Красиво!', color_win_text:'Ты раскрасил стену! Молодец 🎨',
-    quest_hint:'Найди всех 6 героев на стенах города!',
-    quest_found:'Ты нашёл героя!', quest_complete:'Все герои найдены!',
-    quest_complete_text:'Ты собрал всех героев! Вио гордится тобой 🎉',
-    ach_start:'🌟 Ты начал приключение!', ach_world1:'🐉 Ты оживил стену!',
-    ach_world2:'🎨 Ты раскрасил стену!', ach_world3:'📖 Ты продолжил историю!', ach_world4:'🗺️ Ты нашёл героев!',
-    dragon_phrases:['Привет! Я Вио! 👋','Давай играть! 🎮','Ты меня нашёл! 🌟','Я живу на стене! 🧱','Ты мой друг! ❤️','Ура! 🎉']
+/* ============ ПЕРСОНАЖИ (SVG) ============ */
+const Characters = {
+  hero: {
+    name:{ru:'Тим',en:'Tim'},
+    avatar:'👤',
+    svg:`<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+      <!-- тело -->
+      <ellipse cx="150" cy="400" rx="80" ry="100" fill="#4C1D95"/>
+      <rect x="80" y="330" width="140" height="120" fill="#8B5CF6" rx="20"/>
+      <!-- шея -->
+      <rect x="130" y="290" width="40" height="50" fill="#F4C8A8"/>
+      <!-- голова -->
+      <ellipse cx="150" cy="240" rx="65" ry="75" fill="#F4C8A8"/>
+      <!-- волосы -->
+      <path d="M85 220 Q85 160 150 160 Q215 160 215 220 Q210 200 180 195 Q150 190 120 195 Q90 200 85 220 Z" fill="#3D2A5C"/>
+      <!-- глаза -->
+      <ellipse cx="125" cy="235" rx="9" ry="11" fill="#1A0F2E"/>
+      <ellipse cx="175" cy="235" rx="9" ry="11" fill="#1A0F2E"/>
+      <circle cx="127" cy="232" r="3" fill="#fff"/>
+      <circle cx="177" cy="232" r="3" fill="#fff"/>
+      <!-- брови -->
+      <path d="M115 218 Q125 214 135 218" stroke="#3D2A5C" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M165 218 Q175 214 185 218" stroke="#3D2A5C" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- рот -->
+      <ellipse class="mouth" cx="150" cy="275" rx="12" ry="6" fill="#8B2C2C"/>
+      <!-- румяна -->
+      <ellipse cx="110" cy="262" rx="12" ry="7" fill="#F472B6" opacity=".5"/>
+      <ellipse cx="190" cy="262" rx="12" ry="7" fill="#F472B6" opacity=".5"/>
+    </svg>`
   },
-  en:{
-    welcome:'Vio\'s Adventures', start:'Start', tap:'Tap to start ✨', menu_title:'Choose an adventure',
-    world1:'Bring the wall to life', world2:'Color the wall', world3:'Continue the story', world4:'Find the heroes',
-    back:'Back', continue:'Continue',
-    hint_dragon:'Tap Vio to make him talk 👆',
-    task_feed:'Feed Vio', task_catch:'Play with Vio', task_path:'Reach the castle',
-    world1_hint:'Complete all 3 tasks to finish the world!', progress:'Progress',
-    feed_hint:'Tap the food to feed Vio!', feed_score:'Eaten: {n}/{max}',
-    feed_win_title:'Vio is full!', feed_win_text:'Vio says thanks! He is not hungry anymore 🍎',
-    catch_hint:'Catch the stars with your finger!', catch_score:'Caught: {n}',
-    catch_time:'Time: {t}s', catch_win_title:'Great game!', catch_win_text:'Vio caught the stars and is very happy ⭐',
-    path_hint:'Tap the steps to reach the castle', path_win_title:'You reached the castle!',
-    path_win_text:'The castle is open! Vio is proud of you 🏰', path_step:'Step {n}',
-    world_complete:'World 1 complete!', world_complete_text:'You completed all tasks and brought the wall to life! 🎉',
-    brush:'🖌 Brush', eraser:'🧽 Eraser', save:'💾 Save', clear:'🗑 Clear',
-    color_hint:'Pick a color and color the picture with your finger!',
-    color_win_title:'Beautiful!', color_win_text:'You colored the wall! Well done 🎨',
-    quest_hint:'Find all 6 heroes on the walls of the city!',
-    quest_found:'You found a hero!', quest_complete:'All heroes found!',
-    quest_complete_text:'You collected all heroes! Vio is proud of you 🎉',
-    ach_start:'🌟 You started the adventure!', ach_world1:'🐉 You brought the wall to life!',
-    ach_world2:'🎨 You colored the wall!', ach_world3:'📖 You continued the story!', ach_world4:'🗺️ You found the heroes!',
-    dragon_phrases:['Hi! I\'m Vio! 👋','Let\'s play! 🎮','You found me! 🌟','I live on the wall! 🧱','You are my friend! ❤️','Hooray! 🎉']
+  paper: {
+    name:{ru:'Бумажка',en:'Paper'},
+    avatar:'📄',
+    svg:`<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- бумажный кораблик -->
+      <polygon points="60,200 150,120 240,200 150,260" fill="#F5F0E1"/>
+      <polygon points="60,200 150,120 150,200" fill="#E8E0CC"/>
+      <polygon points="150,120 240,200 150,200" fill="#FFF8E7"/>
+      <!-- глаза -->
+      <circle cx="125" cy="180" r="8" fill="#1A0F2E"/>
+      <circle cx="175" cy="180" r="8" fill="#1A0F2E"/>
+      <circle cx="128" cy="177" r="3" fill="#fff"/>
+      <circle cx="178" cy="177" r="3" fill="#fff"/>
+      <!-- рот -->
+      <ellipse class="mouth" cx="150" cy="205" rx="8" ry="4" fill="#1A0F2E"/>
+      <!-- румяна -->
+      <circle cx="105" cy="200" r="8" fill="#F472B6" opacity=".5"/>
+      <circle cx="195" cy="200" r="8" fill="#F472B6" opacity=".5"/>
+      <!-- блик -->
+      <circle cx="110" cy="150" r="4" fill="#FBBF24" opacity=".8"/>
+      <circle cx="190" cy="140" r="3" fill="#FBBF24" opacity=".6"/>
+    </svg>`
+  },
+  nika: {
+    name:{ru:'Ника',en:'Nika'},
+    avatar:'💫',
+    svg:`<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+      <!-- тело-призрак -->
+      <path d="M80 500 Q80 380 110 340 Q150 300 190 340 Q220 380 220 500 Z" fill="#A78BFA" opacity=".65"/>
+      <!-- голова -->
+      <ellipse cx="150" cy="250" rx="60" ry="70" fill="#C4B5FD" opacity=".85"/>
+      <!-- волосы -->
+      <path d="M90 230 Q90 170 150 170 Q210 170 210 230 Q200 195 150 195 Q100 195 90 230 Z" fill="#8B5CF6"/>
+      <!-- глаза -->
+      <ellipse cx="128" cy="245" rx="10" ry="12" fill="#4C1D95"/>
+      <ellipse cx="172" cy="245" rx="10" ry="12" fill="#4C1D95"/>
+      <circle cx="130" cy="242" r="3" fill="#fff"/>
+      <circle cx="174" cy="242" r="3" fill="#fff"/>
+      <!-- улыбка -->
+      <path d="M130 275 Q150 290 170 275" stroke="#4C1D95" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse class="mouth" cx="150" cy="280" rx="10" ry="5" fill="#4C1D95" opacity=".7"/>
+      <!-- свечение -->
+      <ellipse cx="150" cy="360" rx="90" ry="140" fill="#A78BFA" opacity=".15"/>
+    </svg>`
   }
 };
-let currentLang = localStorage.getItem('viokrista_lang') || 'ru';
-function toggleLang(){ currentLang = currentLang==='ru'?'en':'ru'; localStorage.setItem('viokrista_lang',currentLang); applyLang(); }
-function applyLang(){
-  document.documentElement.lang = currentLang;
-  document.getElementById('langSwitch').textContent = '🌐 '+currentLang.toUpperCase();
-  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.dataset.i18n; if(translations[currentLang][k]) el.textContent=translations[currentLang][k]; });
-  updateProgress(); renderStory(); renderQuest(); updateQuestProgress();
-}
-function t(k){ return translations[currentLang][k]||k; }
 
-/* ============ ЭКРАНЫ ============ */
-function goTo(id){
-  initAudio();
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='screen-world1'){ earnBadge('world1'); updateProgress(); }
-  if(id==='screen-world2'){ earnBadge('world2'); initCanvas(); }
-  if(id==='screen-world3'){ earnBadge('world3'); renderStory(); }
-  if(id==='screen-world4'){ earnBadge('world4'); renderQuest(); }
-  if(id==='screen-menu') earnBadge('start');
+function showCharacter(who,pos='center'){
+  const layer=document.getElementById('charLayer');
+  // убрать старых (кроме одного в той же позиции)
+  Array.from(layer.children).forEach(c=>{
+    if(c.dataset.who!==who) c.remove();
+  });
+  if(document.querySelector(`[data-who="${who}"]`)) return;
+  const ch=Characters[who];
+  if(!ch) return;
+  const el=document.createElement('div');
+  el.className='character '+pos;
+  el.dataset.who=who;
+  el.innerHTML=ch.svg;
+  layer.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
 }
-
-/* ============ АЧИВКИ ============ */
-function earnBadge(name){
-  const badges = JSON.parse(localStorage.getItem('viokrista_badges')||'[]');
-  if(!badges.includes(name)){
-    badges.push(name);
-    localStorage.setItem('viokrista_badges',JSON.stringify(badges));
-    renderBadges();
-    if(name!=='start'){ showToast(t('ach_'+name)); sfxWin(); burstConfetti(); }
-  }
+function hideAllCharacters(){
+  document.querySelectorAll('.character').forEach(c=>{c.classList.remove('show');setTimeout(()=>c.remove(),800);});
 }
-function renderBadges(){
-  const badges = JSON.parse(localStorage.getItem('viokrista_badges')||'[]');
-  document.querySelectorAll('.badge').forEach(b=>{ if(badges.includes(b.dataset.ach)) b.classList.add('earned'); });
-}
-function showToast(text){
-  const toast = document.getElementById('toast');
-  toast.textContent = text; toast.classList.add('show');
-  clearTimeout(window.toastTimer);
-  window.toastTimer = setTimeout(()=>toast.classList.remove('show'),2500);
-}
-function dragonSpeak(){
-  sfxClick();
-  const phrases = translations[currentLang].dragon_phrases;
-  showToast(phrases[Math.floor(Math.random()*phrases.length)]);
-  if(navigator.vibrate) navigator.vibrate(30);
+function hideCharacter(who){
+  const c=document.querySelector(`[data-who="${who}"]`);
+  if(c){c.classList.remove('show');setTimeout(()=>c.remove(),800);}
 }
 
-/* ============ МИР 1: ПРОГРЕСС ============ */
-function getWorld1Progress(){ return JSON.parse(localStorage.getItem('viokrista_world1')||'{"feed":false,"catch":false,"path":false}'); }
-function setWorld1Progress(key){
-  const p = getWorld1Progress(); p[key]=true;
-  localStorage.setItem('viokrista_world1',JSON.stringify(p));
-  updateProgress();
-}
-function updateProgress(){
-  const p = getWorld1Progress();
-  const done = [p.feed,p.catch,p.path].filter(Boolean).length;
-  document.querySelectorAll('.task-card').forEach(c=>c.classList.remove('done'));
-  if(p.feed) document.getElementById('task-feed').classList.add('done');
-  if(p.catch) document.getElementById('task-catch').classList.add('done');
-  if(p.path) document.getElementById('task-path').classList.add('done');
-  const fill = document.getElementById('progressFill');
-  const text = document.getElementById('progressText');
-  if(fill) fill.style.width = (done/3*100)+'%';
-  if(text) text.textContent = t('progress')+': '+done+'/3';
-  if(done===3){
-    earnBadge('world1');
-    setTimeout(()=>showWin('🎉',t('world_complete'),t('world_complete_text')),500);
-  }
-}
-
-/* ============ ЗАДАНИЯ МИРА 1 ============ */
-let currentTask = null, catchTimer = null, catchTimeLeft = 0, catchScore = 0, catchSpawner = null;
-
-function startTask(name){
-  initAudio(); sfxClick();
-  currentTask = name;
-  const screen = document.getElementById('taskScreen');
-  const content = document.getElementById('taskContent');
-  const hint = document.getElementById('taskHint');
-  const score = document.getElementById('taskScore');
-  content.innerHTML=''; score.textContent='';
-  if(name==='feed') startFeed(content,hint,score);
-  if(name==='catch') startCatch(content,hint,score);
-  if(name==='path') startPath(content,hint,score);
-  screen.classList.add('active');
-}
-function closeTask(){
-  document.getElementById('taskScreen').classList.remove('active');
-  if(catchTimer) clearInterval(catchTimer);
-  if(catchSpawner) clearInterval(catchSpawner);
-  currentTask=null;
-}
-
-/* --- ПОКОРМИ --- */
-function startFeed(content,hint,score){
-  hint.textContent = t('feed_hint');
-  const foods = ['🍎','🍌','🍇','🍓','🍒','🍑','🥝','🍊'];
-  let eaten=0; const max=5;
-  function update(){ score.textContent = t('feed_score').replace('{n}',eaten).replace('{max}',max); }
-  update();
-  content.innerHTML = `<div class="feed-dragon" id="feedDragon">
-    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
-      <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
-      <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
-      <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
-      <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
-      <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
-      <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
-      <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
-      <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-      <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-      <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-      <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-      <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
-      <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
-      <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
-      <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
-      <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
-      <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
-      <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
-      <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
-      <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
-      <circle cx="133" cy="99" r="4" fill="#fff"/>
-      <circle cx="177" cy="99" r="4" fill="#fff"/>
-      <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
-      <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
-      <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <ellipse cx="145" cy="118" rx="4" ry="3" fill="#1E1B4B"/>
-      <ellipse cx="155" cy="118" rx="4" ry="3" fill="#1E1B4B"/>
-    </svg>
-  </div>`;
-  const dragon = document.getElementById('feedDragon');
-  function spawn(){
-    if(eaten>=max) return;
-    const f = document.createElement('div');
-    f.className='food-item spawn';
-    f.textContent = foods[Math.floor(Math.random()*foods.length)];
-    const r = dragon.getBoundingClientRect();
-    f.style.left = (Math.random()*(r.width-50))+'px';
-    f.style.top = (Math.random()*(r.height-80))+'px';
-    const eat = ()=>{
-      if(f.classList.contains('eaten')) return;
-      f.classList.add('eaten'); eaten++; update(); sfxEat();
-      const rect = f.getBoundingClientRect();
-      burstParticles(rect.left+20, rect.top+20, '#FBBF24', 8);
-      if(navigator.vibrate) navigator.vibrate(20);
-      if(eaten>=max){
-        setTimeout(()=>{ setWorld1Progress('feed'); closeTask(); sfxWin(); burstConfetti(); showWin('🍎',t('feed_win_title'),t('feed_win_text')); },500);
-      } else setTimeout(spawn,400);
-    };
-    f.addEventListener('click',eat);
-    f.addEventListener('touchstart',e=>{e.preventDefault();eat();},{passive:false});
-    dragon.appendChild(f);
-  }
-  spawn(); setTimeout(spawn,300); setTimeout(spawn,600);
-}
-
-/* --- ЗВЁЗДЫ --- */
-function startCatch(content,hint,score){
-  hint.textContent = t('catch_hint');
-  catchScore=0; catchTimeLeft=20;
-  content.innerHTML = `<div class="catch-area" id="catchArea"></div>`;
-  const area = document.getElementById('catchArea');
-  function update(){ score.textContent = t('catch_score').replace('{n}',catchScore)+' | '+t('catch_time').replace('{t}',catchTimeLeft); }
-  update();
-  function spawn(){
-    const s = document.createElement('div');
-    s.className='star'; s.textContent='⭐';
-    const x = Math.random()*(area.clientWidth-50);
-    const y = Math.random()*(area.clientHeight-50);
-    s.style.left=x+'px'; s.style.top=y+'px';
-    const catchIt = ()=>{
-      if(s.classList.contains('caught')) return;
-      s.classList.add('caught'); catchScore++; update(); sfxCatch();
-      const rect = s.getBoundingClientRect();
-      burstParticles(rect.left+18, rect.top+18, '#FBBF24', 6);
-      if(navigator.vibrate) navigator.vibrate(15);
-      setTimeout(()=>s.remove(),300);
-    };
-    s.addEventListener('click',catchIt);
-    s.addEventListener('touchstart',e=>{e.preventDefault();catchIt();},{passive:false});
-    area.appendChild(s);
-    setTimeout(()=>{ if(!s.classList.contains('caught')) s.remove(); },3000);
-  }
-  catchSpawner = setInterval(spawn,600);
-  spawn(); spawn();
-  catchTimer = setInterval(()=>{
-    catchTimeLeft--; update();
-    if(catchTimeLeft<=0){
-      clearInterval(catchTimer); clearInterval(catchSpawner);
-      setTimeout(()=>{ setWorld1Progress('catch'); closeTask(); sfxWin(); burstConfetti(); showWin('⭐',t('catch_win_title'),t('catch_win_text')); },400);
-    }
-  },1000);
-}
-
-/* --- ЗАМОК --- */
-function startPath(content,hint,score){
-  hint.textContent = t('path_hint');
-  score.textContent='';
-  const total=5; let current=0;
-  content.innerHTML = `<div class="path-area" id="pathArea"></div>`;
-  const area = document.getElementById('pathArea');
-  function render(){
-    area.innerHTML='';
-    for(let i=1;i<=total;i++){
-      const s = document.createElement('div');
-      s.className='path-step';
-      if(i<current) s.classList.add('done');
-      if(i>current) s.classList.add('locked');
-      if(i===current) s.textContent = t('path_step').replace('{n}',i)+' 👆';
-      else if(i<current) s.textContent = t('path_step').replace('{n}',i)+' ✓';
-      else s.textContent = t('path_step').replace('{n}',i);
-      if(i===current){
-        const next = ()=>{
-          current++; sfxClick();
-          const rect = s.getBoundingClientRect();
-          burstParticles(rect.left+rect.width/2, rect.top+rect.height/2, '#8B5CF6', 8);
-          if(navigator.vibrate) navigator.vibrate(20);
-          render();
-          if(current>total){
-            setTimeout(()=>{ setWorld1Progress('path'); closeTask(); sfxWin(); burstConfetti(); showWin('🏰',t('path_win_title'),t('path_win_text')); },800);
-          }
-        };
-        s.addEventListener('click',next);
-        s.addEventListener('touchstart',e=>{e.preventDefault();next();},{passive:false});
-      }
-      area.appendChild(s);
-    }
-    if(current>total){
-      const c = document.createElement('div');
-      c.className='castle-final'; c.textContent='🏰';
-      area.appendChild(c);
-    }
-  }
-  render();
-}
-
-/* ============ МОДАЛКИ ============ */
-function showWin(emoji,title,text){
-  document.getElementById('winEmoji').textContent = emoji;
-  document.getElementById('winTitle').textContent = title;
-  document.getElementById('winText').textContent = text;
-  document.getElementById('winModal').classList.add('show');
-}
-function closeWin(){
-  document.getElementById('winModal').classList.remove('show');
-  if(currentTask===null) goTo('screen-world1');
-}
-
-/* ============ МИР 2: РАСКРАСКА ============ */
-let canvas, ctx, currentColor='#8B5CF6', currentTool='brush', isDrawing=false, lastX=0, lastY=0;
-const paletteColors = ['#8B5CF6','#FBBF24','#F472B6','#22C55E','#38BDF8','#FF6B6B','#FB923C','#A78BFA','#FFFFFF','#1E1B4B','#84CC16','#EC4899'];
-function initCanvas(){
-  canvas = document.getElementById('colorCanvas');
-  if(!canvas) return;
-  ctx = canvas.getContext('2d');
-  if(!canvas.dataset.inited){
-    drawColoringTemplate();
-    canvas.dataset.inited='1';
-  }
-  const pal = document.getElementById('palette');
-  if(pal && !pal.dataset.inited){
-    paletteColors.forEach((c,i)=>{
-      const s = document.createElement('div');
-      s.className='color-swatch'+(i===0?' active':'');
-      s.style.background = c;
-      s.addEventListener('click',()=>{
-        currentColor = c; currentTool='brush';
-        document.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('active'));
-        s.classList.add('active');
-        document.getElementById('toolBrush').classList.add('active');
-        document.getElementById('toolEraser').classList.remove('active');
-        sfxClick();
-      });
-      pal.appendChild(s);
-    });
-    pal.dataset.inited='1';
-    canvas.addEventListener('mousedown',startDraw);
-    canvas.addEventListener('mousemove',draw);
-    canvas.addEventListener('mouseup',stopDraw);
-    canvas.addEventListener('mouseleave',stopDraw);
-    canvas.addEventListener('touchstart',e=>{e.preventDefault();startDraw(e.touches[0]);},{passive:false});
-    canvas.addEventListener('touchmove',e=>{e.preventDefault();draw(e.touches[0]);},{passive:false});
-    canvas.addEventListener('touchend',stopDraw);
-  }
-}
-function drawColoringTemplate(){
-  ctx.fillStyle='#FFFFFF';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle='#1E1B4B';
-  ctx.lineWidth = 4;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-  // Солнце
-  ctx.beginPath(); ctx.arc(80,80,45,0,Math.PI*2); ctx.stroke();
-  for(let i=0;i<8;i++){
-    const a = i*Math.PI/4;
-    ctx.beginPath();
-    ctx.moveTo(80+Math.cos(a)*55, 80+Math.sin(a)*55);
-    ctx.lineTo(80+Math.cos(a)*75, 80+Math.sin(a)*75);
-    ctx.stroke();
-  }
-  // Дом
-  ctx.strokeRect(180,180,140,140);
-  ctx.beginPath();
-  ctx.moveTo(170,180); ctx.lineTo(250,110); ctx.lineTo(330,180);
-  ctx.closePath(); ctx.stroke();
-  // Дверь
-  ctx.strokeRect(230,250,40,70);
-  // Окно
-  ctx.strokeRect(200,205,30,30);
-  ctx.strokeRect(290,205,30,30);
-  // Облако
-  ctx.beginPath();
-  ctx.arc(370,80,25,0,Math.PI*2);
-  ctx.arc(400,70,30,0,Math.PI*2);
-  ctx.arc(430,80,25,0,Math.PI*2);
-  ctx.stroke();
-  // Дерево
-  ctx.beginPath();
-  ctx.moveTo(100,380); ctx.lineTo(100,280);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(100,250,50,0,Math.PI*2);
-  ctx.stroke();
-  // Трава
-  ctx.beginPath();
-  ctx.moveTo(0,380); ctx.lineTo(500,380);
-  ctx.stroke();
-}
-function getPos(e){
-  const r = canvas.getBoundingClientRect();
-  const scaleX = canvas.width/r.width;
-  const scaleY = canvas.height/r.height;
-  return { x:(e.clientX-r.left)*scaleX, y:(e.clientY-r.top)*scaleY };
-}
-function startDraw(e){
-  initAudio();
-  isDrawing = true;
-  const p = getPos(e);
-  lastX = p.x; lastY = p.y;
-  draw(e);
-}
-function draw(e){
-  if(!isDrawing) return;
-  const p = getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(lastX,lastY);
-  ctx.lineTo(p.x,p.y);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  if(currentTool==='eraser'){
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 30;
-  } else {
-    ctx.strokeStyle = currentColor;
-    ctx.lineWidth = 14;
-  }
-  ctx.stroke();
-  lastX = p.x; lastY = p.y;
-}
-function stopDraw(){ isDrawing = false; }
-function setTool(tool){
-  currentTool = tool;
-  document.getElementById('toolBrush').classList.toggle('active',tool==='brush');
-  document.getElementById('toolEraser').classList.toggle('active',tool==='eraser');
-  sfxClick();
-}
-function clearDrawing(){
-  if(!ctx) return;
-  drawColoringTemplate();
-  sfxClick();
-}
-function saveDrawing(){
-  if(!canvas) return;
-  const link = document.createElement('a');
-  link.download = 'viokrista-drawing.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-  showToast(currentLang==='ru'?'Рисунок сохранён! 💾':'Drawing saved! 💾');
-  sfxWin(); burstConfetti();
-  earnBadge('world2');
-}
-
-/* ============ МИР 3: ИСТОРИЯ ============ */
-const storyData = {
-  ru: [
-    { text:'Вио проснулся на стене и увидел, что все краски исчезли. Куда ему идти?', choices:[
-      { text:'🌲 В тёмный лес', next:1 },
-      { text:'🏰 К старому замку', next:2 }
+/* ============ СЦЕНАРИЙ ============ */
+// Каждый шаг: {type:'text'|'choice'|'scene', ...}
+const Script = {
+  ru:[
+    // Сцена 0 — машина
+    {type:'scene', bg:'car', caption:'Глава 1. Дом на Краю Улицы', ambient:'night', particles:'night'},
+    {type:'text', who:'', avatar:'🌇', name:'', text:'Дорога вьётся между домами. За окном мелькают деревья, вывески, чужие окна.', thought:true},
+    {type:'text', who:'', avatar:'👩', name:'Мама', text:'...и бабушкин дом, конечно, старый, но такой уютный. Ты помнишь его?'},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Я не помню. Я вообще не помню бабушку. Только запах — кажется, корицы и старой бумаги.)', thought:true},
+    {type:'text', who:'', avatar:'👨', name:'Папа', text:'Тим, ты слушаешь?'},
+    {type:'choice', options:[
+      {text:'«Да, пап».', tag:'+Доверие', effects:{trust:1}},
+      {text:'«Ага».', tag:'нейтрально', effects:{}},
+      {text:'Молчать.', tag:'+Самостоятельность', effects:{independence:1}}
     ]},
-    { text:'В лесу Вио встретил грустного лисёнка. Он потерял свой хвост.', choices:[
-      { text:'🔍 Помочь найти хвост', next:3 },
-      { text:'➡️ Идти дальше одному', next:4 }
+
+    // Сцена 1 — дом снаружи
+    {type:'scene', bg:'house', caption:'Дом бабушки. Вечер.', ambient:'night', particles:'house'},
+    {type:'text', who:'', avatar:'🏡', name:'', text:'Дом старый, но красивый. Двухэтажный. Окна с резными рамами. Сад, заросший, но живой.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Почему у меня такое чувство, будто я уже здесь был?..)', thought:true},
+
+    // Сцена 2 — внутри
+    {type:'scene', bg:'room', caption:'Внутри дома. Пахнет корицей.', ambient:'night', particles:'house'},
+    {type:'text', who:'', avatar:'📸', name:'', text:'На стенах — старые фотографии. Камера медленно проходит по ним.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(На фото — женщина с добрыми глазами. Это бабушка? Почему я её не помню?)', thought:true},
+    {type:'text', who:'', avatar:'📷', name:'', text:'На одной из фотографий — маленький Тим на руках у бабушки. Но её лицо... размыто.', thought:true},
+    {type:'choice', options:[
+      {text:'Взять фотографию в руки.', tag:'+Наблюдательность', effects:{observation:1}, then:[
+        {type:'text', who:'', avatar:'📷', name:'', text:'Фотография тёплая на ощупь. Тёплая, как живая.', thought:true}
+      ]},
+      {text:'Пройти мимо.', tag:'нейтрально', effects:{}},
+      {text:'Позвать маму.', tag:'+Доверие', effects:{trust:1}}
     ]},
-    { text:'В замке Вио нашёл волшебную кисть. Она может вернуть цвета!', choices:[
-      { text:'🖌 Взять кисть', next:5 },
-      { text:'🚪 Оставить и уйти', next:4 }
+
+    // Сцена 3 — ночь, свет в окне
+    {type:'scene', bg:'house', caption:'Ночь. Свет в окне соседнего дома.', ambient:'night', particles:'house'},
+    {type:'text', who:'', avatar:'📖', name:'', text:'В тетради бабушки — рисунки: дом, сад, поезд, маяк, дверь. И подпись: «Тихий Свет не гаснет, пока кто-то помнит».', thought:true},
+    {type:'text', who:'', avatar:'💡', name:'', text:'Свет в окне соседнего дома. Того, который пустует уже много лет.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Там же никто не живёт... Почему горит свет?)', thought:true},
+    {type:'choice', options:[
+      {text:'Пойти посмотреть.', tag:'+Любопытство +Смелость', effects:{curiosity:1,courage:1}},
+      {text:'Закрыть штору.', tag:'+Самостоятельность', effects:{independence:1}},
+      {text:'Позвать родителей.', tag:'+Доверие −Смелость', effects:{trust:1,courage:-1}}
     ]},
-    { text:'Вио помог лисёнку, и они стали друзьями. Лисёнок показал тайную тропу к радуге!', choices:[
-      { text:'🌈 Пойти к радуге', next:5 },
-      { text:'🏠 Вернуться на стену', next:6 }
+
+    // Сцена 4 — пустой дом, знакомство с Бумажкой
+    {type:'scene', bg:'room', caption:'Пустой дом. Кто-то ждёт внутри.', ambient:'magic', particles:'magic', magic:true},
+    {type:'text', who:'', avatar:'🚪', name:'', text:'Дверь скрипит. Внутри темно, но свет идёт из одной комнаты.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Тут пахнет... корицей. Как в бабушкином доме. Но это другой дом.)', thought:true},
+    {type:'showChar', who:'paper', pos:'center', magic:true},
+    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой! Ты... ты меня видишь?', talking:true},
+    {type:'choice', options:[
+      {text:'«Вижу. Ты кто?»', tag:'+Любопытство', effects:{curiosity:1}, then:[
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Я... я Бумажка. Я потерялся. Я всегда теряюсь. Но сегодня — особенно. Потому что Тихий Свет тускнеет!', talking:true}
+      ]},
+      {text:'«Не бойся, я помогу».', tag:'+Доброта', effects:{kindness:1}, then:[
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой... Спасибо! Ты... ты добрый. Ты, наверное, Проводник!', talking:true}
+      ]},
+      {text:'«Что ты такое?»', tag:'нейтрально', effects:{}, then:[
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Я — Потеряшка! Раньше я был бумажным корабликом. А теперь я... вот такой. Маленький и живой.', talking:true}
+      ]},
+      {text:'Молча наблюдать.', tag:'+Наблюдательность', effects:{observation:1}, then:[
+        {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Он дрожит. Но не от страха. От холода. Или от одиночества.)', thought:true},
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ты... ты молчишь. Но ты меня видишь. Это уже хорошо.', talking:true}
+      ]}
     ]},
-    { text:'Вио вернулся на стену ни с чем. Краски так и не вернулись...', choices:[
-      { text:'🔄 Начать заново', next:0 }
+    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой! Ты не знаешь, что такое Тихий Свет? Тогда тебе нужно туда попасть. Ты ведь что-то потерял, да?', talking:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Я потерял... что? Я не помню.)', thought:true},
+
+    // Сцена 5 — переход в Тихий Свет
+    {type:'scene', bg:'void', caption:'Тихий Свет. Первый взгляд.', ambient:'magic', particles:'void', magic:true, shake:true},
+    {type:'hideChar', who:'paper'},
+    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой-ой-ой. Начинается. Держись за меня!', talking:true},
+    {type:'showChar', who:'paper', pos:'center', magic:true},
+    {type:'text', who:'', avatar:'✨', name:'', text:'Свет становится ярче. Комната растворяется. Стены исчезают. Появляется место, которого не должно быть.', thought:true},
+    {type:'text', who:'', avatar:'🌌', name:'', text:'Вокруг — дома, которых нет на карте. Небо фиолетовое, с золотыми звёздами. Пахнет корицей и старой бумагой.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Где я? Что это за место?)', thought:true},
+    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Добро пожаловать в Тихий Свет! Тут живёт всё, что люди забыли.', talking:true},
+    {type:'choice', options:[
+      {text:'«Как я сюда попал?»', tag:'+Любопытство', effects:{curiosity:1}, then:[
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ты попал сюда, потому что ты что-то потерял. И Тихий Свет тебя выбрал.', talking:true}
+      ]},
+      {text:'«Я хочу домой».', tag:'+Самостоятельность', effects:{independence:1}, then:[
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Домой? Но ты только пришёл! И... кажется, ты нужен здесь.', talking:true}
+      ]},
+      {text:'«Это... красиво».', tag:'+Творчество', effects:{creativity:1}, then:[
+        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Красиво? Ой... ты первый, кто так говорит. Обычно все пугаются.', talking:true}
+      ]}
     ]},
-    { text:'Вио взмахнул кистью — и стена засияла всеми цветами! Краски вернулись!', choices:[
-      { text:'🎉 Конец!', next:6 }
-    ]},
-    { text:'Вио стал героем стены. Теперь дети приходят к нему и раскрашивают мир вместе с ним!', choices:[
-      { text:'🔄 Играть снова', next:0 }
-    ]}
+
+    // Сцена 6 — финал главы
+    {type:'scene', bg:'room', caption:'Утро. Всё было сном?', ambient:'night', particles:'house'},
+    {type:'hideChar', who:'paper'},
+    {type:'text', who:'', avatar:'🌅', name:'', text:'Тим открывает глаза. Он снова в своей комнате. Утро. В руке — маленький бумажный кораблик. Он спит.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Это был сон? Или...)', thought:true},
+    {type:'text', who:'', avatar:'📖', name:'', text:'На столе — рисунок. Тот же, что был в тетради бабушки. Но теперь на нём появилась новая деталь: маленькая девочка с фонарём.', thought:true},
+    {type:'text', who:'', avatar:'💫', name:'Тим (мысли)', text:'(Кто ты?)', thought:true},
+    {type:'showChar', who:'nika', pos:'right', magic:true},
+    {type:'text', who:'nika', avatar:'💫', name:'???', text:'Скоро узнаешь.', talking:true},
+    {type:'hideChar', who:'nika', magic:true},
+    {type:'text', who:'', avatar:'🌙', name:'', text:'В окне мелькнуло отражение девочки. Она улыбнулась. И исчезла.', thought:true},
+    {type:'end'}
   ],
-  en: [
-    { text:'Vio woke up on the wall and saw that all colors had disappeared. Where should he go?', choices:[
-      { text:'🌲 Into the dark forest', next:1 },
-      { text:'🏰 To the old castle', next:2 }
+  en:[
+    {type:'scene', bg:'car', caption:'Chapter 1. The House at the Edge of the Street', ambient:'night', particles:'night'},
+    {type:'text', who:'', avatar:'🌇', name:'', text:'The road winds between houses. Trees, signs, strangers\' windows flash by.', thought:true},
+    {type:'text', who:'', avatar:'👩', name:'Mom', text:'...and grandma\'s house is old, of course, but so cozy. Do you remember it?'},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(I don\'t remember. I don\'t remember grandma at all. Only a smell — cinnamon and old paper.)', thought:true},
+    {type:'text', who:'', avatar:'👨', name:'Dad', text:'Tim, are you listening?'},
+    {type:'choice', options:[
+      {text:'"Yes, Dad."', tag:'+Trust', effects:{trust:1}},
+      {text:'"Uh-huh."', tag:'neutral', effects:{}},
+      {text:'Stay silent.', tag:'+Independence', effects:{independence:1}}
     ]},
-    { text:'In the forest Vio met a sad fox who lost his tail.', choices:[
-      { text:'🔍 Help find the tail', next:3 },
-      { text:'➡️ Go on alone', next:4 }
+    {type:'scene', bg:'house', caption:'Grandma\'s house. Evening.', ambient:'night', particles:'house'},
+    {type:'text', who:'', avatar:'🏡', name:'', text:'The house is old but beautiful. Two stories. Carved window frames. An overgrown but living garden.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Why do I feel like I\'ve been here before?..)', thought:true},
+    {type:'scene', bg:'room', caption:'Inside the house. Smells of cinnamon.', ambient:'night', particles:'house'},
+    {type:'text', who:'', avatar:'📸', name:'', text:'Old photographs on the walls. The camera slowly moves past them.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(A woman with kind eyes. Is that grandma? Why don\'t I remember her?)', thought:true},
+    {type:'text', who:'', avatar:'📷', name:'', text:'In one photo — little Tim in grandma\'s arms. But her face... is blurred.', thought:true},
+    {type:'choice', options:[
+      {text:'Pick up the photograph.', tag:'+Observation', effects:{observation:1}},
+      {text:'Walk past.', tag:'neutral', effects:{}},
+      {text:'Call mom.', tag:'+Trust', effects:{trust:1}}
     ]},
-    { text:'In the castle Vio found a magic brush. It can bring colors back!', choices:[
-      { text:'🖌 Take the brush', next:5 },
-      { text:'🚪 Leave it and go', next:4 }
+    {type:'scene', bg:'house', caption:'Night. Light in the window next door.', ambient:'night', particles:'house'},
+    {type:'text', who:'', avatar:'📖', name:'', text:'In grandma\'s notebook — drawings: house, garden, train, lighthouse, door. And a note: "The Quiet Light doesn\'t fade while someone remembers."', thought:true},
+    {type:'text', who:'', avatar:'💡', name:'', text:'Light in the window of the house next door. The one that\'s been empty for years.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Nobody lives there... Why is the light on?)', thought:true},
+    {type:'choice', options:[
+      {text:'Go check.', tag:'+Curiosity +Courage', effects:{curiosity:1,courage:1}},
+      {text:'Close the curtain.', tag:'+Independence', effects:{independence:1}},
+      {text:'Call parents.', tag:'+Trust −Courage', effects:{trust:1,courage:-1}}
     ]},
-    { text:'Vio helped the fox and they became friends. The fox showed a secret path to the rainbow!', choices:[
-      { text:'🌈 Go to the rainbow', next:5 },
-      { text:'🏠 Return to the wall', next:6 }
+    {type:'scene', bg:'room', caption:'Empty house. Someone is waiting inside.', ambient:'magic', particles:'magic', magic:true},
+    {type:'text', who:'', avatar:'🚪', name:'', text:'The door creaks. It\'s dark inside, but light comes from one room.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(It smells like... cinnamon. Like grandma\'s house. But this is a different house.)', thought:true},
+    {type:'showChar', who:'paper', pos:'center', magic:true},
+    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'Oh! You... you can see me?', talking:true},
+    {type:'choice', options:[
+      {text:'"I see you. Who are you?"', tag:'+Curiosity', effects:{curiosity:1}},
+      {text:'"Don\'t be afraid, I\'ll help."', tag:'+Kindness', effects:{kindness:1}},
+      {text:'"What are you?"', tag:'neutral', effects:{}},
+      {text:'Watch silently.', tag:'+Observation', effects:{observation:1}}
     ]},
-    { text:'Vio returned to the wall with nothing. The colors never came back...', choices:[
-      { text:'🔄 Start over', next:0 }
+    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'You don\'t know what the Quiet Light is? Then you need to go there. You lost something, right?', talking:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(I lost... what? I don\'t remember.)', thought:true},
+    {type:'scene', bg:'void', caption:'The Quiet Light. First look.', ambient:'magic', particles:'void', magic:true, shake:true},
+    {type:'hideChar', who:'paper'},
+    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'Oh-oh-oh. It\'s starting. Hold on to me!', talking:true},
+    {type:'showChar', who:'paper', pos:'center', magic:true},
+    {type:'text', who:'', avatar:'✨', name:'', text:'Light grows brighter. The room dissolves. Walls disappear. A place appears that shouldn\'t exist.', thought:true},
+    {type:'text', who:'', avatar:'🌌', name:'', text:'Around — houses that aren\'t on any map. Purple sky with golden stars. Smells of cinnamon and old paper.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Where am I? What is this place?)', thought:true},
+    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'Welcome to the Quiet Light! Everything people forgot lives here.', talking:true},
+    {type:'choice', options:[
+      {text:'"How did I get here?"', tag:'+Curiosity', effects:{curiosity:1}},
+      {text:'"I want to go home."', tag:'+Independence', effects:{independence:1}},
+      {text:'"It\'s... beautiful."', tag:'+Creativity', effects:{creativity:1}}
     ]},
-    { text:'Vio waved the brush — and the wall shone with all colors! The colors are back!', choices:[
-      { text:'🎉 The end!', next:6 }
-    ]},
-    { text:'Vio became the hero of the wall. Now children come to him and color the world together!', choices:[
-      { text:'🔄 Play again', next:0 }
-    ]}
+    {type:'scene', bg:'room', caption:'Morning. Was it a dream?', ambient:'night', particles:'house'},
+    {type:'hideChar', who:'paper'},
+    {type:'text', who:'', avatar:'🌅', name:'', text:'Tim opens his eyes. He\'s back in his room. Morning. In his hand — a small paper boat. It\'s sleeping.', thought:true},
+    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Was it a dream? Or...)', thought:true},
+    {type:'text', who:'', avatar:'📖', name:'', text:'On the table — a drawing. The same one from grandma\'s notebook. But now there\'s a new detail: a little girl with a lantern.', thought:true},
+    {type:'text', who:'', avatar:'💫', name:'Tim (thoughts)', text:'(Who are you?)', thought:true},
+    {type:'showChar', who:'nika', pos:'right', magic:true},
+    {type:'text', who:'nika', avatar:'💫', name:'???', text:'You\'ll find out soon.', talking:true},
+    {type:'hideChar', who:'nika', magic:true},
+    {type:'text', who:'', avatar:'🌙', name:'', text:'A girl\'s reflection flashed in the window. She smiled. And disappeared.', thought:true},
+    {type:'end'}
   ]
 };
-function renderStory(){
-  const area = document.getElementById('storyArea');
-  if(!area) return;
-  if(!area.dataset.node) area.dataset.node = '0';
-  const node = parseInt(area.dataset.node);
-  const data = storyData[currentLang][node];
-  area.innerHTML = `
-    <div class="story-text">${data.text}</div>
-    <div class="story-choices" id="storyChoices"></div>
-  `;
-  const choices = document.getElementById('storyChoices');
-  data.choices.forEach(c=>{
-    const b = document.createElement('button');
-    b.className='choice-btn';
-    b.textContent = c.text;
-    b.addEventListener('click',()=>{
-      sfxClick();
-      if(c.next===0){ area.dataset.node='0'; renderStory(); }
-      else if(c.next===6 && node===5){
-        area.dataset.node='6'; renderStory();
-        sfxWin(); burstConfetti();
-        earnBadge('world3');
-        showWin('📖', currentLang==='ru'?'История завершена!':'Story complete!', currentLang==='ru'?'Ты прошёл историю и вернул краски! 🎉':'You finished the story and brought colors back! 🎉');
-      } else {
-        area.dataset.node = String(c.next);
-        renderStory();
-      }
-    });
-    choices.appendChild(b);
-  });
+
+/* ============ ИГРОВОЙ ДВИЖОК ============ */
+let currentLang = localStorage.getItem('ts_lang') || 'ru';
+let script = Script[currentLang];
+let index = 0;
+let isTyping = false;
+let typingTimer = null;
+let typeFullText = '';
+let typeCharIndex = 0;
+const stats = JSON.parse(localStorage.getItem('ts_stats')||'{"curiosity":0,"courage":0,"kindness":0,"observation":0,"independence":0,"creativity":0,"trust":0}');
+
+const dlgBox = document.getElementById('dialogueBox');
+const dlgText = document.getElementById('dialogueText');
+const speakerName = document.getElementById('speakerName');
+const speakerAvatar = document.getElementById('speakerAvatar');
+const nextArrow = document.getElementById('nextArrow');
+const choicesBox = document.getElementById('choices');
+
+function saveStats(){localStorage.setItem('ts_stats',JSON.stringify(stats));}
+function applyEffects(e){ if(!e) return; for(const k in e){ if(stats[k]!==undefined) stats[k]+=e[k]; } saveStats(); }
+
+function updateDots(){
+  const dots=document.getElementById('progressDots');
+  if(!dots) return;
+  const total=script.length;
+  const done=Math.round((index/total)*10);
+  if(dots.children.length!==10){
+    dots.innerHTML='';
+    for(let i=0;i<10;i++){const d=document.createElement('div');d.className='dot';dots.appendChild(d);}
+  }
+  Array.from(dots.children).forEach((d,i)=>{d.classList.toggle('active',i<done);});
 }
 
-/* ============ МИР 4: КВЕСТ ============ */
-const heroes = [
-  { id:'fox', emoji:'🦊', ru:'Лисёнок', en:'Fox', ruDesc:'Живёт на стене у парка. Любит играть с листьями.', enDesc:'Lives on the wall near the park. Loves playing with leaves.', wall:'🏞️', wallRu:'Парк', wallEn:'Park' },
-  { id:'owl', emoji:'🦉', ru:'Сова', en:'Owl', ruDesc:'Мудрая сова на стене библиотеки. Знает все сказки.', enDesc:'Wise owl on the library wall. Knows all fairy tales.', wall:'📚', wallRu:'Библиотека', wallEn:'Library' },
-  { id:'cat', emoji:'🐱', ru:'Кот', en:'Cat', ruDesc:'Рыжий кот на стене у кафе. Любит спать на солнце.', enDesc:'Ginger cat on the cafe wall. Loves sleeping in the sun.', wall:'☕', wallRu:'Кафе', wallEn:'Cafe' },
-  { id:'turtle', emoji:'🐢', ru:'Черепаха', en:'Turtle', ruDesc:'Черепаха на стене у пруда. Самая мудрая в городе.', enDesc:'Turtle on the wall near the pond. The wisest in town.', wall:'🌊', wallRu:'Пруд', wallEn:'Pond' },
-  { id:'butterfly', emoji:'🦋', ru:'Бабочка', en:'Butterfly', ruDesc:'Бабочка на стене у сада. Любит цветы и нектар.', enDesc:'Butterfly on the garden wall. Loves flowers and nectar.', wall:'🌷', wallRu:'Сад', wallEn:'Garden' },
-  { id:'star', emoji:'⭐', ru:'Звёздочка', en:'Star', ruDesc:'Звёздочка на стене у школы. Светит по ночам.', enDesc:'Star on the school wall. Shines at night.', wall:'🏫', wallRu:'Школа', wallEn:'School' }
-];
-function renderQuest(){
-  const map = document.getElementById('questMap');
-  if(!map) return;
-  const found = JSON.parse(localStorage.getItem('viokrista_quest')||'[]');
-  map.innerHTML='';
-  heroes.forEach(h=>{
-    const card = document.createElement('div');
-    card.className='wall-card'+(found.includes(h.id)?' found':'');
-    card.innerHTML = `<div class="wall-icon">${h.wall}</div><div class="wall-label">${currentLang==='ru'?h.wallRu:h.wallEn}</div>`;
-    card.addEventListener('click',()=>{
-      if(found.includes(h.id)) return;
-      openHero(h);
-    });
-    map.appendChild(card);
-  });
-  updateQuestProgress();
+function setBackground(name){ setBg(name); }
+function caption(text){
+  const c=document.getElementById('sceneCaption');
+  c.textContent=text;
+  c.classList.add('show');
+  setTimeout(()=>c.classList.remove('show'), 2500);
 }
-function openHero(h){
-  sfxClick();
-  document.getElementById('heroEmoji').textContent = h.emoji;
-  document.getElementById('heroName').textContent = currentLang==='ru'?h.ru:h.en;
-  document.getElementById('heroDesc').textContent = currentLang==='ru'?h.ruDesc:h.enDesc;
-  document.getElementById('heroModal').classList.add('show');
-  const found = JSON.parse(localStorage.getItem('viokrista_quest')||'[]');
-  if(!found.includes(h.id)){
-    found.push(h.id);
-    localStorage.setItem('viokrista_quest',JSON.stringify(found));
-    renderQuest();
-    sfxWin(); burstConfetti();
-    if(found.length===heroes.length){
-      earnBadge('world4');
-      setTimeout(()=>{
-        closeHero();
-        showWin('🏆',t('quest_complete'),t('quest_complete_text'));
-      },2000);
-    } else {
-      showToast(t('quest_found')+' '+h.emoji);
+
+function typeText(text, cb){
+  isTyping=true;
+  typeFullText=text;
+  typeCharIndex=0;
+  dlgText.textContent='';
+  nextArrow.classList.remove('show');
+  clearInterval(typingTimer);
+  typingTimer=setInterval(()=>{
+    if(typeCharIndex>=typeFullText.length){
+      clearInterval(typingTimer);
+      isTyping=false;
+      nextArrow.classList.add('show');
+      if(cb) cb();
+      return;
     }
+    dlgText.textContent+=typeFullText[typeCharIndex];
+    typeCharIndex++;
+    if(typeCharIndex%3===0) sfxPage();
+  },28);
+}
+
+function showText(step){
+  dlgBox.classList.add('show');
+  choicesBox.classList.remove('show');
+  speakerName.textContent=step.name||'';
+  speakerAvatar.textContent=step.avatar||'👤';
+  speakerName.classList.toggle('thought', !!step.thought);
+  dlgText.classList.toggle('thought', !!step.thought);
+  typeText(step.text||'');
+  // lip-sync имитация
+  if(step.talking){
+    const c=document.querySelector('.character.show');
+    if(c){ c.classList.add('talking'); setTimeout(()=>c.classList.remove('talking'), Math.min(4000, (step.text||'').length*60)); }
   }
 }
-function closeHero(){ document.getElementById('heroModal').classList.remove('show'); }
-function updateQuestProgress(){
-  const found = JSON.parse(localStorage.getItem('viokrista_quest')||'[]');
-  const fill = document.getElementById('questFill');
-  const text = document.getElementById('questText');
-  if(fill) fill.style.width = (found.length/heroes.length*100)+'%';
-  if(text) text.textContent = found.length+'/'+heroes.length;
+
+function showChoices(step){
+  dlgBox.classList.remove('show');
+  choicesBox.innerHTML='';
+  step.options.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='choice-btn';
+    b.innerHTML = opt.text + (opt.tag?`<span class="tag">${opt.tag}</span>`:'');
+    b.addEventListener('click',()=>{
+      sfxChoice();
+      applyEffects(opt.effects);
+      choicesBox.classList.remove('show');
+      if(opt.then && opt.then.length){
+        // вставляем под-шаги после текущего
+        script.splice(index+1,0,...opt.then);
+      }
+      index++;
+      playStep();
+    });
+    choicesBox.appendChild(b);
+  });
+  choicesBox.classList.add('show');
 }
 
-/* ============ СТАРТ ============ */
-window.addEventListener('load',()=>{
-  applyLang();
-  renderBadges();
-  updateProgress();
-  initCanvas();
+function showEnd(){
+  dlgBox.classList.remove('show');
+  choicesBox.classList.remove('show');
+  hideAllCharacters();
+  const es=document.getElementById('endScreen');
+  document.getElementById('endTitle').textContent = currentLang==='ru'?'Конец главы 1':'End of Chapter 1';
+  const statsText = currentLang==='ru'
+    ? `Твои качества:<br>🔍 Любопытство: ${stats.curiosity}<br>💪 Смелость: ${stats.courage}<br>💖 Доброта: ${stats.kindness}<br>👁 Наблюдательность: ${stats.observation}<br>🌟 Самостоятельность: ${stats.independence}<br>🎨 Творчество: ${stats.creativity}<br>🤝 Доверие: ${stats.trust}`
+    : `Your traits:<br>🔍 Curiosity: ${stats.curiosity}<br>💪 Courage: ${stats.courage}<br>💖 Kindness: ${stats.kindness}<br>👁 Observation: ${stats.observation}<br>🌟 Independence: ${stats.independence}<br>🎨 Creativity: ${stats.creativity}<br>🤝 Trust: ${stats.trust}`;
+  document.getElementById('endSub').innerHTML = (currentLang==='ru'
+    ? 'Ты сделал первый шаг в Тихий Свет. Но это только начало.<br><br>'
+    : 'You made the first step into the Quiet Light. But this is only the beginning.<br><br>') + statsText;
+  es.classList.add('show');
+  sfxMagic();
+  playAmbient('magic');
+}
+
+function playStep(){
+  updateDots();
+  if(index>=script.length){ showEnd(); return; }
+  const step=script[index];
+  if(step.type==='scene'){
+    if(step.shake){
+      document.getElementById('game').classList.add('shake');
+      setTimeout(()=>document.getElementById('game').classList.remove('shake'),600);
+    }
+    if(step.bg) setBackground(step.bg);
+    if(step.caption) caption(step.caption);
+    if(step.ambient) playAmbient(step.ambient);
+    if(step.particles) startParticles(step.particles);
+    if(step.magic) sfxMagic();
+    index++;
+    setTimeout(playStep, step.caption?2200:600);
+    return;
+  }
+  if(step.type==='showChar'){
+    if(step.magic) sfxMagic();
+    showCharacter(step.who, step.pos||'center');
+    index++;
+    setTimeout(playStep, 800);
+    return;
+  }
+  if(step.type==='hideChar'){
+    hideCharacter(step.who);
+    index++;
+    setTimeout(playStep, 600);
+    return;
+  }
+  if(step.type==='text'){
+    showText(step);
+    return; // ждём клика
+  }
+  if(step.type==='choice'){
+    showChoices(step);
+    return;
+  }
+  if(step.type==='end'){
+    showEnd();
+    return;
+  }
+}
+
+function advance(){
+  if(isTyping){
+    // мгновенно показать текст
+    clearInterval(typingTimer);
+    dlgText.textContent=typeFullText;
+    isTyping=false;
+    nextArrow.classList.add('show');
+    return;
+  }
+  if(script[index] && script[index].type==='text'){
+    index++;
+    playStep();
+  }
+}
+
+// Клик / тап по экрану
+document.getElementById('game').addEventListener('click',(e)=>{
+  if(e.target.closest('.choice-btn')||e.target.closest('.lang-btn')||e.target.closest('.loader-btn')||e.target.closest('.end-btn')||e.target.closest('.menu-btn')) return;
+  initAudio();
+  if(document.getElementById('loader').classList.contains('hide')) advance();
 });
+document.getElementById('game').addEventListener('touchstart',(e)=>{
+  if(e.target.closest('.choice-btn')||e.target.closest('.lang-btn')||e.target.closest('.loader-btn')||e.target.closest('.end-btn')||e.target.closest('.menu-btn')) return;
+  e.preventDefault();
+  initAudio();
+  if(document.getElementById('loader').classList.contains('hide')) advance();
+},{passive:false});
+
+/* === ЯЗЫК === */
+function applyLang(){
+  document.getElementById('langBtn').textContent='🌐 '+currentLang.toUpperCase();
+  document.getElementById('chapterLabel').textContent = currentLang==='ru'?'Глава 1':'Chapter 1';
+  document.getElementById('loaderSub').innerHTML = currentLang==='ru'
+    ? 'Некоторые двери открываются только для тех,<br>кто потерял что-то важное.'
+    : 'Some doors open only for those<br>who have lost something important.';
+  document.getElementById('startBtn').textContent = currentLang==='ru'?'Начать историю':'Start the story';
+  document.getElementById('endBtn').textContent = currentLang==='ru'?'Продолжить путь':'Continue the journey';
+}
+document.getElementById('langBtn').addEventListener('click',(e)=>{
+  e.stopPropagation();
+  currentLang = currentLang==='ru'?'en':'ru';
+  localStorage.setItem('ts_lang',currentLang);
+  script = Script[currentLang];
+  // перезапуск с начала при смене языка
+  index = 0;
+  applyLang();
+  document.getElementById('endScreen').classList.remove('show');
+  hideAllCharacters();
+  playStep();
+});
+
+/* === СТАРТ === */
+document.getElementById('startBtn').addEventListener('click',(e)=>{
+  e.stopPropagation();
+  initAudio();
+  sfxMagic();
+  playAmbient('night');
+  document.getElementById('loader').classList.add('hide');
+  setTimeout(()=>{
+    playStep();
+  },600);
+});
+document.getElementById('endBtn').addEventListener('click',(e)=>{
+  e.stopPropagation();
+  // Начать заново (для теста)
+  index=0;
+  document.getElementById('endScreen').classList.remove('show');
+  hideAllCharacters();
+  playStep();
+});
+
+/* Двойной тап для быстрого перехода */
+let lastTap=0;
+document.getElementById('game').addEventListener('touchend',(e)=>{
+  const now=Date.now();
+  if(now-lastTap<300 && !e.target.closest('.choice-btn') && !e.target.closest('.lang-btn')){
+    if(isTyping){ clearInterval(typingTimer); dlgText.textContent=typeFullText; isTyping=false; nextArrow.classList.add('show'); }
+  }
+  lastTap=now;
+});
+
+// Инициализация
+applyLang();
+startParticles('night');
+setBg('car');
 </script>
 </body>
 </html>
