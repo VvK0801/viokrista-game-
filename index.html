@@ -9,12 +9,12 @@
 html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#050510;color:#fff}
 #app{position:fixed;inset:0;overflow:hidden}
 
-/* ===== ЗВЁЗДЫ ===== */
+/* ЗВЁЗДЫ */
 #stars{position:absolute;inset:0;z-index:1}
 .star{position:absolute;border-radius:50%;background:#fff}
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.85;transform:scale(1.15)}}
 
-/* ===== ПАДАЮЩАЯ ЗВЕЗДА ===== */
+/* ПАДАЮЩАЯ ЗВЕЗДА */
 #falling-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
   box-shadow:0 0 8px 2px rgba(251,191,36,.7);z-index:2;opacity:0}
 @keyframes fall{
@@ -23,7 +23,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   100%{opacity:0;transform:translate(-80vw,80vh) scale(0.3)}
 }
 
-/* ===== ТУМАН ===== */
+/* ТУМАН */
 .fog{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:3}
 .fog-1{width:500px;height:500px;background:#4C1D95;top:-100px;left:-100px;animation:drift1 25s infinite ease-in-out}
 .fog-2{width:600px;height:600px;background:#1E1B4B;bottom:-200px;right:-200px;animation:drift2 30s infinite ease-in-out}
@@ -32,104 +32,88 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,-80px)}}
 @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,100px)}}
 
-/* ===== ВИНЬЕТКА ===== */
+/* ВИНЬЕТКА + свечение */
 .vignette{position:absolute;inset:0;pointer-events:none;z-index:4;
   background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,16,.95) 100%)}
-
-/* ===== ЛЁГКОЕ СВЕЧЕНИЕ СНИЗУ (загадочное, не яркое) ===== */
 .mystic-glow{position:absolute;inset:0;pointer-events:none;z-index:4;
   background:radial-gradient(ellipse at 50% 110%,rgba(139,92,246,.15) 0%,transparent 55%)}
 
-/* ===== ЧАСТИЦЫ ===== */
+/* ЧАСТИЦЫ */
 #particles{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
 .particle{position:absolute;width:2px;height:2px;border-radius:50%;background:#A78BFA;
   box-shadow:0 0 6px #A78BFA;opacity:0}
 @keyframes floatP{
   0%{opacity:0;transform:translateY(0) translateX(0)}
-  15%{opacity:.65}
-  85%{opacity:.4}
-  100%{opacity:0;transform:translateY(-100vh) translateX(var(--dx,20px))}
+  15%{opacity:.65}85%{opacity:.4}100%{opacity:0;transform:translateY(-100vh) translateX(var(--dx,20px))}
 }
 
-/* ===== ЭКРАНЫ ===== */
-.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:20px}
+/* ЭКРАНЫ */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:20px;overflow-y:auto}
 .screen.active{display:flex;animation:fadeIn .8s ease}
 @keyframes fadeIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:scale(1)}}
 
-/* ===== ЗАГОЛОВКИ ===== */
+/* ЗАГОЛОВКИ */
 .title-main{font-size:clamp(32px,9.5vw,64px);font-weight:900;letter-spacing:5px;
   color:#F5E6C8;text-align:center;line-height:1.05;margin-bottom:6px;
-  text-shadow:0 0 20px rgba(251,191,36,.25),0 0 40px rgba(251,191,36,.15);
+  text-shadow:0 0 20px rgba(251,191,36,.25);
   animation:titleBreath 5s infinite ease-in-out}
 @keyframes titleBreath{
   0%,100%{text-shadow:0 0 20px rgba(251,191,36,.2),0 0 40px rgba(251,191,36,.1)}
   50%{text-shadow:0 0 30px rgba(251,191,36,.35),0 0 60px rgba(251,191,36,.2)}
 }
-
 .title-sub{font-size:clamp(11px,3vw,14px);letter-spacing:6px;color:#A78BFA;
   font-weight:500;margin-bottom:8px;text-transform:uppercase;opacity:.75;text-align:center}
-
-/* VioKrista — название города */
 .city-name{font-size:clamp(13px,3.8vw,17px);letter-spacing:8px;font-weight:600;
   color:#C4B5FD;text-transform:uppercase;margin-bottom:35px;
   text-shadow:0 0 15px rgba(167,139,250,.4);opacity:.9}
-
 .divider{width:70px;height:1px;background:linear-gradient(90deg,transparent,rgba(251,191,36,.6),transparent);margin:22px 0}
 
-/* ===== КНОПКИ ===== */
+/* КНОПКИ */
 .btn{padding:16px 40px;font-size:clamp(14px,3.8vw,17px);font-weight:700;border:none;border-radius:50px;
-  cursor:pointer;font-family:inherit;letter-spacing:1.5px;position:relative;overflow:hidden;
-  transition:transform .2s ease,box-shadow .3s ease}
+  cursor:pointer;font-family:inherit;letter-spacing:1.5px;transition:transform .2s,box-shadow .3s}
 .btn:active{transform:scale(.96)}
-
 .btn-gold{background:linear-gradient(135deg,#B45309 0%,#92400E 50%,#78350F 100%);
   color:#FFF8DC;border:1px solid rgba(251,191,36,.5);
   box-shadow:0 8px 30px rgba(180,83,9,.5),inset 0 1px 0 rgba(251,191,36,.3);
   text-shadow:0 0 10px rgba(251,191,36,.4)}
 .btn-gold:hover{box-shadow:0 10px 40px rgba(251,191,36,.5),inset 0 1px 0 rgba(251,191,36,.5)}
-
 @keyframes softPulse{
   0%,100%{box-shadow:0 8px 30px rgba(180,83,9,.4),inset 0 1px 0 rgba(251,191,36,.3)}
   50%{box-shadow:0 8px 40px rgba(251,191,36,.6),inset 0 1px 0 rgba(251,191,36,.5),0 0 40px rgba(251,191,36,.2)}
 }
 .soft-pulse{animation:softPulse 3s infinite ease-in-out}
+.btn-ghost{padding:12px 28px;background:rgba(139,92,246,.15);border:1.5px solid rgba(139,92,246,.5);
+  color:#E9D5FF;font-size:15px;font-weight:600;border-radius:50px;cursor:pointer;font-family:inherit;
+  letter-spacing:1px;transition:all .2s}
+.btn-ghost:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
 
-/* ===== МЕНЮ ===== */
+/* МЕНЮ */
 .menu-title{font-size:clamp(22px,6.5vw,40px);font-weight:900;letter-spacing:4px;
-  color:#F5E6C8;margin-bottom:6px;text-align:center;
-  text-shadow:0 0 20px rgba(251,191,36,.25)}
+  color:#F5E6C8;margin-bottom:6px;text-align:center;text-shadow:0 0 20px rgba(251,191,36,.25)}
 .menu-sub{font-size:clamp(12px,3.2vw,14px);color:#A78BFA;margin-bottom:30px;text-align:center;
   letter-spacing:2px;opacity:.8}
-
 .menu-list{display:flex;flex-direction:column;gap:11px;width:100%;max-width:340px}
 .menu-btn{padding:15px 22px;background:rgba(30,27,75,.6);border:1.5px solid rgba(139,92,246,.35);
   border-radius:14px;color:#E9D5FF;font-size:clamp(14px,3.8vw,16px);font-weight:600;
-  cursor:pointer;font-family:inherit;text-align:left;transition:all .25s ease;
-  backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;letter-spacing:.5px;
+  cursor:pointer;font-family:inherit;text-align:left;transition:all .25s;
+  backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;
   box-shadow:0 4px 18px rgba(0,0,0,.3)}
 .menu-btn:hover,.menu-btn:active{background:rgba(139,92,246,.28);border-color:rgba(251,191,36,.6);
-  transform:translateX(5px);box-shadow:0 4px 25px rgba(139,92,246,.25);color:#fff}
-.menu-btn .ico{font-size:20px;flex-shrink:0;opacity:.9}
+  transform:translateX(5px);color:#fff}
+.menu-btn .ico{font-size:20px;opacity:.9}
 .menu-btn .lbl{flex:1}
 .menu-btn .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:400;
   letter-spacing:.8px;margin-top:2px;opacity:.8}
 
-/* ===== ЯЗЫК ===== */
+/* ЯЗЫК */
 .lang-btn{position:absolute;top:16px;right:16px;z-index:50;padding:9px 15px;
   background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
   color:#C4B5FD;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
   backdrop-filter:blur(10px);letter-spacing:1px;transition:all .2s}
 .lang-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
 
-/* ===== ПОДПИСИ ===== */
-.credit{position:absolute;bottom:20px;left:0;right:0;text-align:center;
-  font-size:10px;color:#5B21B6;letter-spacing:2px;z-index:10;opacity:.6}
-.version{position:absolute;bottom:50px;left:20px;font-size:10px;color:#4C1D95;
-  letter-spacing:1px;z-index:10;font-weight:600;opacity:.6}
-
-/* ===== ЗВЕЗДА-ЛОГОТИП ===== */
-.star-logo{width:clamp(55px,16vw,90px);height:clamp(55px,16vw,90px);margin-bottom:22px;
-  position:relative}
+/* ЗВЕЗДА-ЛОГОТИП */
+.star-logo{width:clamp(55px,16vw,90px);height:clamp(55px,16vw,90px);margin-bottom:22px;position:relative}
 .star-logo svg{width:100%;height:100%;animation:spin 30s linear infinite;opacity:.9;
   filter:drop-shadow(0 0 15px rgba(251,191,36,.4))}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -137,6 +121,92 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   background:radial-gradient(circle,rgba(251,191,36,.2),transparent 70%);
   animation:starPulse 4s infinite ease-in-out}
 @keyframes starPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.2);opacity:.7}}
+
+/* ПОДПИСИ */
+.credit{position:absolute;bottom:20px;left:0;right:0;text-align:center;
+  font-size:10px;color:#5B21B6;letter-spacing:2px;z-index:10;opacity:.6}
+.version{position:absolute;bottom:50px;left:20px;font-size:10px;color:#4C1D95;
+  letter-spacing:1px;z-index:10;font-weight:600;opacity:.6}
+
+/* ====== ЭТАП 2: СОЗДАНИЕ ГЕРОЯ ====== */
+.creator-wrap{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:16px;
+  padding:10px}
+.creator-top{width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:0 5px;margin-bottom:6px}
+.creator-step{font-size:11px;color:#A78BFA;letter-spacing:2px;font-weight:600;text-transform:uppercase}
+.creator-dots{display:flex;gap:5px}
+.cdot{width:6px;height:6px;border-radius:50%;background:rgba(167,139,250,.25);transition:all .3s}
+.cdot.active{background:#FBBF24;width:18px;border-radius:3px}
+
+.preview-box{width:100%;height:clamp(200px,45vh,300px);background:radial-gradient(ellipse at center,rgba(76,29,149,.25),transparent 70%);
+  border:1.5px solid rgba(139,92,246,.35);border-radius:20px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+.preview-glow{position:absolute;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.15),transparent 70%);
+  animation:starPulse 4s infinite ease-in-out;pointer-events:none}
+#heroSVG{width:auto;height:92%;max-height:280px;filter:drop-shadow(0 10px 30px rgba(139,92,246,.5));
+  animation:heroFloat 4s infinite ease-in-out;position:relative;z-index:2}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.creator-label{font-size:13px;color:#C4B5FD;letter-spacing:1.5px;font-weight:600;
+  text-transform:uppercase;margin-top:5px;opacity:.8;text-align:center;width:100%}
+
+.input-name{width:100%;padding:15px 20px;background:rgba(30,27,75,.6);
+  border:1.5px solid rgba(139,92,246,.45);border-radius:14px;color:#fff;font-size:16px;
+  font-family:inherit;font-weight:600;letter-spacing:1px;text-align:center;
+  outline:none;transition:all .2s}
+.input-name:focus{border-color:rgba(251,191,36,.6);background:rgba(30,27,75,.85);
+  box-shadow:0 0 20px rgba(251,191,36,.2)}
+.input-name::placeholder{color:#6D28D9;font-weight:400}
+
+.option-row{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap}
+.option-btn{padding:11px 16px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
+  border-radius:12px;color:#C4B5FD;font-family:inherit;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .2s;letter-spacing:.5px;min-width:56px;text-align:center}
+.option-btn:hover{background:rgba(139,92,246,.25);color:#fff}
+.option-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(180,83,9,.35));
+  border-color:rgba(251,191,36,.7);color:#F5E6C8;
+  box-shadow:0 0 20px rgba(251,191,36,.3),inset 0 0 10px rgba(251,191,36,.15)}
+
+.age-slider{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
+.age-value{font-size:22px;font-weight:900;color:#F5E6C8;letter-spacing:2px;
+  text-shadow:0 0 15px rgba(251,191,36,.4)}
+.age-desc{font-size:12px;color:#A78BFA;letter-spacing:1px;opacity:.8;text-align:center}
+input[type=range]{width:100%;-webkit-appearance:none;height:6px;background:rgba(139,92,246,.25);
+  border-radius:6px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;
+  background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
+  box-shadow:0 0 15px rgba(251,191,36,.6),inset 0 1px 0 rgba(255,255,255,.3);border:2px solid #F5E6C8}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;
+  background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
+  box-shadow:0 0 15px rgba(251,191,36,.6);border:2px solid #F5E6C8}
+
+.hair-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hair-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;transition:all .2s;
+  border:2px solid transparent}
+.hair-swatch:hover{transform:scale(1.1)}
+.hair-swatch.active{border-color:#F5E6C8;transform:scale(1.15);
+  box-shadow:0 0 15px rgba(251,191,36,.6)}
+
+.gender-row{display:flex;gap:8px;justify-content:center;width:100%}
+.gender-btn{flex:1;max-width:100px;padding:14px 8px;background:rgba(30,27,75,.55);
+  border:1.5px solid rgba(139,92,246,.35);border-radius:14px;color:#C4B5FD;
+  font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.5px}
+.gender-btn .g-ico{font-size:22px}
+.gender-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
+  border-color:rgba(251,191,36,.7);color:#F5E6C8;
+  box-shadow:0 0 20px rgba(251,191,36,.3)}
+
+.creator-actions{display:flex;gap:10px;width:100%;margin-top:10px}
+.creator-actions .btn{flex:1;padding:14px 20px;font-size:14px}
+
+/* ТОСТ */
+#toastEl{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#F5E6C8;padding:14px 26px;border-radius:50px;
+  font-weight:600;font-size:14px;box-shadow:0 8px 30px rgba(76,29,149,.6);z-index:200;
+  opacity:0;transition:all .4s;pointer-events:none;text-align:center;max-width:88vw;
+  letter-spacing:.5px;font-family:inherit;border:1px solid rgba(167,139,250,.4)}
 </style>
 </head>
 <body>
@@ -158,40 +228,30 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <div class="star-logo">
       <div class="star-pulse"></div>
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="starG">
-            <stop offset="0%" stop-color="#FFF8DC"/>
-            <stop offset="60%" stop-color="#FBBF24"/>
-            <stop offset="100%" stop-color="#B45309"/>
-          </radialGradient>
-        </defs>
-        <polygon points="50,8 60,40 94,40 66,60 76,92 50,74 24,92 34,60 6,40 40,40"
-          fill="url(#starG)"/>
+        <defs><radialGradient id="starG"><stop offset="0%" stop-color="#FFF8DC"/>
+          <stop offset="60%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#B45309"/></radialGradient></defs>
+        <polygon points="50,8 60,40 94,40 66,60 76,92 50,74 24,92 34,60 6,40 40,40" fill="url(#starG)"/>
       </svg>
     </div>
-
     <div class="title-main" id="titleMain">ПОСЛЕДНИЙ СВЕТ</div>
     <div class="title-sub" id="titleSub">ИНТЕРАКТИВНАЯ ИСТОРИЯ</div>
     <div class="city-name" id="cityName">ГОРОД VIOKRISTA</div>
-
     <div class="divider"></div>
-
-    <button class="btn btn-gold soft-pulse" id="startBtn" onclick="goToMenu()" data-i18n="start">ВОЙТИ В ИСТОРИЮ</button>
+    <button class="btn btn-gold soft-pulse" onclick="goToMenu()" id="startBtn" data-i18n="start">ВОЙТИ В ИСТОРИЮ</button>
   </div>
 
   <!-- ========== МЕНЮ ========== -->
   <div class="screen" id="screen-menu">
     <div class="menu-title" id="menuTitle">ГЛАВНОЕ МЕНЮ</div>
     <div class="menu-sub" id="menuSub">Что ты выберешь сегодня?</div>
-
     <div class="menu-list">
+      <button class="menu-btn" onclick="goToCreator()">
+        <span class="ico">✨</span>
+        <span class="lbl"><span data-i18n="menu_new">Новая история</span><small data-i18n="menu_new_sub">Начать с начала</small></span>
+      </button>
       <button class="menu-btn" onclick="notReady('continue')">
         <span class="ico">▶</span>
         <span class="lbl"><span data-i18n="menu_continue">Продолжить</span><small data-i18n="menu_continue_sub">Глава 1 · Скоро</small></span>
-      </button>
-      <button class="menu-btn" onclick="notReady('new')">
-        <span class="ico">✨</span>
-        <span class="lbl"><span data-i18n="menu_new">Новая история</span><small data-i18n="menu_new_sub">Начать с начала</small></span>
       </button>
       <button class="menu-btn" onclick="notReady('chars')">
         <span class="ico">👥</span>
@@ -206,13 +266,82 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
         <span class="lbl"><span data-i18n="menu_settings">Настройки</span><small data-i18n="menu_settings_sub">Звук, язык, сложность</small></span>
       </button>
     </div>
-
     <div class="divider"></div>
-    <div style="font-size:11px;color:#5B21B6;letter-spacing:5px;font-weight:600;opacity:.7" id="menuBrand">VIOKRISTA</div>
+    <div style="font-size:11px;color:#5B21B6;letter-spacing:5px;font-weight:600;opacity:.7">VIOKRISTA</div>
+  </div>
+
+  <!-- ========== ЭТАП 2: СОЗДАНИЕ ГЕРОЯ ========== -->
+  <div class="screen" id="screen-creator">
+    <div class="creator-wrap">
+
+      <div class="creator-top">
+        <button class="btn-ghost" onclick="goToMenu()" style="padding:8px 16px;font-size:12px" data-i18n="back">← Назад</button>
+        <div class="creator-dots" id="creatorDots"></div>
+        <div class="creator-step" id="creatorStep">ШАГ 1/5</div>
+      </div>
+
+      <div class="preview-box">
+        <div class="preview-glow"></div>
+        <div id="heroSVG"></div>
+      </div>
+
+      <!-- ИМЯ -->
+      <div class="creator-block" id="block-name">
+        <div class="creator-label" data-i18n="c_name">Как тебя зовут?</div>
+        <input class="input-name" type="text" id="heroName" maxlength="14" placeholder="Имя" data-i18n-ph="c_name_ph">
+      </div>
+
+      <!-- ПОЛ -->
+      <div class="creator-block" id="block-gender" style="display:none">
+        <div class="creator-label" data-i18n="c_gender">Ты —</div>
+        <div class="gender-row">
+          <button class="gender-btn active" data-gender="girl" onclick="setGender('girl')">
+            <span class="g-ico">👧</span><span data-i18n="c_girl">Девочка</span>
+          </button>
+          <button class="gender-btn" data-gender="boy" onclick="setGender('boy')">
+            <span class="g-ico">👦</span><span data-i18n="c_boy">Мальчик</span>
+          </button>
+          <button class="gender-btn" data-gender="none" onclick="setGender('none')">
+            <span class="g-ico">✨</span><span data-i18n="c_none">Не важно</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ВОЗРАСТ -->
+      <div class="creator-block" id="block-age" style="display:none">
+        <div class="creator-label" data-i18n="c_age">Сколько тебе лет?</div>
+        <div class="age-slider">
+          <div class="age-value" id="ageValue">10</div>
+          <input type="range" id="ageRange" min="6" max="16" value="10" step="1" oninput="setAge(this.value)">
+          <div class="age-desc" id="ageDesc"></div>
+        </div>
+      </div>
+
+      <!-- ВОЛОСЫ -->
+      <div class="creator-block" id="block-hair" style="display:none">
+        <div class="creator-label" data-i18n="c_hair">Цвет волос</div>
+        <div class="hair-row" id="hairRow"></div>
+      </div>
+
+      <!-- ГОЛОС -->
+      <div class="creator-block" id="block-voice" style="display:none">
+        <div class="creator-label" data-i18n="c_voice">Твой голос</div>
+        <div class="option-row">
+          <button class="option-btn" data-voice="high" onclick="setVoice('high')" data-i18n="c_voice_high">Высокий</button>
+          <button class="option-btn active" data-voice="mid" onclick="setVoice('mid')" data-i18n="c_voice_mid">Средний</button>
+          <button class="option-btn" data-voice="low" onclick="setVoice('low')" data-i18n="c_voice_low">Низкий</button>
+        </div>
+      </div>
+
+      <div class="creator-actions">
+        <button class="btn-ghost" id="prevStep" onclick="prevStep()" style="display:none" data-i18n="c_prev">← Назад</button>
+        <button class="btn btn-gold soft-pulse" id="nextStep" onclick="nextStep()" data-i18n="c_next">Далее →</button>
+      </div>
+    </div>
   </div>
 
   <div class="credit" id="credit">© VIOKRISTA · 2026</div>
-  <div class="version" id="version">v0.1 · ЭТАП 1</div>
+  <div class="version" id="version">v0.2 · ЭТАП 2</div>
 </div>
 
 <script>
@@ -220,38 +349,47 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 const translations = {
   ru: {
     start: 'ВОЙТИ В ИСТОРИЮ',
-    menu_title: 'ГЛАВНОЕ МЕНЮ',
-    menu_sub: 'Что ты выберешь сегодня?',
-    menu_continue: 'Продолжить',
-    menu_continue_sub: 'Глава 1 · Скоро',
-    menu_new: 'Новая история',
-    menu_new_sub: 'Начать с начала',
-    menu_chars: 'Персонажи',
-    menu_chars_sub: 'Луна, Элиан, Флик…',
-    menu_collect: 'Коллекция',
-    menu_collect_sub: 'Воспоминания и находки',
-    menu_settings: 'Настройки',
-    menu_settings_sub: 'Звук, язык, сложность',
-    not_ready: 'Скоро здесь появится этот раздел ✨'
+    menu_title: 'ГЛАВНОЕ МЕНЮ', menu_sub: 'Что ты выберешь сегодня?',
+    menu_continue: 'Продолжить', menu_continue_sub: 'Глава 1 · Скоро',
+    menu_new: 'Новая история', menu_new_sub: 'Начать с начала',
+    menu_chars: 'Персонажи', menu_chars_sub: 'Луна, Элиан, Флик…',
+    menu_collect: 'Коллекция', menu_collect_sub: 'Воспоминания и находки',
+    menu_settings: 'Настройки', menu_settings_sub: 'Звук, язык, сложность',
+    not_ready: 'Скоро здесь появится этот раздел ✨',
+    back: '← Назад',
+    c_name: 'Как тебя зовут?', c_name_ph: 'Введи имя',
+    c_gender: 'Ты —', c_girl: 'Девочка', c_boy: 'Мальчик', c_none: 'Не важно',
+    c_age: 'Сколько тебе лет?',
+    c_hair: 'Цвет волос',
+    c_voice: 'Твой голос', c_voice_high: 'Высокий', c_voice_mid: 'Средний', c_voice_low: 'Низкий',
+    c_prev: '← Назад', c_next: 'Далее →', c_finish: '✨ НАЧАТЬ ИСТОРИЮ',
+    c_step: 'ШАГ',
+    age_6: '5–7 лет · Совсем юный герой', age_8: '8–10 лет · Юный герой',
+    age_11: '11–13 лет · Подросток', age_14: '14–16 лет · Взрослеющий герой',
+    need_name: 'Пожалуйста, введи имя ✨'
   },
   en: {
     start: 'ENTER THE STORY',
-    menu_title: 'MAIN MENU',
-    menu_sub: 'What will you choose today?',
-    menu_continue: 'Continue',
-    menu_continue_sub: 'Chapter 1 · Soon',
-    menu_new: 'New story',
-    menu_new_sub: 'Start from the beginning',
-    menu_chars: 'Characters',
-    menu_chars_sub: 'Luna, Elian, Flick…',
-    menu_collect: 'Collection',
-    menu_collect_sub: 'Memories and finds',
-    menu_settings: 'Settings',
-    menu_settings_sub: 'Sound, language, difficulty',
-    not_ready: 'This section will appear soon ✨'
+    menu_title: 'MAIN MENU', menu_sub: 'What will you choose today?',
+    menu_continue: 'Continue', menu_continue_sub: 'Chapter 1 · Soon',
+    menu_new: 'New story', menu_new_sub: 'Start from the beginning',
+    menu_chars: 'Characters', menu_chars_sub: 'Luna, Elian, Flick…',
+    menu_collect: 'Collection', menu_collect_sub: 'Memories and finds',
+    menu_settings: 'Settings', menu_settings_sub: 'Sound, language, difficulty',
+    not_ready: 'This section will appear soon ✨',
+    back: '← Back',
+    c_name: 'What is your name?', c_name_ph: 'Enter name',
+    c_gender: 'You are —', c_girl: 'Girl', c_boy: 'Boy', c_none: 'Rather not say',
+    c_age: 'How old are you?',
+    c_hair: 'Hair color',
+    c_voice: 'Your voice', c_voice_high: 'High', c_voice_mid: 'Medium', c_voice_low: 'Low',
+    c_prev: '← Back', c_next: 'Next →', c_finish: '✨ START THE STORY',
+    c_step: 'STEP',
+    age_6: '5–7 · Very young hero', age_8: '8–10 · Young hero',
+    age_11: '11–13 · Teen', age_14: '14–16 · Growing hero',
+    need_name: 'Please enter your name ✨'
   }
 };
-
 let currentLang = localStorage.getItem('ls_lang') || 'ru';
 
 function toggleLang(){
@@ -259,61 +397,232 @@ function toggleLang(){
   localStorage.setItem('ls_lang', currentLang);
   applyLang();
 }
-
 function applyLang(){
   document.documentElement.lang = currentLang;
-  const btn = document.getElementById('langBtn');
-  if(btn) btn.textContent = '🌐 ' + currentLang.toUpperCase();
-
-  // Универсальные переводы
+  document.getElementById('langBtn').textContent = '🌐 ' + currentLang.toUpperCase();
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.dataset.i18n;
     if(translations[currentLang][k]) el.textContent = translations[currentLang][k];
   });
-
-  // Заголовки
-  const mt = document.getElementById('menuTitle');
-  if(mt) mt.textContent = translations[currentLang].menu_title;
-  const ms = document.getElementById('menuSub');
-  if(ms) ms.textContent = translations[currentLang].menu_sub;
-
-  // Название города — всегда латиницей, но с переводом слова «ГОРОД»
-  const cn = document.getElementById('cityName');
-  if(cn) cn.textContent = currentLang === 'ru' ? 'ГОРОД VIOKRISTA' : 'CITY OF VIOKRISTA';
-
-  const ts = document.getElementById('titleSub');
-  if(ts) ts.textContent = currentLang === 'ru' ? 'ИНТЕРАКТИВНАЯ ИСТОРИЯ' : 'INTERACTIVE STORY';
-
-  const tm = document.getElementById('titleMain');
-  if(tm) tm.textContent = currentLang === 'ru' ? 'ПОСЛЕДНИЙ СВЕТ' : 'THE LAST LIGHT';
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.dataset.i18nPh;
+    if(translations[currentLang][k]) el.placeholder = translations[currentLang][k];
+  });
+  document.getElementById('menuTitle').textContent = translations[currentLang].menu_title;
+  document.getElementById('menuSub').textContent = translations[currentLang].menu_sub;
+  document.getElementById('titleMain').textContent = currentLang === 'ru' ? 'ПОСЛЕДНИЙ СВЕТ' : 'THE LAST LIGHT';
+  document.getElementById('titleSub').textContent = currentLang === 'ru' ? 'ИНТЕРАКТИВНАЯ ИСТОРИЯ' : 'INTERACTIVE STORY';
+  document.getElementById('cityName').textContent = currentLang === 'ru' ? 'ГОРОД VIOKRISTA' : 'CITY OF VIOKRISTA';
+  updateStep();
+  updateAgeDesc();
 }
-
 function t(k){ return translations[currentLang][k] || k; }
 
 /* ============ ЭКРАНЫ ============ */
 function goToMenu(){
-  const load = document.getElementById('screen-load');
-  const menu = document.getElementById('screen-menu');
-  load.classList.remove('active');
-  setTimeout(() => menu.classList.add('active'), 400);
+  showScreen('screen-menu');
   launchFallingStar();
   burstParticles();
 }
-
-function notReady(section){
-  showToast(t('not_ready'));
+function goToCreator(){
+  hero.step = 0;
+  renderCreator();
+  showScreen('screen-creator');
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
+/* ============ ГЕРОЙ ============ */
+const hero = {
+  name: '',
+  gender: 'girl',
+  age: 10,
+  hair: '#3D2A5C',
+  voice: 'mid',
+  step: 0,
+  totalSteps: 5
+};
+
+const hairColors = ['#3D2A5C', '#8B5CF6', '#FBBF24', '#F472B6', '#22C55E', '#38BDF8', '#FFFFFF', '#1E1B4B'];
+
+function setGender(g){
+  hero.gender = g;
+  document.querySelectorAll('.gender-btn').forEach(b => b.classList.toggle('active', b.dataset.gender === g));
+  renderPreview();
+}
+function setAge(v){
+  hero.age = parseInt(v);
+  document.getElementById('ageValue').textContent = v;
+  updateAgeDesc();
+  renderPreview();
+}
+function setHair(c){
+  hero.hair = c;
+  document.querySelectorAll('.hair-swatch').forEach(s => s.classList.toggle('active', s.dataset.color === c));
+  renderPreview();
+}
+function setVoice(v){
+  hero.voice = v;
+  document.querySelectorAll('[data-voice]').forEach(b => b.classList.toggle('active', b.dataset.voice === v));
+}
+function updateAgeDesc(){
+  const a = hero.age;
+  const key = a <= 7 ? 'age_6' : a <= 10 ? 'age_8' : a <= 13 ? 'age_11' : 'age_14';
+  const el = document.getElementById('ageDesc');
+  if(el) el.textContent = t(key);
+}
+
+/* ============ SVG ГЕРОЯ ============ */
+function renderPreview(){
+  const svg = document.getElementById('heroSVG');
+  if(!svg) return;
+  const hair = hero.hair;
+  const dressColor = hero.gender === 'boy' ? '#4C1D95' : '#6D28D9';
+  const dressColor2 = hero.gender === 'boy' ? '#7C3AED' : '#8B5CF6';
+  svg.innerHTML = `
+    <svg viewBox="0 0 220 420" xmlns="http://www.w3.org/2000/svg" style="height:100%;width:auto">
+      <defs>
+        <radialGradient id="aura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(251,191,36,.15)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="110" cy="380" rx="90" ry="20" fill="url(#aura)"/>
+      <!-- Тень -->
+      <ellipse cx="110" cy="395" rx="55" ry="8" fill="#0A0A14" opacity=".6"/>
+      <!-- Тело -->
+      <path d="M70 220 Q60 380 55 390 L165 390 Q160 380 150 220 Z" fill="${dressColor}"/>
+      <path d="M70 220 Q60 380 55 390 L110 390 L110 220 Z" fill="${dressColor2}" opacity=".5"/>
+      <!-- Руки -->
+      <path d="M70 230 Q55 300 50 380" stroke="${dressColor}" stroke-width="14" stroke-linecap="round" fill="none"/>
+      <path d="M150 230 Q165 300 170 380" stroke="${dressColor}" stroke-width="14" stroke-linecap="round" fill="none"/>
+      <!-- Шея -->
+      <rect x="100" y="185" width="20" height="30" fill="#F4C8A8"/>
+      <!-- Голова -->
+      <ellipse cx="110" cy="140" rx="52" ry="60" fill="#F4C8A8"/>
+      <!-- Волосы (в зависимости от gender) -->
+      ${hero.gender === 'boy' ? `
+        <path d="M60 130 Q60 75 110 75 Q160 75 160 130 Q150 95 110 90 Q70 95 60 130 Z" fill="${hair}"/>
+      ` : hero.gender === 'girl' ? `
+        <path d="M58 135 Q55 70 110 70 Q165 70 162 135 Q155 100 110 95 Q65 100 58 135 Z" fill="${hair}"/>
+        <path d="M58 130 Q50 200 62 250 Q68 220 68 180 Q70 160 75 145 Z" fill="${hair}"/>
+        <path d="M162 130 Q170 200 158 250 Q152 220 152 180 Q150 160 145 145 Z" fill="${hair}"/>
+      ` : `
+        <path d="M62 130 Q62 78 110 78 Q158 78 158 130 Q148 98 110 93 Q72 98 62 130 Z" fill="${hair}"/>
+      `}
+      <!-- Глаза -->
+      <ellipse cx="90" cy="138" rx="7" ry="9" fill="#1A0F2E"/>
+      <ellipse cx="130" cy="138" rx="7" ry="9" fill="#1A0F2E"/>
+      <circle cx="92" cy="135" r="2.5" fill="#fff"/>
+      <circle cx="132" cy="135" r="2.5" fill="#fff"/>
+      <!-- Брови -->
+      <path d="M82 122 Q90 118 98 122" stroke="${hair}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M122 122 Q130 118 138 122" stroke="${hair}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Румяна -->
+      <ellipse cx="78" cy="158" rx="8" ry="5" fill="#F472B6" opacity=".5"/>
+      <ellipse cx="142" cy="158" rx="8" ry="5" fill="#F472B6" opacity=".5"/>
+      <!-- Улыбка -->
+      <path d="M100 165 Q110 174 120 165" stroke="#8B2C2C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Свечение вокруг -->
+      <circle cx="110" cy="140" r="90" fill="url(#aura)" opacity=".5"/>
+    </svg>
+  `;
+}
+
+/* ============ ШАГИ ============ */
+function renderCreator(){
+  const blocks = ['block-name', 'block-gender', 'block-age', 'block-hair', 'block-voice'];
+  blocks.forEach((id, i) => {
+    document.getElementById(id).style.display = (i === hero.step) ? 'block' : 'none';
+  });
+
+  // Кнопки «назад» / «далее»
+  document.getElementById('prevStep').style.display = hero.step === 0 ? 'none' : 'inline-block';
+  const nextBtn = document.getElementById('nextStep');
+  if(hero.step === hero.totalSteps - 1){
+    nextBtn.textContent = t('c_finish');
+  } else {
+    nextBtn.textContent = t('c_next');
+  }
+
+  // Показать имя, если введено
+  if(hero.step > 0) document.getElementById('heroName').value = hero.name;
+
+  // Заполнить палитру волос (только один раз)
+  const hairRow = document.getElementById('hairRow');
+  if(hairRow && !hairRow.dataset.filled){
+    hairColors.forEach(c => {
+      const s = document.createElement('div');
+      s.className = 'hair-swatch' + (c === hero.hair ? ' active' : '');
+      s.style.background = c;
+      s.dataset.color = c;
+      s.onclick = () => setHair(c);
+      hairRow.appendChild(s);
+    });
+    hairRow.dataset.filled = '1';
+  }
+
+  // Точки-индикаторы
+  const dots = document.getElementById('creatorDots');
+  if(dots && !dots.dataset.filled){
+    for(let i = 0; i < hero.totalSteps; i++){
+      const d = document.createElement('div');
+      d.className = 'cdot';
+      dots.appendChild(d);
+    }
+    dots.dataset.filled = '1';
+  }
+  updateStep();
+  renderPreview();
+}
+
+function updateStep(){
+  const dots = document.querySelectorAll('#creatorDots .cdot');
+  dots.forEach((d, i) => d.classList.toggle('active', i <= hero.step));
+  const step = document.getElementById('creatorStep');
+  if(step) step.textContent = t('c_step') + ' ' + (hero.step + 1) + '/' + hero.totalSteps;
+
+  const nextBtn = document.getElementById('nextStep');
+  if(nextBtn && hero.step === hero.totalSteps - 1) nextBtn.textContent = t('c_finish');
+  else if(nextBtn) nextBtn.textContent = t('c_next');
+}
+
+function nextStep(){
+  if(hero.step === 0){
+    const nameVal = document.getElementById('heroName').value.trim();
+    if(!nameVal){ showToast(t('need_name')); return; }
+    hero.name = nameVal;
+  }
+  if(hero.step === hero.totalSteps - 1){
+    // Финальный шаг — сохранение и переход
+    saveHero();
+    showToast(currentLang === 'ru' ? '✨ Герой создан! Дальше — Глава 1' : '✨ Hero created! Next — Chapter 1');
+    setTimeout(() => {
+      showScreen('screen-menu');
+    }, 1500);
+    return;
+  }
+  hero.step++;
+  renderCreator();
+}
+function prevStep(){
+  if(hero.step === 0) return;
+  hero.step--;
+  renderCreator();
+}
+
+function saveHero(){
+  localStorage.setItem('ls_hero', JSON.stringify(hero));
+}
+
+/* ============ УТИЛИТЫ ============ */
 function showToast(text){
   let toast = document.getElementById('toastEl');
   if(!toast){
     toast = document.createElement('div');
     toast.id = 'toastEl';
-    toast.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
-      background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#F5E6C8;padding:14px 26px;border-radius:50px;
-      font-weight:600;font-size:14px;box-shadow:0 8px 30px rgba(76,29,149,.6);z-index:200;
-      opacity:0;transition:all .4s ease;pointer-events:none;text-align:center;max-width:88vw;
-      letter-spacing:.5px;font-family:inherit;border:1px solid rgba(167,139,250,.4)`;
     document.body.appendChild(toast);
   }
   toast.textContent = text;
@@ -327,8 +636,9 @@ function showToast(text){
     toast.style.opacity = '0';
   }, 2400);
 }
+function notReady(section){ showToast(t('not_ready')); }
 
-/* ============ ЗВЁЗДЫ ============ */
+/* ============ ЗВЁЗДЫ / ЧАСТИЦЫ ============ */
 function createStars(){
   const cont = document.getElementById('stars');
   cont.innerHTML = '';
@@ -341,23 +651,12 @@ function createStars(){
     s.style.height = size + 'px';
     s.style.left = Math.random() * 100 + '%';
     s.style.top = Math.random() * 100 + '%';
-    const dur = 3 + Math.random() * 5;
-    s.style.animation = `twinkle ${dur}s infinite ease-in-out`;
+    s.style.animation = `twinkle ${3 + Math.random() * 5}s infinite ease-in-out`;
     s.style.animationDelay = (Math.random() * 5) + 's';
-    // Мягкое свечение обычным звёздам
-    if(size > 1.4){
-      s.style.boxShadow = '0 0 4px rgba(255,255,255,.5)';
-    }
-    // Редкие золотые звёзды, едва заметные
-    if(Math.random() < 0.08){
-      s.style.background = '#F5E6C8';
-      s.style.boxShadow = '0 0 6px rgba(251,191,36,.6)';
-    }
+    if(Math.random() < 0.08){ s.style.background = '#F5E6C8'; s.style.boxShadow = '0 0 6px rgba(251,191,36,.6)'; }
     cont.appendChild(s);
   }
 }
-
-/* ============ ПАДАЮЩАЯ ЗВЕЗДА ============ */
 function launchFallingStar(){
   const star = document.getElementById('falling-star');
   star.style.left = (30 + Math.random() * 40) + '%';
@@ -366,55 +665,36 @@ function launchFallingStar(){
   void star.offsetWidth;
   star.style.animation = 'fall 2.8s ease-in forwards';
 }
-
 setInterval(() => {
-  if(document.getElementById('screen-menu').classList.contains('active')){
-    launchFallingStar();
-  }
+  if(document.getElementById('screen-menu').classList.contains('active')) launchFallingStar();
 }, 9000);
 
-/* ============ ЧАСТИЦЫ ============ */
 function spawnParticle(){
   const cont = document.getElementById('particles');
   const p = document.createElement('div');
   p.className = 'particle';
   p.style.left = Math.random() * 100 + '%';
   p.style.top = (90 + Math.random() * 15) + '%';
-  const dx = (Math.random() * 80 - 40) + 'px';
-  p.style.setProperty('--dx', dx);
+  p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
   const dur = 7 + Math.random() * 8;
   p.style.animation = `floatP ${dur}s linear forwards`;
-  // Случайный оттенок — фиолетовый или золотой
-  const isGold = Math.random() < 0.3;
-  const col = isGold ? '#FBBF24' : '#A78BFA';
+  const col = Math.random() < 0.3 ? '#FBBF24' : '#A78BFA';
   p.style.background = col;
   p.style.boxShadow = '0 0 6px ' + col;
   cont.appendChild(p);
   setTimeout(() => p.remove(), dur * 1000 + 200);
 }
-
-function burstParticles(){
-  for(let i = 0; i < 15; i++){
-    setTimeout(spawnParticle, i * 60);
-  }
-}
-
+function burstParticles(){ for(let i = 0; i < 15; i++) setTimeout(spawnParticle, i * 60); }
 setInterval(spawnParticle, 700);
 
 /* ============ СТАРТ ============ */
 window.addEventListener('load', () => {
   createStars();
   applyLang();
+  renderCreator();
   setTimeout(launchFallingStar, 1800);
 });
-
 window.addEventListener('resize', createStars);
-
-// Клик по фону — эффект частиц
-document.getElementById('app').addEventListener('click', (e) => {
-  if(e.target.closest('button')) return;
-  burstParticles();
-});
 </script>
 </body>
 </html>
