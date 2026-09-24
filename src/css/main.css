@@ -1,1 +1,116 @@
+/* ============ ПОСЛЕДНИЙ СВЕТ · VioKrista ============ */
+/* Общие стили: фон, экраны, кнопки, анимации */
 
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#050510;color:#fff}
+#app{position:fixed;inset:0;overflow:hidden}
+
+/* ===== ФОН: ЗВЁЗДЫ ===== */
+#stars{position:absolute;inset:0;z-index:1}
+.star{position:absolute;border-radius:50%;background:#fff}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.85;transform:scale(1.15)}}
+.star.dim{animation:dimStar 1.5s ease forwards}
+@keyframes dimStar{
+  0%{opacity:.9;transform:scale(1.3);box-shadow:0 0 12px #FBBF24}
+  60%{opacity:.4;transform:scale(1);box-shadow:0 0 20px #FBBF24}
+  100%{opacity:0;transform:scale(.3);box-shadow:0 0 40px rgba(251,191,36,0)}
+}
+
+/* ===== ФОН: ТУМАН ===== */
+.fog{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:2}
+.fog-1{width:500px;height:500px;background:#4C1D95;top:-100px;left:-100px;animation:drift1 25s infinite ease-in-out}
+.fog-2{width:600px;height:600px;background:#1E1B4B;bottom:-200px;right:-200px;animation:drift2 30s infinite ease-in-out}
+.fog-3{width:400px;height:400px;background:#5B21B6;top:30%;left:40%;animation:drift3 20s infinite ease-in-out}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,-80px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,100px)}}
+
+/* ===== ВИНЬЕТКА ===== */
+.vignette{position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,16,.95) 100%)}
+
+/* ===== ЭКРАНЫ ===== */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;z-index:10;overflow:hidden}
+.screen.active{display:flex;animation:fadeIn .6s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ===== ВЕРХНИЕ КНОПКИ ===== */
+.top-btns{position:absolute;top:16px;right:16px;z-index:100;display:flex;gap:8px}
+.icon-btn{padding:9px 14px;background:rgba(20,17,45,.7);border:1.5px solid rgba(139,92,246,.45);
+  border-radius:50px;color:#C4B5FD;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);letter-spacing:.5px;transition:all .2s;min-width:44px}
+.icon-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+.icon-btn.off{opacity:.4}
+
+.back-btn{position:absolute;top:16px;left:16px;z-index:100;padding:9px 16px;
+  background:rgba(20,17,45,.7);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
+  color:#C4B5FD;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);letter-spacing:.5px;transition:all .2s;display:flex;align-items:center;gap:6px}
+.back-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+
+/* ===== ЗАГОЛОВКИ ===== */
+.title-main{font-size:clamp(34px,10vw,68px);font-weight:900;letter-spacing:6px;color:#F5E6C8;
+  line-height:1;text-shadow:0 0 25px rgba(251,191,36,.3),0 0 50px rgba(251,191,36,.15);
+  animation:titleBreath 5s infinite ease-in-out;text-align:center}
+@keyframes titleBreath{
+  0%,100%{text-shadow:0 0 25px rgba(251,191,36,.25),0 0 50px rgba(251,191,36,.1)}
+  50%{text-shadow:0 0 35px rgba(251,191,36,.45),0 0 70px rgba(251,191,36,.2)}}
+.title-sub{font-size:clamp(10px,2.8vw,13px);letter-spacing:8px;color:#A78BFA;
+  font-weight:500;text-transform:uppercase;opacity:.75;text-align:center}
+.city-name{font-size:clamp(12px,3.5vw,15px);letter-spacing:8px;font-weight:600;
+  color:#C4B5FD;text-transform:uppercase;text-shadow:0 0 15px rgba(167,139,250,.4);
+  opacity:.85;text-align:center;margin-top:-4px}
+.divider-line{width:70px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(251,191,36,.6),transparent);margin:22px 0}
+
+/* ===== КНОПКИ ===== */
+.btn-main{padding:17px 44px;font-size:clamp(14px,3.8vw,16px);font-weight:800;
+  border:none;border-radius:50px;cursor:pointer;font-family:inherit;letter-spacing:2px;
+  color:#FFF8DC;text-transform:uppercase;
+  background:linear-gradient(135deg,#B45309 0%,#92400E 50%,#78350F 100%);
+  border:1.5px solid rgba(251,191,36,.6);
+  box-shadow:0 8px 30px rgba(180,83,9,.5),inset 0 1px 0 rgba(251,191,36,.4);
+  text-shadow:0 0 10px rgba(251,191,36,.4);
+  transition:transform .2s,box-shadow .3s}
+.btn-main:hover{box-shadow:0 10px 45px rgba(251,191,36,.6),inset 0 1px 0 rgba(251,191,36,.6)}
+.btn-main:active{transform:scale(.96)}
+@keyframes softPulse{
+  0%,100%{box-shadow:0 8px 30px rgba(180,83,9,.4),inset 0 1px 0 rgba(251,191,36,.4)}
+  50%{box-shadow:0 8px 40px rgba(251,191,36,.7),inset 0 1px 0 rgba(251,191,36,.6),0 0 50px rgba(251,191,36,.3)}}
+.soft-pulse{animation:softPulse 3s infinite ease-in-out}
+
+.btn-ghost{padding:12px 24px;background:rgba(139,92,246,.15);border:1.5px solid rgba(139,92,246,.5);
+  color:#E9D5FF;font-size:14px;font-weight:700;border-radius:50px;cursor:pointer;font-family:inherit;
+  letter-spacing:1.5px;transition:all .2s;text-transform:uppercase}
+.btn-ghost:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+
+/* ===== ЛОГО-ЗВЕЗДА ===== */
+.star-logo{width:clamp(70px,20vw,110px);height:clamp(70px,20vw,110px);position:relative;margin-bottom:10px}
+.star-logo svg{width:100%;height:100%;animation:spin 40s linear infinite;opacity:.95;
+  filter:drop-shadow(0 0 20px rgba(251,191,36,.5))}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.star-pulse{position:absolute;inset:-20px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.25),transparent 70%);
+  animation:starPulse 4s infinite ease-in-out}
+@keyframes starPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.25);opacity:.9}}
+
+/* ===== ПАДАЮЩАЯ ЗВЕЗДА ===== */
+.shooting-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
+  box-shadow:0 0 12px 3px #FBBF24,0 0 40px 8px rgba(251,191,36,.4);z-index:6;pointer-events:none}
+.shooting-star::after{content:'';position:absolute;top:50%;left:0;width:80px;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(251,191,36,.8));transform:translateY(-50%)}
+@keyframes shoot{
+  0%{opacity:0;transform:translate(0,0)}
+  10%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translate(-70vw,70vh)}}
+
+/* ===== ТОСТ ===== */
+#toastEl{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#F5E6C8;padding:14px 26px;
+  border-radius:50px;font-weight:600;font-size:14px;box-shadow:0 8px 30px rgba(76,29,149,.6);
+  z-index:200;opacity:0;transition:all .4s;pointer-events:none;text-align:center;max-width:88vw;
+  letter-spacing:.5px;font-family:inherit;border:1px solid rgba(167,139,250,.4)}
+#toastEl.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ===== ВЕРСИЯ ===== */
+.menu-version{position:absolute;bottom:20px;left:0;right:0;text-align:center;
+  font-size:10px;color:#5B21B6;letter-spacing:3px;opacity:.6;font-weight:600}
