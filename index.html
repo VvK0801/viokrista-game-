@@ -32,7 +32,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,-80px)}}
 @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,100px)}}
 
-/* ВИНЬЕТКА + свечение */
+/* ВИНЬЕТКА + СВЕЧЕНИЕ */
 .vignette{position:absolute;inset:0;pointer-events:none;z-index:4;
   background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,16,.95) 100%)}
 .mystic-glow{position:absolute;inset:0;pointer-events:none;z-index:4;
@@ -105,12 +105,13 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .menu-btn .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:400;
   letter-spacing:.8px;margin-top:2px;opacity:.8}
 
-/* ЯЗЫК */
-.lang-btn{position:absolute;top:16px;right:16px;z-index:50;padding:9px 15px;
-  background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
-  color:#C4B5FD;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
-  backdrop-filter:blur(10px);letter-spacing:1px;transition:all .2s}
-.lang-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+/* ВЕРХНИЕ КНОПКИ */
+.top-btns{position:absolute;top:16px;right:16px;z-index:50;display:flex;gap:8px}
+.icon-btn{padding:9px 14px;background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);
+  border-radius:50px;color:#C4B5FD;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);letter-spacing:.5px;transition:all .2s;min-width:44px}
+.icon-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+.icon-btn.off{opacity:.4}
 
 /* ЗВЕЗДА-ЛОГОТИП */
 .star-logo{width:clamp(55px,16vw,90px);height:clamp(55px,16vw,90px);margin-bottom:22px;position:relative}
@@ -128,28 +129,53 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .version{position:absolute;bottom:50px;left:20px;font-size:10px;color:#4C1D95;
   letter-spacing:1px;z-index:10;font-weight:600;opacity:.6}
 
-/* ====== ЭТАП 2: СОЗДАНИЕ ГЕРОЯ ====== */
-.creator-wrap{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:16px;
-  padding:10px}
-.creator-top{width:100%;display:flex;align-items:center;justify-content:space-between;
-  padding:0 5px;margin-bottom:6px}
+/* ========== ЭТАП 3: СОЗДАНИЕ ГЕРОЯ ========== */
+.creator-wrap{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:10px}
+.creator-top{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 5px;margin-bottom:4px}
 .creator-step{font-size:11px;color:#A78BFA;letter-spacing:2px;font-weight:600;text-transform:uppercase}
 .creator-dots{display:flex;gap:5px}
 .cdot{width:6px;height:6px;border-radius:50%;background:rgba(167,139,250,.25);transition:all .3s}
 .cdot.active{background:#FBBF24;width:18px;border-radius:3px}
 
-.preview-box{width:100%;height:clamp(200px,45vh,300px);background:radial-gradient(ellipse at center,rgba(76,29,149,.25),transparent 70%);
-  border:1.5px solid rgba(139,92,246,.35);border-radius:20px;display:flex;align-items:center;justify-content:center;
+/* ПРЕВЬЮ ПЕРСОНАЖА */
+.preview-box{width:100%;height:clamp(240px,50vh,340px);
+  background:radial-gradient(ellipse at center,rgba(76,29,149,.3),transparent 75%);
+  border:1.5px solid rgba(139,92,246,.35);border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;backdrop-filter:blur(10px)}
-.preview-glow{position:absolute;width:200px;height:200px;border-radius:50%;
+.preview-glow{position:absolute;width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.2),transparent 70%);
+  animation:starPulse 5s infinite ease-in-out;pointer-events:none}
+.hero-container{position:relative;height:95%;max-height:320px;display:flex;align-items:flex-end;justify-content:center;
+  animation:heroFloat 5s infinite ease-in-out;z-index:2}
+@keyframes heroFloat{
+  0%,100%{transform:translateY(0) rotate(-0.5deg)}
+  50%{transform:translateY(-8px) rotate(0.5deg)}
+}
+.hero-container.happy{animation:heroHappy 0.6s ease}
+@keyframes heroHappy{
+  0%{transform:translateY(0)}
+  30%{transform:translateY(-20px) rotate(-3deg)}
+  60%{transform:translateY(-10px) rotate(3deg)}
+  100%{transform:translateY(0)}
+}
+.hero-img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 15px 40px rgba(139,92,246,.6));
+  transition:filter .3s}
+.hero-aura{position:absolute;inset:-30px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,rgba(251,191,36,.15),transparent 70%);
-  animation:starPulse 4s infinite ease-in-out;pointer-events:none}
-#heroSVG{width:auto;height:92%;max-height:280px;filter:drop-shadow(0 10px 30px rgba(139,92,246,.5));
-  animation:heroFloat 4s infinite ease-in-out;position:relative;z-index:2}
-@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  animation:auraPulse 4s infinite ease-in-out}
+@keyframes auraPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.9;transform:scale(1.1)}}
 
+/* Смена цвета волос - наложение */
+.hair-tint{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;
+  transition:background .4s;opacity:.35;border-radius:8px}
+
+/* Выбор одежды */
+.outfit-overlay{position:absolute;inset:0;pointer-events:none;transition:opacity .4s;opacity:0}
+
+/* Управление */
 .creator-label{font-size:13px;color:#C4B5FD;letter-spacing:1.5px;font-weight:600;
-  text-transform:uppercase;margin-top:5px;opacity:.8;text-align:center;width:100%}
+  text-transform:uppercase;margin-top:5px;opacity:.85;text-align:center;width:100%}
 
 .input-name{width:100%;padding:15px 20px;background:rgba(30,27,75,.6);
   border:1.5px solid rgba(139,92,246,.45);border-radius:14px;color:#fff;font-size:16px;
@@ -161,8 +187,8 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 
 .option-row{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap}
 .option-btn{padding:11px 16px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
-  border-radius:12px;color:#C4B5FD;font-family:inherit;font-size:14px;font-weight:600;
-  cursor:pointer;transition:all .2s;letter-spacing:.5px;min-width:56px;text-align:center}
+  border-radius:12px;color:#C4B5FD;font-family:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;letter-spacing:.5px;min-width:52px;text-align:center}
 .option-btn:hover{background:rgba(139,92,246,.25);color:#fff}
 .option-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(180,83,9,.35));
   border-color:rgba(251,191,36,.7);color:#F5E6C8;
@@ -182,23 +208,32 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
   box-shadow:0 0 15px rgba(251,191,36,.6);border:2px solid #F5E6C8}
 
 .hair-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.hair-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;transition:all .2s;
-  border:2px solid transparent}
+.hair-swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;transition:all .2s;
+  border:2px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 .hair-swatch:hover{transform:scale(1.1)}
 .hair-swatch.active{border-color:#F5E6C8;transform:scale(1.15);
-  box-shadow:0 0 15px rgba(251,191,36,.6)}
+  box-shadow:0 0 15px rgba(251,191,36,.7)}
 
 .gender-row{display:flex;gap:8px;justify-content:center;width:100%}
 .gender-btn{flex:1;max-width:100px;padding:14px 8px;background:rgba(30,27,75,.55);
   border:1.5px solid rgba(139,92,246,.35);border-radius:14px;color:#C4B5FD;
-  font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;
+  font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;
   display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.5px}
 .gender-btn .g-ico{font-size:22px}
 .gender-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
   border-color:rgba(251,191,36,.7);color:#F5E6C8;
   box-shadow:0 0 20px rgba(251,191,36,.3)}
 
-.creator-actions{display:flex;gap:10px;width:100%;margin-top:10px}
+.outfit-row{display:flex;gap:6px;justify-content:center;width:100%;flex-wrap:wrap}
+.outfit-btn{padding:10px 12px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
+  border-radius:10px;color:#C4B5FD;font-family:inherit;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px}
+.outfit-btn .o-ico{font-size:20px}
+.outfit-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
+  border-color:rgba(251,191,36,.7);color:#F5E6C8;
+  box-shadow:0 0 20px rgba(251,191,36,.3)}
+
+.creator-actions{display:flex;gap:10px;width:100%;margin-top:6px}
 .creator-actions .btn{flex:1;padding:14px 20px;font-size:14px}
 
 /* ТОСТ */
@@ -221,9 +256,12 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
   <div class="vignette"></div>
   <div class="mystic-glow"></div>
 
-  <button class="lang-btn" id="langBtn" onclick="toggleLang()">🌐 RU</button>
+  <div class="top-btns">
+    <button class="icon-btn" id="soundBtn" onclick="toggleSound()">🔊</button>
+    <button class="icon-btn" id="langBtn" onclick="toggleLang()">🌐 RU</button>
+  </div>
 
-  <!-- ========== ЗАГРУЗКА ========== -->
+  <!-- ЗАГРУЗКА -->
   <div class="screen active" id="screen-load">
     <div class="star-logo">
       <div class="star-pulse"></div>
@@ -240,7 +278,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
     <button class="btn btn-gold soft-pulse" onclick="goToMenu()" id="startBtn" data-i18n="start">ВОЙТИ В ИСТОРИЮ</button>
   </div>
 
-  <!-- ========== МЕНЮ ========== -->
+  <!-- МЕНЮ -->
   <div class="screen" id="screen-menu">
     <div class="menu-title" id="menuTitle">ГЛАВНОЕ МЕНЮ</div>
     <div class="menu-sub" id="menuSub">Что ты выберешь сегодня?</div>
@@ -270,19 +308,22 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
     <div style="font-size:11px;color:#5B21B6;letter-spacing:5px;font-weight:600;opacity:.7">VIOKRISTA</div>
   </div>
 
-  <!-- ========== ЭТАП 2: СОЗДАНИЕ ГЕРОЯ ========== -->
+  <!-- СОЗДАНИЕ ГЕРОЯ -->
   <div class="screen" id="screen-creator">
     <div class="creator-wrap">
 
       <div class="creator-top">
         <button class="btn-ghost" onclick="goToMenu()" style="padding:8px 16px;font-size:12px" data-i18n="back">← Назад</button>
         <div class="creator-dots" id="creatorDots"></div>
-        <div class="creator-step" id="creatorStep">ШАГ 1/5</div>
+        <div class="creator-step" id="creatorStep">ШАГ 1/6</div>
       </div>
 
       <div class="preview-box">
         <div class="preview-glow"></div>
-        <div id="heroSVG"></div>
+        <div class="hero-container" id="heroContainer">
+          <div class="hero-aura"></div>
+          <img src="hero.png" alt="Hero" class="hero-img" id="heroImg" onerror="this.style.display='none'">
+        </div>
       </div>
 
       <!-- ИМЯ -->
@@ -300,9 +341,6 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
           </button>
           <button class="gender-btn" data-gender="boy" onclick="setGender('boy')">
             <span class="g-ico">👦</span><span data-i18n="c_boy">Мальчик</span>
-          </button>
-          <button class="gender-btn" data-gender="none" onclick="setGender('none')">
-            <span class="g-ico">✨</span><span data-i18n="c_none">Не важно</span>
           </button>
         </div>
       </div>
@@ -323,6 +361,12 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
         <div class="hair-row" id="hairRow"></div>
       </div>
 
+      <!-- ОДЕЖДА -->
+      <div class="creator-block" id="block-outfit" style="display:none">
+        <div class="creator-label" data-i18n="c_outfit">Стиль одежды</div>
+        <div class="outfit-row" id="outfitRow"></div>
+      </div>
+
       <!-- ГОЛОС -->
       <div class="creator-block" id="block-voice" style="display:none">
         <div class="creator-label" data-i18n="c_voice">Твой голос</div>
@@ -341,10 +385,85 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
   </div>
 
   <div class="credit" id="credit">© VIOKRISTA · 2026</div>
-  <div class="version" id="version">v0.2 · ЭТАП 2</div>
+  <div class="version" id="version">v0.3 · ЭТАП 3</div>
 </div>
 
 <script>
+/* ============ АУДИО-КОНТЕКСТ ============ */
+let audioCtx = null;
+let soundOn = localStorage.getItem('ls_sound') !== 'off';
+let musicTimer = null;
+let currentMusic = null;
+
+function initAudio(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, dur, type='sine', vol=0.05){
+  if(!soundOn || !audioCtx) return;
+  try{
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    const now = audioCtx.currentTime;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(vol, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + dur);
+  }catch(e){}
+}
+
+/* ============ МУЗЫКА ============ */
+const MusicThemes = {
+  menu: {
+    notes: [220, 261.63, 329.63, 392, 329.63, 261.63, 220, 196],
+    tempo: 900,
+    type: 'sine',
+    vol: 0.035,
+    harmony: 'fifth'
+  },
+  creator: {
+    notes: [261.63, 329.63, 392, 523.25, 440, 392, 329.63, 293.66],
+    tempo: 800,
+    type: 'triangle',
+    vol: 0.04,
+    harmony: 'octave'
+  }
+};
+
+function playMusic(themeName){
+  stopMusic();
+  if(!soundOn || !audioCtx) return;
+  const cfg = MusicThemes[themeName] || MusicThemes.menu;
+  currentMusic = themeName;
+  let idx = 0;
+  const playNote = () => {
+    if(!soundOn || !audioCtx || currentMusic !== themeName) return;
+    const note = cfg.notes[idx % cfg.notes.length];
+    playTone(note, cfg.tempo / 1000 * 0.85, cfg.type, cfg.vol);
+    // Гармония
+    if(cfg.harmony === 'fifth') playTone(note * 1.5, cfg.tempo / 1000 * 0.85, 'sine', cfg.vol * 0.4);
+    if(cfg.harmony === 'octave') playTone(note / 2, cfg.tempo / 1000 * 0.85, 'sine', cfg.vol * 0.5);
+    // Искра сверху изредка
+    if(idx % 4 === 2){
+      setTimeout(() => playTone(note * 2, 0.4, 'sine', cfg.vol * 0.35), cfg.tempo / 2);
+    }
+    idx++;
+  };
+  playNote();
+  musicTimer = setInterval(playNote, cfg.tempo);
+}
+
+function stopMusic(){
+  if(musicTimer){ clearInterval(musicTimer); musicTimer = null; }
+  currentMusic = null;
+}
+
 /* ============ ЯЗЫКИ ============ */
 const translations = {
   ru: {
@@ -358,15 +477,19 @@ const translations = {
     not_ready: 'Скоро здесь появится этот раздел ✨',
     back: '← Назад',
     c_name: 'Как тебя зовут?', c_name_ph: 'Введи имя',
-    c_gender: 'Ты —', c_girl: 'Девочка', c_boy: 'Мальчик', c_none: 'Не важно',
+    c_gender: 'Ты —', c_girl: 'Девочка', c_boy: 'Мальчик',
     c_age: 'Сколько тебе лет?',
     c_hair: 'Цвет волос',
+    c_outfit: 'Стиль одежды',
     c_voice: 'Твой голос', c_voice_high: 'Высокий', c_voice_mid: 'Средний', c_voice_low: 'Низкий',
     c_prev: '← Назад', c_next: 'Далее →', c_finish: '✨ НАЧАТЬ ИСТОРИЮ',
     c_step: 'ШАГ',
     age_6: '5–7 лет · Совсем юный герой', age_8: '8–10 лет · Юный герой',
     age_11: '11–13 лет · Подросток', age_14: '14–16 лет · Взрослеющий герой',
-    need_name: 'Пожалуйста, введи имя ✨'
+    need_name: 'Пожалуйста, введи имя ✨',
+    outfit_plaid: 'Плащ', outfit_hoodie: 'Худи', outfit_dress: 'Платье',
+    outfit_shirt: 'Рубашка', outfit_jacket: 'Куртка', outfit_robe: 'Мантия',
+    saved: '✨ Герой создан!'
   },
   en: {
     start: 'ENTER THE STORY',
@@ -379,15 +502,19 @@ const translations = {
     not_ready: 'This section will appear soon ✨',
     back: '← Back',
     c_name: 'What is your name?', c_name_ph: 'Enter name',
-    c_gender: 'You are —', c_girl: 'Girl', c_boy: 'Boy', c_none: 'Rather not say',
+    c_gender: 'You are —', c_girl: 'Girl', c_boy: 'Boy',
     c_age: 'How old are you?',
     c_hair: 'Hair color',
+    c_outfit: 'Outfit style',
     c_voice: 'Your voice', c_voice_high: 'High', c_voice_mid: 'Medium', c_voice_low: 'Low',
     c_prev: '← Back', c_next: 'Next →', c_finish: '✨ START THE STORY',
     c_step: 'STEP',
     age_6: '5–7 · Very young hero', age_8: '8–10 · Young hero',
     age_11: '11–13 · Teen', age_14: '14–16 · Growing hero',
-    need_name: 'Please enter your name ✨'
+    need_name: 'Please enter your name ✨',
+    outfit_plaid: 'Cloak', outfit_hoodie: 'Hoodie', outfit_dress: 'Dress',
+    outfit_shirt: 'Shirt', outfit_jacket: 'Jacket', outfit_robe: 'Robe',
+    saved: '✨ Hero created!'
   }
 };
 let currentLang = localStorage.getItem('ls_lang') || 'ru';
@@ -413,55 +540,95 @@ function applyLang(){
   document.getElementById('titleMain').textContent = currentLang === 'ru' ? 'ПОСЛЕДНИЙ СВЕТ' : 'THE LAST LIGHT';
   document.getElementById('titleSub').textContent = currentLang === 'ru' ? 'ИНТЕРАКТИВНАЯ ИСТОРИЯ' : 'INTERACTIVE STORY';
   document.getElementById('cityName').textContent = currentLang === 'ru' ? 'ГОРОД VIOKRISTA' : 'CITY OF VIOKRISTA';
-  updateStep();
-  updateAgeDesc();
+  updateStep(); updateAgeDesc(); renderOutfitRow();
 }
 function t(k){ return translations[currentLang][k] || k; }
 
+/* ============ ЗВУК ============ */
+function toggleSound(){
+  soundOn = !soundOn;
+  localStorage.setItem('ls_sound', soundOn ? 'on' : 'off');
+  updateSoundBtn();
+  if(!soundOn) stopMusic();
+  else {
+    initAudio();
+    // Возобновить музыку текущего экрана
+    if(document.getElementById('screen-creator').classList.contains('active')) playMusic('creator');
+    else playMusic('menu');
+  }
+}
+function updateSoundBtn(){
+  const b = document.getElementById('soundBtn');
+  b.textContent = soundOn ? '🔊' : '🔇';
+  b.classList.toggle('off', !soundOn);
+}
+
 /* ============ ЭКРАНЫ ============ */
-function goToMenu(){
-  showScreen('screen-menu');
-  launchFallingStar();
-  burstParticles();
-}
-function goToCreator(){
-  hero.step = 0;
-  renderCreator();
-  showScreen('screen-creator');
-}
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+function goToMenu(){
+  initAudio();
+  showScreen('screen-menu');
+  launchFallingStar(); burstParticles();
+  if(soundOn) playMusic('menu');
+}
+function goToCreator(){
+  initAudio();
+  hero.step = 0;
+  renderCreator();
+  showScreen('screen-creator');
+  if(soundOn) playMusic('creator');
+}
 
 /* ============ ГЕРОЙ ============ */
 const hero = {
-  name: '',
-  gender: 'girl',
-  age: 10,
-  hair: '#3D2A5C',
-  voice: 'mid',
-  step: 0,
-  totalSteps: 5
+  name: '', gender: 'girl', age: 10,
+  hair: '#3D2A5C', outfit: 'plaid', voice: 'mid',
+  step: 0, totalSteps: 6
 };
 
-const hairColors = ['#3D2A5C', '#8B5CF6', '#FBBF24', '#F472B6', '#22C55E', '#38BDF8', '#FFFFFF', '#1E1B4B'];
+const hairColors = [
+  { c: '#3D2A5C', n: 'Тёмно-коричневый' },
+  { c: '#8B5A2B', n: 'Коричневый' },
+  { c: '#1E1B4B', n: 'Чёрный' },
+  { c: '#C0C0C0', n: 'Серебристый' },
+  { c: '#B45309', n: 'Рыжий' },
+  { c: '#8B5CF6', n: 'Фиолетовый' },
+  { c: '#38BDF8', n: 'Синий' },
+  { c: '#FBBF24', n: 'Золотой' }
+];
+
+const outfits = [
+  { id: 'plaid', ico: '🧥', ru: 'Плащ', en: 'Cloak', color: 'rgba(101,163,13,0.35)' },
+  { id: 'hoodie', ico: '👕', ru: 'Худи', en: 'Hoodie', color: 'rgba(139,92,246,0.3)' },
+  { id: 'dress', ico: '👗', ru: 'Платье', en: 'Dress', color: 'rgba(244,114,182,0.3)' },
+  { id: 'shirt', ico: '👔', ru: 'Рубашка', en: 'Shirt', color: 'rgba(56,189,248,0.3)' },
+  { id: 'jacket', ico: '🧥', ru: 'Куртка', en: 'Jacket', color: 'rgba(30,27,75,0.4)' },
+  { id: 'robe', ico: '🥋', ru: 'Мантия', en: 'Robe', color: 'rgba(180,83,9,0.3)' }
+];
 
 function setGender(g){
   hero.gender = g;
   document.querySelectorAll('.gender-btn').forEach(b => b.classList.toggle('active', b.dataset.gender === g));
-  renderPreview();
+  heroHappy();
 }
 function setAge(v){
   hero.age = parseInt(v);
   document.getElementById('ageValue').textContent = v;
   updateAgeDesc();
-  renderPreview();
+  heroHappy();
 }
 function setHair(c){
   hero.hair = c;
   document.querySelectorAll('.hair-swatch').forEach(s => s.classList.toggle('active', s.dataset.color === c));
-  renderPreview();
+  heroHappy();
+}
+function setOutfit(id){
+  hero.outfit = id;
+  document.querySelectorAll('.outfit-btn').forEach(b => b.classList.toggle('active', b.dataset.outfit === id));
+  heroHappy();
 }
 function setVoice(v){
   hero.voice = v;
@@ -473,98 +640,44 @@ function updateAgeDesc(){
   const el = document.getElementById('ageDesc');
   if(el) el.textContent = t(key);
 }
-
-/* ============ SVG ГЕРОЯ ============ */
-function renderPreview(){
-  const svg = document.getElementById('heroSVG');
-  if(!svg) return;
-  const hair = hero.hair;
-  const dressColor = hero.gender === 'boy' ? '#4C1D95' : '#6D28D9';
-  const dressColor2 = hero.gender === 'boy' ? '#7C3AED' : '#8B5CF6';
-  svg.innerHTML = `
-    <svg viewBox="0 0 220 420" xmlns="http://www.w3.org/2000/svg" style="height:100%;width:auto">
-      <defs>
-        <radialGradient id="aura" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="rgba(251,191,36,.15)"/>
-          <stop offset="100%" stop-color="transparent"/>
-        </radialGradient>
-      </defs>
-      <ellipse cx="110" cy="380" rx="90" ry="20" fill="url(#aura)"/>
-      <!-- Тень -->
-      <ellipse cx="110" cy="395" rx="55" ry="8" fill="#0A0A14" opacity=".6"/>
-      <!-- Тело -->
-      <path d="M70 220 Q60 380 55 390 L165 390 Q160 380 150 220 Z" fill="${dressColor}"/>
-      <path d="M70 220 Q60 380 55 390 L110 390 L110 220 Z" fill="${dressColor2}" opacity=".5"/>
-      <!-- Руки -->
-      <path d="M70 230 Q55 300 50 380" stroke="${dressColor}" stroke-width="14" stroke-linecap="round" fill="none"/>
-      <path d="M150 230 Q165 300 170 380" stroke="${dressColor}" stroke-width="14" stroke-linecap="round" fill="none"/>
-      <!-- Шея -->
-      <rect x="100" y="185" width="20" height="30" fill="#F4C8A8"/>
-      <!-- Голова -->
-      <ellipse cx="110" cy="140" rx="52" ry="60" fill="#F4C8A8"/>
-      <!-- Волосы (в зависимости от gender) -->
-      ${hero.gender === 'boy' ? `
-        <path d="M60 130 Q60 75 110 75 Q160 75 160 130 Q150 95 110 90 Q70 95 60 130 Z" fill="${hair}"/>
-      ` : hero.gender === 'girl' ? `
-        <path d="M58 135 Q55 70 110 70 Q165 70 162 135 Q155 100 110 95 Q65 100 58 135 Z" fill="${hair}"/>
-        <path d="M58 130 Q50 200 62 250 Q68 220 68 180 Q70 160 75 145 Z" fill="${hair}"/>
-        <path d="M162 130 Q170 200 158 250 Q152 220 152 180 Q150 160 145 145 Z" fill="${hair}"/>
-      ` : `
-        <path d="M62 130 Q62 78 110 78 Q158 78 158 130 Q148 98 110 93 Q72 98 62 130 Z" fill="${hair}"/>
-      `}
-      <!-- Глаза -->
-      <ellipse cx="90" cy="138" rx="7" ry="9" fill="#1A0F2E"/>
-      <ellipse cx="130" cy="138" rx="7" ry="9" fill="#1A0F2E"/>
-      <circle cx="92" cy="135" r="2.5" fill="#fff"/>
-      <circle cx="132" cy="135" r="2.5" fill="#fff"/>
-      <!-- Брови -->
-      <path d="M82 122 Q90 118 98 122" stroke="${hair}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path d="M122 122 Q130 118 138 122" stroke="${hair}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <!-- Румяна -->
-      <ellipse cx="78" cy="158" rx="8" ry="5" fill="#F472B6" opacity=".5"/>
-      <ellipse cx="142" cy="158" rx="8" ry="5" fill="#F472B6" opacity=".5"/>
-      <!-- Улыбка -->
-      <path d="M100 165 Q110 174 120 165" stroke="#8B2C2C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <!-- Свечение вокруг -->
-      <circle cx="110" cy="140" r="90" fill="url(#aura)" opacity=".5"/>
-    </svg>
-  `;
+function heroHappy(){
+  const c = document.getElementById('heroContainer');
+  if(!c) return;
+  c.classList.remove('happy');
+  void c.offsetWidth;
+  c.classList.add('happy');
+  playTone(880, 0.15, 'sine', 0.06);
+  setTimeout(() => playTone(1100, 0.1, 'sine', 0.05), 100);
 }
 
-/* ============ ШАГИ ============ */
+/* ============ РЕНДЕР ШАГОВ ============ */
 function renderCreator(){
-  const blocks = ['block-name', 'block-gender', 'block-age', 'block-hair', 'block-voice'];
+  const blocks = ['block-name', 'block-gender', 'block-age', 'block-hair', 'block-outfit', 'block-voice'];
   blocks.forEach((id, i) => {
     document.getElementById(id).style.display = (i === hero.step) ? 'block' : 'none';
   });
-
-  // Кнопки «назад» / «далее»
   document.getElementById('prevStep').style.display = hero.step === 0 ? 'none' : 'inline-block';
-  const nextBtn = document.getElementById('nextStep');
-  if(hero.step === hero.totalSteps - 1){
-    nextBtn.textContent = t('c_finish');
-  } else {
-    nextBtn.textContent = t('c_next');
-  }
-
-  // Показать имя, если введено
+  document.getElementById('nextStep').textContent = hero.step === hero.totalSteps - 1 ? t('c_finish') : t('c_next');
   if(hero.step > 0) document.getElementById('heroName').value = hero.name;
 
-  // Заполнить палитру волос (только один раз)
+  // Hair swatches
   const hairRow = document.getElementById('hairRow');
   if(hairRow && !hairRow.dataset.filled){
-    hairColors.forEach(c => {
+    hairColors.forEach(h => {
       const s = document.createElement('div');
-      s.className = 'hair-swatch' + (c === hero.hair ? ' active' : '');
-      s.style.background = c;
-      s.dataset.color = c;
-      s.onclick = () => setHair(c);
+      s.className = 'hair-swatch' + (h.c === hero.hair ? ' active' : '');
+      s.style.background = h.c;
+      s.dataset.color = h.c;
+      s.title = h.n;
+      s.onclick = () => setHair(h.c);
       hairRow.appendChild(s);
     });
     hairRow.dataset.filled = '1';
   }
 
-  // Точки-индикаторы
+  renderOutfitRow();
+
+  // Dots
   const dots = document.getElementById('creatorDots');
   if(dots && !dots.dataset.filled){
     for(let i = 0; i < hero.totalSteps; i++){
@@ -575,7 +688,29 @@ function renderCreator(){
     dots.dataset.filled = '1';
   }
   updateStep();
-  renderPreview();
+}
+
+function renderOutfitRow(){
+  const row = document.getElementById('outfitRow');
+  if(!row) return;
+  if(!row.dataset.filled){
+    outfits.forEach(o => {
+      const b = document.createElement('button');
+      b.className = 'outfit-btn' + (o.id === hero.outfit ? ' active' : '');
+      b.dataset.outfit = o.id;
+      b.innerHTML = `<span class="o-ico">${o.ico}</span><span>${currentLang === 'ru' ? o.ru : o.en}</span>`;
+      b.onclick = () => setOutfit(o.id);
+      row.appendChild(b);
+    });
+    row.dataset.filled = '1';
+  } else {
+    // Обновить активный класс
+    row.querySelectorAll('.outfit-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.outfit === hero.outfit);
+      const o = outfits.find(x => x.id === b.dataset.outfit);
+      if(o) b.querySelector('span:last-child').textContent = currentLang === 'ru' ? o.ru : o.en;
+    });
+  }
 }
 
 function updateStep(){
@@ -583,25 +718,23 @@ function updateStep(){
   dots.forEach((d, i) => d.classList.toggle('active', i <= hero.step));
   const step = document.getElementById('creatorStep');
   if(step) step.textContent = t('c_step') + ' ' + (hero.step + 1) + '/' + hero.totalSteps;
-
   const nextBtn = document.getElementById('nextStep');
-  if(nextBtn && hero.step === hero.totalSteps - 1) nextBtn.textContent = t('c_finish');
-  else if(nextBtn) nextBtn.textContent = t('c_next');
+  if(nextBtn) nextBtn.textContent = (hero.step === hero.totalSteps - 1) ? t('c_finish') : t('c_next');
 }
 
 function nextStep(){
   if(hero.step === 0){
-    const nameVal = document.getElementById('heroName').value.trim();
-    if(!nameVal){ showToast(t('need_name')); return; }
-    hero.name = nameVal;
+    const v = document.getElementById('heroName').value.trim();
+    if(!v){ showToast(t('need_name')); return; }
+    hero.name = v;
   }
   if(hero.step === hero.totalSteps - 1){
-    // Финальный шаг — сохранение и переход
     saveHero();
-    showToast(currentLang === 'ru' ? '✨ Герой создан! Дальше — Глава 1' : '✨ Hero created! Next — Chapter 1');
-    setTimeout(() => {
-      showScreen('screen-menu');
-    }, 1500);
+    showToast(t('saved'));
+    playTone(660, 0.2, 'sine', 0.08);
+    setTimeout(() => playTone(880, 0.2, 'sine', 0.08), 150);
+    setTimeout(() => playTone(1100, 0.3, 'sine', 0.08), 300);
+    setTimeout(() => goToMenu(), 1600);
     return;
   }
   hero.step++;
@@ -612,19 +745,12 @@ function prevStep(){
   hero.step--;
   renderCreator();
 }
-
-function saveHero(){
-  localStorage.setItem('ls_hero', JSON.stringify(hero));
-}
+function saveHero(){ localStorage.setItem('ls_hero', JSON.stringify(hero)); }
 
 /* ============ УТИЛИТЫ ============ */
 function showToast(text){
   let toast = document.getElementById('toastEl');
-  if(!toast){
-    toast = document.createElement('div');
-    toast.id = 'toastEl';
-    document.body.appendChild(toast);
-  }
+  if(!toast){ toast = document.createElement('div'); toast.id = 'toastEl'; document.body.appendChild(toast); }
   toast.textContent = text;
   requestAnimationFrame(() => {
     toast.style.transform = 'translateX(-50%) translateY(0)';
@@ -647,8 +773,7 @@ function createStars(){
     const s = document.createElement('div');
     s.className = 'star';
     const size = Math.random() * 1.6 + 0.5;
-    s.style.width = size + 'px';
-    s.style.height = size + 'px';
+    s.style.width = size + 'px'; s.style.height = size + 'px';
     s.style.left = Math.random() * 100 + '%';
     s.style.top = Math.random() * 100 + '%';
     s.style.animation = `twinkle ${3 + Math.random() * 5}s infinite ease-in-out`;
@@ -679,8 +804,7 @@ function spawnParticle(){
   const dur = 7 + Math.random() * 8;
   p.style.animation = `floatP ${dur}s linear forwards`;
   const col = Math.random() < 0.3 ? '#FBBF24' : '#A78BFA';
-  p.style.background = col;
-  p.style.boxShadow = '0 0 6px ' + col;
+  p.style.background = col; p.style.boxShadow = '0 0 6px ' + col;
   cont.appendChild(p);
   setTimeout(() => p.remove(), dur * 1000 + 200);
 }
@@ -691,8 +815,20 @@ setInterval(spawnParticle, 700);
 window.addEventListener('load', () => {
   createStars();
   applyLang();
+  updateSoundBtn();
   renderCreator();
   setTimeout(launchFallingStar, 1800);
+  // Первый тап пользователя запускает аудио
+  const unlockAudio = () => {
+    initAudio();
+    if(soundOn && document.getElementById('screen-load').classList.contains('active')){
+      playTone(660, 0.15, 'sine', 0.05);
+    }
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
+  };
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+  document.addEventListener('click', unlockAudio, { once: true });
 });
 window.addEventListener('resize', createStars);
 </script>
