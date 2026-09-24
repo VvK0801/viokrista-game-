@@ -44,7 +44,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   15%{opacity:.65}85%{opacity:.4}100%{opacity:0;transform:translateY(-100vh) translateX(var(--dx,20px))}
 }
 
-/* ПАДАЮЩИЕ ЗВЁЗДЫ С СЛЕДОМ */
+/* ПАДАЮЩИЕ ЗВЁЗДЫ */
 .shooting-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
   box-shadow:0 0 12px 3px #FBBF24, 0 0 40px 8px rgba(251,191,36,.4);z-index:6;pointer-events:none}
 .shooting-star::after{content:'';position:absolute;top:50%;left:0;width:80px;height:2px;
@@ -52,16 +52,13 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   transform:translateY(-50%) rotate(0deg);transform-origin:left center}
 @keyframes shoot{
   0%{opacity:0;transform:translate(0,0)}
-  10%{opacity:1}
-  90%{opacity:1}
-  100%{opacity:0;transform:translate(-70vw,70vh)}
+  10%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translate(-70vw,70vh)}
 }
 
 /* ЭКРАНЫ */
 .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:20px;overflow-y:auto}
 .screen.active{display:flex;animation:fadeIn .8s ease}
 @keyframes fadeIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:scale(1)}}
-@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 
 /* ЗАГОЛОВКИ */
 .title-main{font-size:clamp(32px,9.5vw,64px);font-weight:900;letter-spacing:5px;
@@ -168,79 +165,40 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   font-family:inherit;font-weight:600;letter-spacing:1px;text-align:center;outline:none;transition:all .2s}
 .input-name:focus{border-color:rgba(251,191,36,.6);background:rgba(30,27,75,.85);box-shadow:0 0 20px rgba(251,191,36,.2)}
 .input-name::placeholder{color:#6D28D9;font-weight:400}
-.option-row{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap}
-.option-btn{padding:11px 16px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
-  border-radius:12px;color:#C4B5FD;font-family:inherit;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .2s;letter-spacing:.5px;min-width:52px;text-align:center}
-.option-btn:hover{background:rgba(139,92,246,.25);color:#fff}
-.option-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(180,83,9,.35));
-  border-color:rgba(251,191,36,.7);color:#F5E6C8;box-shadow:0 0 20px rgba(251,191,36,.3),inset 0 0 10px rgba(251,191,36,.15)}
 .age-slider{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
 .age-value{font-size:22px;font-weight:900;color:#F5E6C8;letter-spacing:2px;text-shadow:0 0 15px rgba(251,191,36,.4)}
-.age-desc{font-size:12px;color:#A78BFA;letter-spacing:1px;opacity:.8;text-align:center}
 input[type=range]{width:100%;-webkit-appearance:none;height:6px;background:rgba(139,92,246,.25);border-radius:6px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;
   background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
   box-shadow:0 0 15px rgba(251,191,36,.6),inset 0 1px 0 rgba(255,255,255,.3);border:2px solid #F5E6C8}
 input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gradient(135deg,#FBBF24,#B45309);
   border-radius:50%;cursor:pointer;box-shadow:0 0 15px rgba(251,191,36,.6);border:2px solid #F5E6C8}
-.hair-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.hair-swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;transition:all .2s;border:2px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-.hair-swatch:hover{transform:scale(1.1)}
-.hair-swatch.active{border-color:#F5E6C8;transform:scale(1.15);box-shadow:0 0 15px rgba(251,191,36,.7)}
-.gender-row{display:flex;gap:8px;justify-content:center;width:100%}
-.gender-btn{flex:1;max-width:100px;padding:14px 8px;background:rgba(30,27,75,.55);
-  border:1.5px solid rgba(139,92,246,.35);border-radius:14px;color:#C4B5FD;
-  font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;
-  display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.5px}
-.gender-btn .g-ico{font-size:22px}
-.gender-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
-  border-color:rgba(251,191,36,.7);color:#F5E6C8;box-shadow:0 0 20px rgba(251,191,36,.3)}
-.outfit-row{display:flex;gap:6px;justify-content:center;width:100%;flex-wrap:wrap}
-.outfit-btn{padding:10px 12px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
-  border-radius:10px;color:#C4B5FD;font-family:inherit;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px}
-.outfit-btn .o-ico{font-size:20px}
-.outfit-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
-  border-color:rgba(251,191,36,.7);color:#F5E6C8;box-shadow:0 0 20px rgba(251,191,36,.3)}
 .creator-actions{display:flex;gap:10px;width:100%;margin-top:6px}
 .creator-actions .btn{flex:1;padding:14px 20px;font-size:14px}
 
-/* ============ ИГРОВАЯ СЦЕНА (Этап 4) ============ */
+/* ИГРОВАЯ СЦЕНА */
 .scene{position:absolute;inset:0;display:none;z-index:30;overflow:hidden}
 .scene.active{display:block}
-
-/* Под-сцена 1: небо */
 .sky-view{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#1a1040 0%,#050510 80%);
   transition:opacity 1.5s ease;opacity:1}
 .sky-view.hidden{opacity:0;pointer-events:none}
-
-/* Дома внизу — силуэты */
 .city-silhouette{position:absolute;bottom:0;left:0;right:0;height:35%;z-index:4;pointer-events:none;
-  transition:opacity 1.5s ease}
+  transition:opacity 1.5s ease;opacity:0}
+.city-silhouette.show{opacity:1}
 .city-silhouette svg{width:100%;height:100%;display:block}
-.city-silhouette.hidden{opacity:0}
-
-/* Под-сцена 2: герой на переднем плане */
 .hero-scene{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;
   padding-bottom:12%;z-index:10;opacity:0;transition:opacity 2s ease;pointer-events:none}
 .hero-scene.show{opacity:1}
 .hero-back{height:70vh;max-height:560px;filter:drop-shadow(0 20px 50px rgba(139,92,246,.5));
   animation:heroBackFloat 6s infinite ease-in-out}
 @keyframes heroBackFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-
-/* Текст сверху */
 .scene-text{position:absolute;top:15%;left:50%;transform:translateX(-50%);z-index:20;
   text-align:center;opacity:0;transition:opacity 1.5s ease;pointer-events:none;padding:0 20px;max-width:90vw}
 .scene-text.show{opacity:1}
 .scene-text-line{font-size:clamp(15px,4.2vw,20px);color:#E9D5FF;letter-spacing:1.5px;
-  font-weight:500;line-height:1.5;text-shadow:0 0 20px rgba(139,92,246,.6);
-  animation:textFade 3s ease}
-@keyframes textFade{0%{opacity:0;transform:translateY(10px)}30%,70%{opacity:1;transform:translateY(0)}100%{opacity:.85}}
+  font-weight:500;line-height:1.5;text-shadow:0 0 20px rgba(139,92,246,.6)}
 .scene-text-label{font-size:11px;color:#A78BFA;letter-spacing:3px;text-transform:uppercase;
   margin-bottom:10px;opacity:.7;font-weight:600}
-
-/* Под-сцена 3: выбор */
 .choice-box{position:absolute;bottom:8%;left:50%;transform:translateX(-50%) translateY(30px);
   z-index:25;width:92%;max-width:460px;opacity:0;transition:all .8s ease;pointer-events:none}
 .choice-box.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
@@ -257,19 +215,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
   border:1.5px solid rgba(251,191,36,.5);color:#F5E6C8;display:flex;align-items:center;
   justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
 .choice-item .c-txt{flex:1}
-
-/* Сцена — надпись "Глава 1" */
 .chapter-intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   z-index:40;background:#050510;opacity:1;transition:opacity 1.5s ease}
 .chapter-intro.hidden{opacity:0;pointer-events:none}
 .chapter-num{font-size:clamp(14px,4vw,18px);color:#A78BFA;letter-spacing:8px;text-transform:uppercase;
-  margin-bottom:14px;opacity:.8;font-weight:600;animation:chapterFade 3s ease}
+  margin-bottom:14px;opacity:.8;font-weight:600}
 .chapter-name{font-size:clamp(24px,7vw,44px);font-weight:900;letter-spacing:4px;text-align:center;
-  color:#F5E6C8;padding:0 20px;line-height:1.15;text-shadow:0 0 30px rgba(251,191,36,.5);
-  animation:chapterFade 3s ease}
-@keyframes chapterFade{0%{opacity:0;transform:translateY(15px)}30%,80%{opacity:1;transform:translateY(0)}100%{opacity:1}}
-
-/* Финал под-сцены */
+  color:#F5E6C8;padding:0 20px;line-height:1.15;text-shadow:0 0 30px rgba(251,191,36,.5)}
 .end-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   z-index:45;background:radial-gradient(ellipse at center,#1a1040,#050510);opacity:0;transition:opacity 1.5s ease;
   pointer-events:none;padding:30px;text-align:center}
@@ -278,14 +230,31 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
   margin-bottom:14px;text-shadow:0 0 25px rgba(251,191,36,.4)}
 .end-card-text{font-size:clamp(13px,3.8vw,16px);color:#C4B5FD;letter-spacing:1px;line-height:1.6;
   max-width:420px;margin-bottom:30px}
-
-/* Пропустить сцену */
 .skip-btn{position:absolute;top:16px;right:16px;z-index:60;padding:9px 16px;
   background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
   color:#C4B5FD;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
   backdrop-filter:blur(10px);letter-spacing:1px;transition:all .2s;display:none}
 .skip-btn.show{display:block}
 .skip-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+
+/* ДИАЛОГ */
+.dialogue{position:absolute;bottom:0;left:0;right:0;padding:22px 20px 30px;z-index:35;
+  background:linear-gradient(to top,rgba(5,5,16,.98) 0%,rgba(5,5,16,.9) 70%,transparent 100%);
+  transform:translateY(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);opacity:0}
+.dialogue.show{transform:translateY(0);opacity:1}
+.dialogue-speaker{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-left:5px}
+.dialogue-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#A78BFA);
+  display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #FBBF24;
+  box-shadow:0 0 20px rgba(251,191,36,.5);flex-shrink:0}
+.dialogue-name{font-size:16px;font-weight:800;color:#FBBF24;letter-spacing:.5px}
+.dialogue-name.thought{color:#A78BFA;font-style:italic}
+.dialogue-text{font-size:clamp(15px,4.2vw,18px);line-height:1.55;color:#E9D5FF;
+  min-height:60px;max-width:700px;margin:0 auto;padding:0 5px}
+.dialogue-text.thought{color:#C4B5FD;font-style:italic;opacity:.9}
+.dialogue-next{position:absolute;right:25px;bottom:15px;color:#FBBF24;font-size:20px;
+  animation:bounceDown 1.2s infinite;opacity:0;transition:opacity .3s;pointer-events:none}
+.dialogue-next.show{opacity:1}
+@keyframes bounceDown{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
 /* ТОСТ */
 #toastEl{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
@@ -330,8 +299,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
 
   <!-- МЕНЮ -->
   <div class="screen" id="screen-menu">
-    <div class="menu-title" id="menuTitle">ГЛАВНОЕ МЕНЮ</div>
-    <div class="menu-sub" id="menuSub">Что ты выберешь сегодня?</div>
+    <div class="menu-title" id="menuTitle" data-i18n="menu_title">ГЛАВНОЕ МЕНЮ</div>
+    <div class="menu-sub" id="menuSub" data-i18n="menu_sub">Что ты выберешь сегодня?</div>
     <div class="menu-list">
       <button class="menu-btn" onclick="startGame()">
         <span class="ico">📖</span>
@@ -354,7 +323,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
     <div style="font-size:11px;color:#5B21B6;letter-spacing:5px;font-weight:600;opacity:.7">VIOKRISTA</div>
   </div>
 
-  <!-- СОЗДАНИЕ ГЕРОЯ (сокращённая версия — переход сразу к игре) -->
+  <!-- СОЗДАНИЕ ГЕРОЯ -->
   <div class="screen" id="screen-creator">
     <div class="creator-wrap">
       <div class="creator-top">
@@ -373,7 +342,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
         <div class="creator-label" data-i18n="c_name">Как тебя зовут?</div>
         <input class="input-name" type="text" id="heroName" maxlength="14" placeholder="Имя" data-i18n-ph="c_name_ph">
       </div>
-      <div class="creator-block" id="block-gender" style="display:none">
+      <div class="creator-block" id="block-age" style="display:none">
         <div class="creator-label" data-i18n="c_age">Сколько тебе лет?</div>
         <div class="age-slider">
           <div class="age-value" id="ageValue">10</div>
@@ -387,23 +356,14 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
     </div>
   </div>
 
-  <!-- ============ ИГРОВАЯ СЦЕНА ============ -->
+  <!-- ИГРОВАЯ СЦЕНА -->
   <div class="scene" id="scene-game">
-
     <button class="skip-btn" id="skipBtn" onclick="skipScene()" data-i18n="skip">Пропустить →</button>
-
-    <!-- Под-сцена 1: НЕБО -->
     <div class="sky-view" id="skyView"></div>
-
-    <!-- Силуэт города -->
     <div class="city-silhouette" id="citySil">
       <svg viewBox="0 0 800 250" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cityG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0a0518"/>
-            <stop offset="100%" stop-color="#050510"/>
-          </linearGradient>
-        </defs>
+        <defs><linearGradient id="cityG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0a0518"/><stop offset="100%" stop-color="#050510"/></linearGradient></defs>
         <rect width="800" height="250" fill="url(#cityG)"/>
         <path d="M0 250 L0 180 L40 180 L40 140 L70 140 L70 100 L90 100 L90 140 L120 140 L120 180
                  L150 180 L150 120 L170 120 L170 90 L185 90 L185 120 L210 120 L210 170
@@ -412,32 +372,21 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
                  L480 180 L520 180 L520 130 L550 130 L550 80 L570 80 L570 130 L600 130 L600 170
                  L640 170 L640 120 L670 120 L670 80 L690 80 L690 60 L710 60 L710 80 L730 80
                  L730 120 L760 120 L760 180 L800 180 L800 250 Z" fill="#080312"/>
-        <!-- Окна -->
         <g fill="#F5E6C8" opacity=".4">
-          <rect x="155" y="130" width="4" height="6"/>
-          <rect x="163" y="130" width="4" height="6"/>
-          <rect x="288" y="100" width="4" height="6"/>
-          <rect x="304" y="100" width="4" height="6"/>
-          <rect x="555" y="95" width="4" height="6"/>
-          <rect x="565" y="105" width="4" height="6"/>
-          <rect x="675" y="90" width="4" height="6"/>
-          <rect x="685" y="100" width="4" height="6"/>
+          <rect x="155" y="130" width="4" height="6"/><rect x="163" y="130" width="4" height="6"/>
+          <rect x="288" y="100" width="4" height="6"/><rect x="304" y="100" width="4" height="6"/>
+          <rect x="555" y="95" width="4" height="6"/><rect x="565" y="105" width="4" height="6"/>
+          <rect x="675" y="90" width="4" height="6"/><rect x="685" y="100" width="4" height="6"/>
         </g>
       </svg>
     </div>
-
-    <!-- Под-сцена 2: ГЕРОЙ -->
     <div class="hero-scene" id="heroScene">
       <img src="hero.png" class="hero-back" id="heroBack" alt="Hero" onerror="this.style.display='none'">
     </div>
-
-    <!-- Текст -->
     <div class="scene-text" id="sceneText">
       <div class="scene-text-label" data-i18n="scene_sys">СИСТЕМА</div>
       <div class="scene-text-line" id="sceneTextLine" data-i18n="scene_q1">Ты заметил это?</div>
     </div>
-
-    <!-- Выбор -->
     <div class="choice-box" id="choiceBox">
       <div class="choice-title" data-i18n="scene_choice">Что ты сделаешь?</div>
       <button class="choice-item" onclick="makeChoice('A')">
@@ -453,14 +402,18 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
         <span class="c-txt" data-i18n="choice_c">Позвать кого-нибудь</span>
       </button>
     </div>
-
-    <!-- Интро главы -->
+    <div class="dialogue" id="dialogue">
+      <div class="dialogue-speaker">
+        <div class="dialogue-avatar" id="dlgAvatar">📄</div>
+        <div class="dialogue-name" id="dlgName">Бумажка</div>
+      </div>
+      <div class="dialogue-text" id="dlgText"></div>
+      <div class="dialogue-next" id="dlgNext">▼</div>
+    </div>
     <div class="chapter-intro" id="chapterIntro">
       <div class="chapter-num" data-i18n="chapter_num">ГЛАВА 1</div>
       <div class="chapter-name" data-i18n="chapter_name">ЗВЕЗДА, КОТОРАЯ УПАЛА</div>
     </div>
-
-    <!-- Финал сцены -->
     <div class="end-card" id="endCard">
       <div class="end-card-title" id="endCardTitle" data-i18n="end_title">Продолжение следует…</div>
       <div class="end-card-text" id="endCardText" data-i18n="end_text">Ты сделал первый выбор. Игра запомнила его.</div>
@@ -468,8 +421,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gra
     </div>
   </div>
 
-  <div class="credit" id="credit">© VIOKRISTA · 2026</div>
-  <div class="version" id="version">v0.4 · ЭТАП 4</div>
+  <div class="credit">© VIOKRISTA · 2026</div>
+  <div class="version">v1.0</div>
 </div>
 
 <script>
@@ -478,22 +431,17 @@ let audioCtx = null;
 let soundOn = localStorage.getItem('ls_sound') !== 'off';
 let musicTimer = null;
 let currentMusic = null;
-let ambientGain = null;
 
 function initAudio(){
-  if(!audioCtx){
-    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
-  }
+  if(!audioCtx){ try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){} }
   if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 }
-
 function playTone(freq, dur, type='sine', vol=0.05){
   if(!soundOn || !audioCtx) return;
   try{
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
+    osc.type = type; osc.frequency.value = freq;
     const now = audioCtx.currentTime;
     gain.gain.setValueAtTime(0, now);
     gain.gain.linearRampToValueAtTime(vol, now + 0.03);
@@ -502,111 +450,103 @@ function playTone(freq, dur, type='sine', vol=0.05){
     osc.start(now); osc.stop(now + dur);
   }catch(e){}
 }
+function sfxDing(){ if(!soundOn) return; [1500,2000,2500].forEach((f,i)=>setTimeout(()=>playTone(f,.6,'sine',.04),i*60)); }
+function sfxChoice(){ if(!soundOn) return; playTone(660,.12,'sine',.08); setTimeout(()=>playTone(880,.15,'sine',.06),100); }
 
-/* Звук "дзинь" — когда гаснет звезда */
-function sfxDing(){
-  if(!soundOn || !audioCtx) return;
-  try{
-    [1500, 2000, 2500].forEach((f, i) => setTimeout(() => playTone(f, 0.6, 'sine', 0.04), i * 60));
-  }catch(e){}
-}
-
-/* Звук выбора */
-function sfxChoice(){
-  if(!soundOn || !audioCtx) return;
-  playTone(660, 0.12, 'sine', 0.08);
-  setTimeout(() => playTone(880, 0.15, 'sine', 0.06), 100);
-}
-
-/* ============ МУЗЫКА ============ */
+/* МУЗЫКА */
 const MusicThemes = {
-  menu: { notes: [220, 261.63, 329.63, 392, 329.63, 261.63, 220, 196], tempo: 900, type: 'sine', vol: 0.035, harmony: 'fifth' },
-  creator: { notes: [261.63, 329.63, 392, 523.25, 440, 392, 329.63, 293.66], tempo: 800, type: 'triangle', vol: 0.04, harmony: 'octave' },
-  scene: { notes: [196, 233.08, 293.66, 349.23, 293.66, 233.08, 196, 174.61], tempo: 1100, type: 'sine', vol: 0.03, harmony: 'fifth' },
-  dramatic: { notes: [174.61, 196, 220, 196, 174.61, 155.56, 174.61, 196], tempo: 1300, type: 'sine', vol: 0.028, harmony: 'octave' }
+  menu: { notes:[220,261.63,329.63,392,329.63,261.63,220,196], tempo:900, type:'sine', vol:.035, harmony:'fifth' },
+  creator: { notes:[261.63,329.63,392,523.25,440,392,329.63,293.66], tempo:800, type:'triangle', vol:.04, harmony:'octave' },
+  scene: { notes:[196,233.08,293.66,349.23,293.66,233.08,196,174.61], tempo:1100, type:'sine', vol:.03, harmony:'fifth' },
+  dramatic: { notes:[174.61,196,220,196,174.61,155.56,174.61,196], tempo:1300, type:'sine', vol:.028, harmony:'octave' }
 };
-
 function playMusic(themeName){
   stopMusic();
   if(!soundOn || !audioCtx) return;
-  const cfg = MusicThemes[themeName];
-  if(!cfg) return;
-  currentMusic = themeName;
-  let idx = 0;
+  const cfg = MusicThemes[themeName]; if(!cfg) return;
+  currentMusic = themeName; let idx = 0;
   const playNote = () => {
     if(!soundOn || !audioCtx || currentMusic !== themeName) return;
     const note = cfg.notes[idx % cfg.notes.length];
-    playTone(note, cfg.tempo / 1000 * 0.85, cfg.type, cfg.vol);
-    if(cfg.harmony === 'fifth') playTone(note * 1.5, cfg.tempo / 1000 * 0.85, 'sine', cfg.vol * 0.4);
-    if(cfg.harmony === 'octave') playTone(note / 2, cfg.tempo / 1000 * 0.85, 'sine', cfg.vol * 0.5);
-    if(idx % 4 === 2) setTimeout(() => playTone(note * 2, 0.4, 'sine', cfg.vol * 0.35), cfg.tempo / 2);
+    playTone(note, cfg.tempo/1000*.85, cfg.type, cfg.vol);
+    if(cfg.harmony==='fifth') playTone(note*1.5, cfg.tempo/1000*.85, 'sine', cfg.vol*.4);
+    if(cfg.harmony==='octave') playTone(note/2, cfg.tempo/1000*.85, 'sine', cfg.vol*.5);
+    if(idx%4===2) setTimeout(()=>playTone(note*2,.4,'sine',cfg.vol*.35), cfg.tempo/2);
     idx++;
   };
   playNote();
   musicTimer = setInterval(playNote, cfg.tempo);
 }
-function stopMusic(){
-  if(musicTimer){ clearInterval(musicTimer); musicTimer = null; }
-  currentMusic = null;
-}
+function stopMusic(){ if(musicTimer){ clearInterval(musicTimer); musicTimer=null; } currentMusic=null; }
 
 /* ============ ЯЗЫКИ ============ */
 const translations = {
   ru: {
-    start: 'ВОЙТИ В ИСТОРИЮ',
-    menu_title: 'ГЛАВНОЕ МЕНЮ', menu_sub: 'Что ты выберешь сегодня?',
-    menu_new: 'Новая история', menu_new_sub: 'Начать с начала',
-    menu_hero: 'Создать героя', menu_hero_sub: 'Имя, возраст, внешность',
-    menu_chars: 'Персонажи', menu_chars_sub: 'Луна, Элиан, Флик…',
-    menu_collect: 'Коллекция', menu_collect_sub: 'Воспоминания и находки',
-    not_ready: 'Скоро здесь появится этот раздел ✨',
-    back: '← Назад',
-    c_name: 'Как тебя зовут?', c_name_ph: 'Введи имя',
-    c_age: 'Сколько тебе лет?',
-    c_prev: '← Назад', c_next: 'Далее →', c_finish: '✨ НАЧАТЬ ИСТОРИЮ',
-    need_name: 'Пожалуйста, введи имя ✨',
-    saved: '✨ Герой создан!',
-    skip: 'Пропустить →',
-    scene_sys: 'СИСТЕМА',
-    scene_q1: 'Ты заметил это?',
-    scene_choice: 'Что ты сделаешь?',
-    choice_a: 'Посмотреть на небо',
-    choice_b: 'Сделать вид, что ничего не произошло',
-    choice_c: 'Позвать кого-нибудь',
-    chapter_num: 'ГЛАВА 1',
-    chapter_name: 'ЗВЕЗДА, КОТОРАЯ УПАЛА',
-    end_title: 'Продолжение следует…',
-    end_text: 'Ты сделал первый выбор. Игра запомнила его.',
-    end_btn: 'Вернуться в меню',
-    no_hero: 'Сначала создай героя ✨'
+    start:'ВОЙТИ В ИСТОРИЮ', menu_title:'ГЛАВНОЕ МЕНЮ', menu_sub:'Что ты выберешь сегодня?',
+    menu_new:'Новая история', menu_new_sub:'Начать с начала',
+    menu_hero:'Создать героя', menu_hero_sub:'Имя, возраст, внешность',
+    menu_chars:'Персонажи', menu_chars_sub:'Луна, Элиан, Флик…',
+    menu_collect:'Коллекция', menu_collect_sub:'Воспоминания и находки',
+    not_ready:'Скоро здесь появится этот раздел ✨',
+    back:'← Назад', c_name:'Как тебя зовут?', c_name_ph:'Введи имя',
+    c_age:'Сколько тебе лет?', c_prev:'← Назад', c_next:'Далее →', c_finish:'✨ НАЧАТЬ',
+    need_name:'Пожалуйста, введи имя ✨', saved:'✨ Герой создан!',
+    skip:'Пропустить →', scene_sys:'СИСТЕМА', scene_q1:'Ты заметил это?',
+    scene_choice:'Что ты сделаешь?',
+    choice_a:'Посмотреть на небо', choice_b:'Сделать вид, что ничего не произошло', choice_c:'Позвать кого-нибудь',
+    chapter_num:'ГЛАВА 1', chapter_name:'ЗВЕЗДА, КОТОРАЯ УПАЛА',
+    end_title:'Продолжение следует…',
+    end_text:'Ты сделал первый выбор. Игра запомнила его.',
+    end_btn:'Вернуться в меню', no_hero:'Сначала создай героя ✨',
+    /* Диалоги */
+    dlg_A_1:'Ты смотришь на небо. Одна звезда срывается вниз — прямо на город!',
+    dlg_A_2:'Вспышка. Золотые частицы. Рядом с тобой — маленькое светящееся существо.',
+    dlg_A_3:'Пи…',
+    dlg_A_4:'Ты… звезда?',
+    dlg_A_5:'Пи-пи!',
+    dlg_B_1:'Ты отворачиваешься. Но через минуту слышишь: БУМ!',
+    dlg_B_2:'Ты оборачиваешься. На месте падения — люди. Луна стоит рядом.',
+    dlg_B_3:'Ты тоже видел?',
+    dlg_B_4:'Что?',
+    dlg_B_5:'…Ничего.',
+    dlg_C_1:'Ты зовёшь на помощь. Но никто не отвечает.',
+    dlg_C_2:'И вдруг слышишь голос:',
+    dlg_C_3:'Не зови их.',
+    dlg_C_4:'На другом конце улицы — человек в тёмном пальто. Он исчезает.',
+    dlg_final_1:'Ты сделал первый выбор. Игра запомнила его.'
   },
   en: {
-    start: 'ENTER THE STORY',
-    menu_title: 'MAIN MENU', menu_sub: 'What will you choose today?',
-    menu_new: 'New story', menu_new_sub: 'Start from the beginning',
-    menu_hero: 'Create hero', menu_hero_sub: 'Name, age, appearance',
-    menu_chars: 'Characters', menu_chars_sub: 'Luna, Elian, Flick…',
-    menu_collect: 'Collection', menu_collect_sub: 'Memories and finds',
-    not_ready: 'This section will appear soon ✨',
-    back: '← Back',
-    c_name: 'What is your name?', c_name_ph: 'Enter name',
-    c_age: 'How old are you?',
-    c_prev: '← Back', c_next: 'Next →', c_finish: '✨ START THE STORY',
-    need_name: 'Please enter your name ✨',
-    saved: '✨ Hero created!',
-    skip: 'Skip →',
-    scene_sys: 'SYSTEM',
-    scene_q1: 'Did you notice this?',
-    scene_choice: 'What will you do?',
-    choice_a: 'Look at the sky',
-    choice_b: 'Pretend nothing happened',
-    choice_c: 'Call someone',
-    chapter_num: 'CHAPTER 1',
-    chapter_name: 'THE STAR THAT FELL',
-    end_title: 'To be continued…',
-    end_text: 'You made your first choice. The game remembered it.',
-    end_btn: 'Return to menu',
-    no_hero: 'Create a hero first ✨'
+    start:'ENTER THE STORY', menu_title:'MAIN MENU', menu_sub:'What will you choose today?',
+    menu_new:'New story', menu_new_sub:'Start from the beginning',
+    menu_hero:'Create hero', menu_hero_sub:'Name, age, appearance',
+    menu_chars:'Characters', menu_chars_sub:'Luna, Elian, Flick…',
+    menu_collect:'Collection', menu_collect_sub:'Memories and finds',
+    not_ready:'This section will appear soon ✨',
+    back:'← Back', c_name:'What is your name?', c_name_ph:'Enter name',
+    c_age:'How old are you?', c_prev:'← Back', c_next:'Next →', c_finish:'✨ START',
+    need_name:'Please enter your name ✨', saved:'✨ Hero created!',
+    skip:'Skip →', scene_sys:'SYSTEM', scene_q1:'Did you notice this?',
+    scene_choice:'What will you do?',
+    choice_a:'Look at the sky', choice_b:'Pretend nothing happened', choice_c:'Call someone',
+    chapter_num:'CHAPTER 1', chapter_name:'THE STAR THAT FELL',
+    end_title:'To be continued…',
+    end_text:'You made your first choice. The game remembered it.',
+    end_btn:'Return to menu', no_hero:'Create a hero first ✨',
+    dlg_A_1:'You look at the sky. One star falls down — right onto the city!',
+    dlg_A_2:'A flash. Golden particles. A small glowing creature is next to you.',
+    dlg_A_3:'Pee…',
+    dlg_A_4:'Are you… a star?',
+    dlg_A_5:'Pee-pee!',
+    dlg_B_1:'You turn away. But a minute later you hear: BOOM!',
+    dlg_B_2:'You turn around. People are at the crash site. Luna stands nearby.',
+    dlg_B_3:'Did you see it too?',
+    dlg_B_4:'What?',
+    dlg_B_5:'…Nothing.',
+    dlg_C_1:'You call for help. But nobody answers.',
+    dlg_C_2:'And then you hear a voice:',
+    dlg_C_3:'Don\'t call them.',
+    dlg_C_4:'On the other side of the street — a man in a dark coat. He disappears.',
+    dlg_final_1:'You made your first choice. The game remembered it.'
   }
 };
 let currentLang = localStorage.getItem('ls_lang') || 'ru';
@@ -635,7 +575,7 @@ function applyLang(){
 }
 function t(k){ return translations[currentLang][k] || k; }
 
-/* ============ ЗВУК ============ */
+/* ЗВУК */
 function toggleSound(){
   soundOn = !soundOn;
   localStorage.setItem('ls_sound', soundOn ? 'on' : 'off');
@@ -654,7 +594,7 @@ function updateSoundBtn(){
   b.classList.toggle('off', !soundOn);
 }
 
-/* ============ ЭКРАНЫ ============ */
+/* ЭКРАНЫ */
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -673,34 +613,26 @@ function goToCreator(){
   if(soundOn) playMusic('creator');
 }
 
-/* ============ ГЕРОЙ ============ */
+/* ГЕРОЙ */
 const hero = { name: '', age: 10, step: 0, totalSteps: 2 };
-
-function setAge(v){
-  hero.age = parseInt(v);
-  document.getElementById('ageValue').textContent = v;
-  heroHappy();
-}
+function setAge(v){ hero.age = parseInt(v); document.getElementById('ageValue').textContent = v; heroHappy(); }
 function heroHappy(){
-  const c = document.getElementById('heroContainer');
-  if(!c) return;
-  c.classList.remove('happy');
-  void c.offsetWidth;
-  c.classList.add('happy');
-  playTone(880, 0.15, 'sine', 0.06);
+  const c = document.getElementById('heroContainer'); if(!c) return;
+  c.classList.remove('happy'); void c.offsetWidth; c.classList.add('happy');
+  playTone(880, .15, 'sine', .06);
 }
 function renderCreator(){
   document.getElementById('block-name').style.display = hero.step === 0 ? 'block' : 'none';
-  document.getElementById('block-gender').style.display = hero.step === 1 ? 'block' : 'none';
+  document.getElementById('block-age').style.display = hero.step === 1 ? 'block' : 'none';
   document.getElementById('prevStep').style.display = hero.step === 0 ? 'none' : 'inline-block';
-  document.getElementById('nextStep').textContent = hero.step === hero.totalSteps - 1 ? '✨ СОХРАНИТЬ' : t('c_next');
+  document.getElementById('nextStep').textContent = hero.step === hero.totalSteps - 1 ? t('c_finish') : t('c_next');
   const dots = document.getElementById('creatorDots');
   if(dots && !dots.dataset.filled){
     for(let i = 0; i < hero.totalSteps; i++){ const d = document.createElement('div'); d.className = 'cdot'; dots.appendChild(d); }
     dots.dataset.filled = '1';
   }
   if(dots) Array.from(dots.children).forEach((d, i) => d.classList.toggle('active', i <= hero.step));
-  document.getElementById('creatorStep').textContent = t('c_step') + ' ' + (hero.step + 1) + '/' + hero.totalSteps;
+  document.getElementById('creatorStep').textContent = 'ШАГ ' + (hero.step + 1) + '/' + hero.totalSteps;
 }
 function nextStep(){
   if(hero.step === 0){
@@ -711,72 +643,51 @@ function nextStep(){
   if(hero.step === hero.totalSteps - 1){
     localStorage.setItem('ls_hero', JSON.stringify(hero));
     showToast(t('saved'));
-    playTone(660, 0.2, 'sine', 0.08);
-    setTimeout(() => playTone(880, 0.2, 'sine', 0.08), 150);
-    setTimeout(() => playTone(1100, 0.3, 'sine', 0.08), 300);
-    setTimeout(() => goToMenu(), 1600);
+    playTone(660,.2,'sine',.08);
+    setTimeout(()=>playTone(880,.2,'sine',.08),150);
+    setTimeout(()=>playTone(1100,.3,'sine',.08),300);
+    setTimeout(()=>goToMenu(), 1600);
     return;
   }
-  hero.step++;
-  renderCreator();
+  hero.step++; renderCreator();
 }
 function prevStep(){ if(hero.step === 0) return; hero.step--; renderCreator(); }
 
-/* ============ ИГРА (Этап 4) ============ */
+/* ИГРА */
 let sceneFlags = JSON.parse(localStorage.getItem('ls_flags') || '{}');
 let skyStars = [];
 let starsDimming = false;
-let sceneTimeline = [];
 
 function startGame(){
   initAudio();
-  // Проверяем, создан ли герой
   const savedHero = JSON.parse(localStorage.getItem('ls_hero') || 'null');
-  if(!savedHero){
-    showToast(t('no_hero'));
-    setTimeout(() => goToCreator(), 900);
-    return;
-  }
+  if(!savedHero){ showToast(t('no_hero')); setTimeout(()=>goToCreator(), 900); return; }
   hero.name = savedHero.name || hero.name;
   hero.age = savedHero.age || hero.age;
 
-  showScreen('scene-game');
   document.getElementById('scene-game').classList.add('active');
-
-  // Сброс под-сцен
   document.getElementById('skyView').classList.remove('hidden');
-  document.getElementById('citySil').classList.remove('hidden');
+  document.getElementById('citySil').classList.remove('show');
   document.getElementById('heroScene').classList.remove('show');
   document.getElementById('sceneText').classList.remove('show');
   document.getElementById('choiceBox').classList.remove('show');
+  document.getElementById('dialogue').classList.remove('show');
   document.getElementById('chapterIntro').classList.remove('hidden');
   document.getElementById('endCard').classList.remove('show');
+  document.getElementById('skipBtn').classList.add('show');
 
-  // Создать звёзды в небе
   createSkyStars();
+  starsDimming = false;
 
-  // Запустить таймлайн
-  runChapterIntro();
-}
-
-function runChapterIntro(){
-  // Показать интро главы 3 секунды
   setTimeout(() => {
     document.getElementById('chapterIntro').classList.add('hidden');
     if(soundOn) playMusic('scene');
-    // Запустить первую под-сцену
     setTimeout(runSkyScene, 800);
   }, 3000);
 }
 
 function runSkyScene(){
-  // Под-сцена 1: небо. Звёзды гаснут одна за одной.
-  setTimeout(() => {
-    // Начать гашение
-    dimStarsProgressively();
-  }, 1500);
-
-  // Через 8 секунд — переход к герою
+  setTimeout(dimStarsProgressively, 1500);
   setTimeout(() => {
     if(!document.getElementById('scene-game').classList.contains('active')) return;
     runHeroScene();
@@ -784,62 +695,134 @@ function runSkyScene(){
 }
 
 function runHeroScene(){
-  // Спрятать небо, показать город и героя
   document.getElementById('skyView').classList.add('hidden');
-  document.getElementById('citySil').classList.remove('hidden');
+  document.getElementById('citySil').classList.add('show');
   document.getElementById('heroScene').classList.add('show');
-
-  // Через 2 сек — показать текст
-  setTimeout(() => {
-    document.getElementById('sceneText').classList.add('show');
-  }, 2000);
-
-  // Через 6 сек — показать выбор
-  setTimeout(() => {
-    document.getElementById('choiceBox').classList.add('show');
-  }, 6500);
+  setTimeout(()=>document.getElementById('sceneText').classList.add('show'), 2000);
+  setTimeout(()=>document.getElementById('choiceBox').classList.add('show'), 6500);
 }
 
+/* ВЫБОР */
 function makeChoice(letter){
-  initAudio();
-  sfxChoice();
+  initAudio(); sfxChoice();
   sceneFlags.firstChoice = letter;
   localStorage.setItem('ls_flags', JSON.stringify(sceneFlags));
 
-  // Визуальный отклик
   const btn = event.currentTarget;
   btn.style.background = 'linear-gradient(135deg,rgba(251,191,36,.5),rgba(180,83,9,.5))';
   btn.style.borderColor = '#FBBF24';
 
-  // Скрыть выбор, показать финал
   setTimeout(() => {
     document.getElementById('choiceBox').classList.remove('show');
     document.getElementById('sceneText').classList.remove('show');
-    setTimeout(() => {
-      document.getElementById('endCard').classList.add('show');
-      playTone(660, 0.3, 'sine', 0.08);
-      setTimeout(() => playTone(880, 0.3, 'sine', 0.08), 200);
-      setTimeout(() => playTone(1100, 0.5, 'sine', 0.08), 400);
-    }, 800);
+    setTimeout(() => playDialogueSequence(letter), 800);
   }, 500);
+}
+
+/* ДИАЛОГИ — в зависимости от выбора */
+let dlgQueue = [];
+let dlgIndex = 0;
+let dlgTyping = false;
+let dlgTimer = null;
+let dlgFullText = '';
+let dlgCharIdx = 0;
+
+function playDialogueSequence(letter){
+  dlgQueue = [];
+  if(letter === 'A'){
+    dlgQueue = [
+      { avatar:'🌌', name:'', text:t('dlg_A_1'), thought:true },
+      { avatar:'✨', name:'', text:t('dlg_A_2'), thought:true },
+      { avatar:'📄', name:'Бумажка', text:t('dlg_A_3') },
+      { avatar:'👤', name:hero.name, text:t('dlg_A_4') },
+      { avatar:'📄', name:'Бумажка', text:t('dlg_A_5') }
+    ];
+  } else if(letter === 'B'){
+    dlgQueue = [
+      { avatar:'🌃', name:'', text:t('dlg_B_1'), thought:true },
+      { avatar:'✨', name:'', text:t('dlg_B_2'), thought:true },
+      { avatar:'🌙', name:'Луна', text:t('dlg_B_3') },
+      { avatar:'👤', name:hero.name, text:t('dlg_B_4') },
+      { avatar:'🌙', name:'Луна', text:t('dlg_B_5') }
+    ];
+  } else {
+    dlgQueue = [
+      { avatar:'🌃', name:'', text:t('dlg_C_1'), thought:true },
+      { avatar:'🌙', name:'???', text:t('dlg_C_2') },
+      { avatar:'🌑', name:'Неизвестный', text:t('dlg_C_3') },
+      { avatar:'✨', name:'', text:t('dlg_C_4'), thought:true }
+    ];
+  }
+  dlgIndex = 0;
+  showDialogueNext();
+}
+
+function showDialogueNext(){
+  if(dlgIndex >= dlgQueue.length){ finishScene(); return; }
+  const step = dlgQueue[dlgIndex];
+  const dlg = document.getElementById('dialogue');
+  document.getElementById('dlgAvatar').textContent = step.avatar || '👤';
+  document.getElementById('dlgName').textContent = step.name || '';
+  document.getElementById('dlgName').classList.toggle('thought', !!step.thought);
+  document.getElementById('dlgText').classList.toggle('thought', !!step.thought);
+  dlg.classList.add('show');
+
+  // Печатающийся текст
+  dlgFullText = step.text;
+  dlgCharIdx = 0;
+  dlgTyping = true;
+  document.getElementById('dlgText').textContent = '';
+  document.getElementById('dlgNext').classList.remove('show');
+  clearInterval(dlgTimer);
+  dlgTimer = setInterval(() => {
+    if(dlgCharIdx >= dlgFullText.length){
+      clearInterval(dlgTimer);
+      dlgTyping = false;
+      document.getElementById('dlgNext').classList.add('show');
+      return;
+    }
+    document.getElementById('dlgText').textContent += dlgFullText[dlgCharIdx];
+    dlgCharIdx++;
+  }, 30);
+}
+
+function advanceDialogue(){
+  if(dlgTyping){
+    clearInterval(dlgTimer);
+    document.getElementById('dlgText').textContent = dlgFullText;
+    dlgTyping = false;
+    document.getElementById('dlgNext').classList.add('show');
+    return;
+  }
+  dlgIndex++;
+  showDialogueNext();
+}
+
+function finishScene(){
+  document.getElementById('dialogue').classList.remove('show');
+  document.getElementById('skipBtn').classList.remove('show');
+  setTimeout(() => {
+    document.getElementById('endCard').classList.add('show');
+    playTone(660,.3,'sine',.08);
+    setTimeout(()=>playTone(880,.3,'sine',.08),200);
+    setTimeout(()=>playTone(1100,.5,'sine',.08),400);
+  }, 600);
 }
 
 function returnToMenu(){
   document.getElementById('scene-game').classList.remove('active');
+  document.getElementById('endCard').classList.remove('show');
   goToMenu();
 }
-
 function skipScene(){
-  // Пропустить под-сцены — перейти сразу к выбору
   document.getElementById('skyView').classList.add('hidden');
+  document.getElementById('citySil').classList.add('show');
   document.getElementById('heroScene').classList.add('show');
   document.getElementById('sceneText').classList.add('show');
-  setTimeout(() => {
-    document.getElementById('choiceBox').classList.add('show');
-  }, 300);
+  setTimeout(()=>document.getElementById('choiceBox').classList.add('show'), 300);
 }
 
-/* ============ ЗВЁЗДЫ В НЕБЕ (для сцены) ============ */
+/* ЗВЁЗДЫ */
 function createSkyStars(){
   const cont = document.getElementById('stars');
   cont.innerHTML = '';
@@ -849,10 +832,9 @@ function createSkyStars(){
     const s = document.createElement('div');
     s.className = 'star';
     const size = Math.random() * 2.2 + 0.6;
-    s.style.width = size + 'px';
-    s.style.height = size + 'px';
+    s.style.width = size + 'px'; s.style.height = size + 'px';
     s.style.left = Math.random() * 100 + '%';
-    s.style.top = (Math.random() * 70) + '%'; // только верхние 70%
+    s.style.top = (Math.random() * 70) + '%';
     s.style.animation = `twinkle ${3 + Math.random() * 5}s infinite ease-in-out`;
     s.style.animationDelay = (Math.random() * 5) + 's';
     if(Math.random() < 0.12){ s.style.background = '#F5E6C8'; s.style.boxShadow = '0 0 6px rgba(251,191,36,.6)'; }
@@ -860,77 +842,58 @@ function createSkyStars(){
     skyStars.push(s);
   }
 }
-
 function dimStarsProgressively(){
   if(starsDimming) return;
   starsDimming = true;
-  // Выбрать 8-10 звёзд для гашения
-  const toDim = skyStars
-    .map((s, i) => ({ s, i, r: Math.random() }))
-    .sort((a, b) => a.r - b.r)
-    .slice(0, 8);
-
+  const toDim = skyStars.map((s,i)=>({s,i,r:Math.random()})).sort((a,b)=>a.r-b.r).slice(0,8);
   toDim.forEach((item, idx) => {
     setTimeout(() => {
       item.s.classList.add('dim');
       sfxDing();
-      // Создать падающую звезду с этого места
       createShootingStar(item.s.style.left, item.s.style.top);
     }, idx * 700);
   });
-
-  // Через 1.5 секунды после последней — остановить музыку на пару секунд
-  setTimeout(() => {
-    stopMusic();
-  }, toDim.length * 700 + 800);
-
-  // Через 4 секунды — вернуть музыку
-  setTimeout(() => {
-    if(soundOn && document.getElementById('scene-game').classList.contains('active') && !document.getElementById('heroScene').classList.contains('show')) {
+  setTimeout(()=>stopMusic(), toDim.length * 700 + 800);
+  setTimeout(()=>{
+    if(soundOn && document.getElementById('scene-game').classList.contains('active')
+       && !document.getElementById('heroScene').classList.contains('show')){
       playMusic('dramatic');
     }
   }, toDim.length * 700 + 3000);
 }
-
 function createShootingStar(leftStr, topStr){
   const star = document.createElement('div');
   star.className = 'shooting-star';
-  star.style.left = leftStr;
-  star.style.top = topStr;
+  star.style.left = leftStr; star.style.top = topStr;
   star.style.animation = 'shoot 1.8s ease-in forwards';
   document.getElementById('scene-game').appendChild(star);
-  setTimeout(() => star.remove(), 2000);
+  setTimeout(()=>star.remove(), 2000);
 }
 
-/* ============ УТИЛИТЫ ============ */
+/* УТИЛИТЫ */
 function showToast(text){
   let toast = document.getElementById('toastEl');
-  if(!toast){ toast = document.createElement('div'); toast.id = 'toastEl'; document.body.appendChild(toast); }
+  if(!toast){ toast = document.createElement('div'); toast.id='toastEl'; document.body.appendChild(toast); }
   toast.textContent = text;
-  requestAnimationFrame(() => {
-    toast.style.transform = 'translateX(-50%) translateY(0)';
-    toast.style.opacity = '1';
-  });
+  requestAnimationFrame(()=>{ toast.style.transform='translateX(-50%) translateY(0)'; toast.style.opacity='1'; });
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(() => {
-    toast.style.transform = 'translateX(-50%) translateY(100px)';
-    toast.style.opacity = '0';
+  window.__toastTimer = setTimeout(()=>{
+    toast.style.transform='translateX(-50%) translateY(100px)'; toast.style.opacity='0';
   }, 2400);
 }
-function notReady(section){ showToast(t('not_ready')); }
+function notReady(){ showToast(t('not_ready')); }
 
-/* ============ ФОН / ЧАСТИЦЫ ============ */
+/* ФОН */
 function launchFallingStar(){
-  // декоративно — для меню
   const star = document.createElement('div');
   star.className = 'shooting-star';
   star.style.left = (30 + Math.random() * 40) + '%';
   star.style.top = '10%';
   star.style.animation = 'shoot 2.8s ease-in forwards';
   document.getElementById('app').appendChild(star);
-  setTimeout(() => star.remove(), 3000);
+  setTimeout(()=>star.remove(), 3000);
 }
-setInterval(() => {
+setInterval(()=>{
   if(document.getElementById('screen-menu').classList.contains('active')) launchFallingStar();
 }, 9000);
 
@@ -938,20 +901,31 @@ function spawnParticle(){
   const cont = document.getElementById('particles');
   const p = document.createElement('div');
   p.className = 'particle';
-  p.style.left = Math.random() * 100 + '%';
-  p.style.top = (90 + Math.random() * 15) + '%';
-  p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
-  const dur = 7 + Math.random() * 8;
+  p.style.left = Math.random()*100 + '%';
+  p.style.top = (90 + Math.random()*15) + '%';
+  p.style.setProperty('--dx', (Math.random()*80-40) + 'px');
+  const dur = 7 + Math.random()*8;
   p.style.animation = `floatP ${dur}s linear forwards`;
   const col = Math.random() < 0.3 ? '#FBBF24' : '#A78BFA';
   p.style.background = col; p.style.boxShadow = '0 0 6px ' + col;
   cont.appendChild(p);
-  setTimeout(() => p.remove(), dur * 1000 + 200);
+  setTimeout(()=>p.remove(), dur*1000+200);
 }
-function burstParticles(){ for(let i = 0; i < 15; i++) setTimeout(spawnParticle, i * 60); }
+function burstParticles(){ for(let i=0;i<15;i++) setTimeout(spawnParticle, i*60); }
 setInterval(spawnParticle, 700);
 
-/* ============ СТАРТ ============ */
+/* КЛИК / ТАП — продвижение диалога */
+document.getElementById('scene-game').addEventListener('click', (e) => {
+  if(e.target.closest('.choice-item') || e.target.closest('.skip-btn')) return;
+  if(document.getElementById('dialogue').classList.contains('show')) advanceDialogue();
+});
+document.getElementById('scene-game').addEventListener('touchstart', (e) => {
+  if(e.target.closest('.choice-item') || e.target.closest('.skip-btn')) return;
+  e.preventDefault();
+  if(document.getElementById('dialogue').classList.contains('show')) advanceDialogue();
+}, { passive: false });
+
+/* СТАРТ */
 window.addEventListener('load', () => {
   applyLang();
   updateSoundBtn();
