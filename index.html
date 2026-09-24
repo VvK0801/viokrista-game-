@@ -13,14 +13,11 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 #stars{position:absolute;inset:0;z-index:1}
 .star{position:absolute;border-radius:50%;background:#fff}
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.85;transform:scale(1.15)}}
-
-/* ПАДАЮЩАЯ ЗВЕЗДА */
-#falling-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
-  box-shadow:0 0 8px 2px rgba(251,191,36,.7);z-index:2;opacity:0}
-@keyframes fall{
-  0%{opacity:0;transform:translate(0,0) scale(0)}
-  10%{opacity:1;transform:translate(0,0) scale(1)}
-  100%{opacity:0;transform:translate(-80vw,80vh) scale(0.3)}
+.star.dim{animation:dimStar 1.5s ease forwards}
+@keyframes dimStar{
+  0%{opacity:.9;transform:scale(1.3);box-shadow:0 0 12px #FBBF24}
+  60%{opacity:.4;transform:scale(1);box-shadow:0 0 20px #FBBF24}
+  100%{opacity:0;transform:scale(.3);box-shadow:0 0 40px rgba(251,191,36,0)}
 }
 
 /* ТУМАН */
@@ -32,7 +29,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,-80px)}}
 @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,100px)}}
 
-/* ВИНЬЕТКА + СВЕЧЕНИЕ */
+/* ВИНЬЕТКА */
 .vignette{position:absolute;inset:0;pointer-events:none;z-index:4;
   background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,16,.95) 100%)}
 .mystic-glow{position:absolute;inset:0;pointer-events:none;z-index:4;
@@ -47,16 +44,29 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   15%{opacity:.65}85%{opacity:.4}100%{opacity:0;transform:translateY(-100vh) translateX(var(--dx,20px))}
 }
 
+/* ПАДАЮЩИЕ ЗВЁЗДЫ С СЛЕДОМ */
+.shooting-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
+  box-shadow:0 0 12px 3px #FBBF24, 0 0 40px 8px rgba(251,191,36,.4);z-index:6;pointer-events:none}
+.shooting-star::after{content:'';position:absolute;top:50%;left:0;width:80px;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(251,191,36,.8));
+  transform:translateY(-50%) rotate(0deg);transform-origin:left center}
+@keyframes shoot{
+  0%{opacity:0;transform:translate(0,0)}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{opacity:0;transform:translate(-70vw,70vh)}
+}
+
 /* ЭКРАНЫ */
 .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:20px;overflow-y:auto}
 .screen.active{display:flex;animation:fadeIn .8s ease}
 @keyframes fadeIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 
 /* ЗАГОЛОВКИ */
 .title-main{font-size:clamp(32px,9.5vw,64px);font-weight:900;letter-spacing:5px;
   color:#F5E6C8;text-align:center;line-height:1.05;margin-bottom:6px;
-  text-shadow:0 0 20px rgba(251,191,36,.25);
-  animation:titleBreath 5s infinite ease-in-out}
+  text-shadow:0 0 20px rgba(251,191,36,.25);animation:titleBreath 5s infinite ease-in-out}
 @keyframes titleBreath{
   0%,100%{text-shadow:0 0 20px rgba(251,191,36,.2),0 0 40px rgba(251,191,36,.1)}
   50%{text-shadow:0 0 30px rgba(251,191,36,.35),0 0 60px rgba(251,191,36,.2)}
@@ -76,7 +86,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   color:#FFF8DC;border:1px solid rgba(251,191,36,.5);
   box-shadow:0 8px 30px rgba(180,83,9,.5),inset 0 1px 0 rgba(251,191,36,.3);
   text-shadow:0 0 10px rgba(251,191,36,.4)}
-.btn-gold:hover{box-shadow:0 10px 40px rgba(251,191,36,.5),inset 0 1px 0 rgba(251,191,36,.5)}
+.btn-gold:hover{box-shadow:0 10px 40px rgba(251,191,36,.5)}
 @keyframes softPulse{
   0%,100%{box-shadow:0 8px 30px rgba(180,83,9,.4),inset 0 1px 0 rgba(251,191,36,.3)}
   50%{box-shadow:0 8px 40px rgba(251,191,36,.6),inset 0 1px 0 rgba(251,191,36,.5),0 0 40px rgba(251,191,36,.2)}
@@ -96,14 +106,12 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .menu-btn{padding:15px 22px;background:rgba(30,27,75,.6);border:1.5px solid rgba(139,92,246,.35);
   border-radius:14px;color:#E9D5FF;font-size:clamp(14px,3.8vw,16px);font-weight:600;
   cursor:pointer;font-family:inherit;text-align:left;transition:all .25s;
-  backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;
-  box-shadow:0 4px 18px rgba(0,0,0,.3)}
+  backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(0,0,0,.3)}
 .menu-btn:hover,.menu-btn:active{background:rgba(139,92,246,.28);border-color:rgba(251,191,36,.6);
   transform:translateX(5px);color:#fff}
 .menu-btn .ico{font-size:20px;opacity:.9}
 .menu-btn .lbl{flex:1}
-.menu-btn .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:400;
-  letter-spacing:.8px;margin-top:2px;opacity:.8}
+.menu-btn .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:400;letter-spacing:.8px;margin-top:2px;opacity:.8}
 
 /* ВЕРХНИЕ КНОПКИ */
 .top-btns{position:absolute;top:16px;right:16px;z-index:50;display:flex;gap:8px}
@@ -113,7 +121,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .icon-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
 .icon-btn.off{opacity:.4}
 
-/* ЗВЕЗДА-ЛОГОТИП */
+/* ЛОГО */
 .star-logo{width:clamp(55px,16vw,90px);height:clamp(55px,16vw,90px);margin-bottom:22px;position:relative}
 .star-logo svg{width:100%;height:100%;animation:spin 30s linear infinite;opacity:.9;
   filter:drop-shadow(0 0 15px rgba(251,191,36,.4))}
@@ -129,91 +137,57 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .version{position:absolute;bottom:50px;left:20px;font-size:10px;color:#4C1D95;
   letter-spacing:1px;z-index:10;font-weight:600;opacity:.6}
 
-/* ========== ЭТАП 3: СОЗДАНИЕ ГЕРОЯ ========== */
+/* СОЗДАНИЕ ГЕРОЯ */
 .creator-wrap{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:10px}
 .creator-top{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 5px;margin-bottom:4px}
 .creator-step{font-size:11px;color:#A78BFA;letter-spacing:2px;font-weight:600;text-transform:uppercase}
 .creator-dots{display:flex;gap:5px}
 .cdot{width:6px;height:6px;border-radius:50%;background:rgba(167,139,250,.25);transition:all .3s}
 .cdot.active{background:#FBBF24;width:18px;border-radius:3px}
-
-/* ПРЕВЬЮ ПЕРСОНАЖА */
 .preview-box{width:100%;height:clamp(240px,50vh,340px);
   background:radial-gradient(ellipse at center,rgba(76,29,149,.3),transparent 75%);
   border:1.5px solid rgba(139,92,246,.35);border-radius:20px;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
 .preview-glow{position:absolute;width:250px;height:250px;border-radius:50%;
   background:radial-gradient(circle,rgba(251,191,36,.2),transparent 70%);
   animation:starPulse 5s infinite ease-in-out;pointer-events:none}
 .hero-container{position:relative;height:95%;max-height:320px;display:flex;align-items:flex-end;justify-content:center;
   animation:heroFloat 5s infinite ease-in-out;z-index:2}
-@keyframes heroFloat{
-  0%,100%{transform:translateY(0) rotate(-0.5deg)}
-  50%{transform:translateY(-8px) rotate(0.5deg)}
-}
+@keyframes heroFloat{0%,100%{transform:translateY(0) rotate(-0.5deg)}50%{transform:translateY(-8px) rotate(0.5deg)}}
 .hero-container.happy{animation:heroHappy 0.6s ease}
-@keyframes heroHappy{
-  0%{transform:translateY(0)}
-  30%{transform:translateY(-20px) rotate(-3deg)}
-  60%{transform:translateY(-10px) rotate(3deg)}
-  100%{transform:translateY(0)}
-}
-.hero-img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 15px 40px rgba(139,92,246,.6));
-  transition:filter .3s}
+@keyframes heroHappy{0%{transform:translateY(0)}30%{transform:translateY(-20px) rotate(-3deg)}
+  60%{transform:translateY(-10px) rotate(3deg)}100%{transform:translateY(0)}}
+.hero-img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 15px 40px rgba(139,92,246,.6));transition:filter .3s}
 .hero-aura{position:absolute;inset:-30px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(251,191,36,.15),transparent 70%);
-  animation:auraPulse 4s infinite ease-in-out}
+  background:radial-gradient(circle,rgba(251,191,36,.15),transparent 70%);animation:auraPulse 4s infinite ease-in-out}
 @keyframes auraPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.9;transform:scale(1.1)}}
-
-/* Смена цвета волос - наложение */
-.hair-tint{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;
-  transition:background .4s;opacity:.35;border-radius:8px}
-
-/* Выбор одежды */
-.outfit-overlay{position:absolute;inset:0;pointer-events:none;transition:opacity .4s;opacity:0}
-
-/* Управление */
 .creator-label{font-size:13px;color:#C4B5FD;letter-spacing:1.5px;font-weight:600;
   text-transform:uppercase;margin-top:5px;opacity:.85;text-align:center;width:100%}
-
 .input-name{width:100%;padding:15px 20px;background:rgba(30,27,75,.6);
   border:1.5px solid rgba(139,92,246,.45);border-radius:14px;color:#fff;font-size:16px;
-  font-family:inherit;font-weight:600;letter-spacing:1px;text-align:center;
-  outline:none;transition:all .2s}
-.input-name:focus{border-color:rgba(251,191,36,.6);background:rgba(30,27,75,.85);
-  box-shadow:0 0 20px rgba(251,191,36,.2)}
+  font-family:inherit;font-weight:600;letter-spacing:1px;text-align:center;outline:none;transition:all .2s}
+.input-name:focus{border-color:rgba(251,191,36,.6);background:rgba(30,27,75,.85);box-shadow:0 0 20px rgba(251,191,36,.2)}
 .input-name::placeholder{color:#6D28D9;font-weight:400}
-
 .option-row{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap}
 .option-btn{padding:11px 16px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
   border-radius:12px;color:#C4B5FD;font-family:inherit;font-size:13px;font-weight:600;
   cursor:pointer;transition:all .2s;letter-spacing:.5px;min-width:52px;text-align:center}
 .option-btn:hover{background:rgba(139,92,246,.25);color:#fff}
 .option-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(180,83,9,.35));
-  border-color:rgba(251,191,36,.7);color:#F5E6C8;
-  box-shadow:0 0 20px rgba(251,191,36,.3),inset 0 0 10px rgba(251,191,36,.15)}
-
+  border-color:rgba(251,191,36,.7);color:#F5E6C8;box-shadow:0 0 20px rgba(251,191,36,.3),inset 0 0 10px rgba(251,191,36,.15)}
 .age-slider{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
-.age-value{font-size:22px;font-weight:900;color:#F5E6C8;letter-spacing:2px;
-  text-shadow:0 0 15px rgba(251,191,36,.4)}
+.age-value{font-size:22px;font-weight:900;color:#F5E6C8;letter-spacing:2px;text-shadow:0 0 15px rgba(251,191,36,.4)}
 .age-desc{font-size:12px;color:#A78BFA;letter-spacing:1px;opacity:.8;text-align:center}
-input[type=range]{width:100%;-webkit-appearance:none;height:6px;background:rgba(139,92,246,.25);
-  border-radius:6px;outline:none}
+input[type=range]{width:100%;-webkit-appearance:none;height:6px;background:rgba(139,92,246,.25);border-radius:6px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;
   background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
   box-shadow:0 0 15px rgba(251,191,36,.6),inset 0 1px 0 rgba(255,255,255,.3);border:2px solid #F5E6C8}
-input[type=range]::-moz-range-thumb{width:26px;height:26px;
-  background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
-  box-shadow:0 0 15px rgba(251,191,36,.6);border:2px solid #F5E6C8}
-
+input[type=range]::-moz-range-thumb{width:26px;height:26px;background:linear-gradient(135deg,#FBBF24,#B45309);
+  border-radius:50%;cursor:pointer;box-shadow:0 0 15px rgba(251,191,36,.6);border:2px solid #F5E6C8}
 .hair-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.hair-swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;transition:all .2s;
-  border:2px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.hair-swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;transition:all .2s;border:2px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 .hair-swatch:hover{transform:scale(1.1)}
-.hair-swatch.active{border-color:#F5E6C8;transform:scale(1.15);
-  box-shadow:0 0 15px rgba(251,191,36,.7)}
-
+.hair-swatch.active{border-color:#F5E6C8;transform:scale(1.15);box-shadow:0 0 15px rgba(251,191,36,.7)}
 .gender-row{display:flex;gap:8px;justify-content:center;width:100%}
 .gender-btn{flex:1;max-width:100px;padding:14px 8px;background:rgba(30,27,75,.55);
   border:1.5px solid rgba(139,92,246,.35);border-radius:14px;color:#C4B5FD;
@@ -221,20 +195,97 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
   display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.5px}
 .gender-btn .g-ico{font-size:22px}
 .gender-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
-  border-color:rgba(251,191,36,.7);color:#F5E6C8;
-  box-shadow:0 0 20px rgba(251,191,36,.3)}
-
+  border-color:rgba(251,191,36,.7);color:#F5E6C8;box-shadow:0 0 20px rgba(251,191,36,.3)}
 .outfit-row{display:flex;gap:6px;justify-content:center;width:100%;flex-wrap:wrap}
 .outfit-btn{padding:10px 12px;background:rgba(30,27,75,.55);border:1.5px solid rgba(139,92,246,.35);
   border-radius:10px;color:#C4B5FD;font-family:inherit;font-size:12px;font-weight:600;
   cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px}
 .outfit-btn .o-ico{font-size:20px}
 .outfit-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(180,83,9,.3));
-  border-color:rgba(251,191,36,.7);color:#F5E6C8;
-  box-shadow:0 0 20px rgba(251,191,36,.3)}
-
+  border-color:rgba(251,191,36,.7);color:#F5E6C8;box-shadow:0 0 20px rgba(251,191,36,.3)}
 .creator-actions{display:flex;gap:10px;width:100%;margin-top:6px}
 .creator-actions .btn{flex:1;padding:14px 20px;font-size:14px}
+
+/* ============ ИГРОВАЯ СЦЕНА (Этап 4) ============ */
+.scene{position:absolute;inset:0;display:none;z-index:30;overflow:hidden}
+.scene.active{display:block}
+
+/* Под-сцена 1: небо */
+.sky-view{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#1a1040 0%,#050510 80%);
+  transition:opacity 1.5s ease;opacity:1}
+.sky-view.hidden{opacity:0;pointer-events:none}
+
+/* Дома внизу — силуэты */
+.city-silhouette{position:absolute;bottom:0;left:0;right:0;height:35%;z-index:4;pointer-events:none;
+  transition:opacity 1.5s ease}
+.city-silhouette svg{width:100%;height:100%;display:block}
+.city-silhouette.hidden{opacity:0}
+
+/* Под-сцена 2: герой на переднем плане */
+.hero-scene{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:12%;z-index:10;opacity:0;transition:opacity 2s ease;pointer-events:none}
+.hero-scene.show{opacity:1}
+.hero-back{height:70vh;max-height:560px;filter:drop-shadow(0 20px 50px rgba(139,92,246,.5));
+  animation:heroBackFloat 6s infinite ease-in-out}
+@keyframes heroBackFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* Текст сверху */
+.scene-text{position:absolute;top:15%;left:50%;transform:translateX(-50%);z-index:20;
+  text-align:center;opacity:0;transition:opacity 1.5s ease;pointer-events:none;padding:0 20px;max-width:90vw}
+.scene-text.show{opacity:1}
+.scene-text-line{font-size:clamp(15px,4.2vw,20px);color:#E9D5FF;letter-spacing:1.5px;
+  font-weight:500;line-height:1.5;text-shadow:0 0 20px rgba(139,92,246,.6);
+  animation:textFade 3s ease}
+@keyframes textFade{0%{opacity:0;transform:translateY(10px)}30%,70%{opacity:1;transform:translateY(0)}100%{opacity:.85}}
+.scene-text-label{font-size:11px;color:#A78BFA;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:10px;opacity:.7;font-weight:600}
+
+/* Под-сцена 3: выбор */
+.choice-box{position:absolute;bottom:8%;left:50%;transform:translateX(-50%) translateY(30px);
+  z-index:25;width:92%;max-width:460px;opacity:0;transition:all .8s ease;pointer-events:none}
+.choice-box.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.choice-title{text-align:center;font-size:13px;color:#A78BFA;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:14px;opacity:.8;font-weight:600}
+.choice-item{width:100%;padding:16px 22px;margin-bottom:10px;background:rgba(30,27,75,.75);
+  border:1.5px solid rgba(139,92,246,.5);border-radius:16px;color:#E9D5FF;
+  font-family:inherit;font-size:clamp(14px,3.8vw,16px);font-weight:600;cursor:pointer;
+  text-align:left;transition:all .25s;backdrop-filter:blur(10px);letter-spacing:.5px;
+  box-shadow:0 4px 18px rgba(0,0,0,.3);display:flex;align-items:center;gap:14px}
+.choice-item:hover,.choice-item:active{background:rgba(139,92,246,.35);border-color:rgba(251,191,36,.7);
+  transform:translateX(6px);color:#fff;box-shadow:0 4px 25px rgba(251,191,36,.25)}
+.choice-item .c-letter{width:32px;height:32px;border-radius:50%;background:rgba(251,191,36,.15);
+  border:1.5px solid rgba(251,191,36,.5);color:#F5E6C8;display:flex;align-items:center;
+  justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+.choice-item .c-txt{flex:1}
+
+/* Сцена — надпись "Глава 1" */
+.chapter-intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:40;background:#050510;opacity:1;transition:opacity 1.5s ease}
+.chapter-intro.hidden{opacity:0;pointer-events:none}
+.chapter-num{font-size:clamp(14px,4vw,18px);color:#A78BFA;letter-spacing:8px;text-transform:uppercase;
+  margin-bottom:14px;opacity:.8;font-weight:600;animation:chapterFade 3s ease}
+.chapter-name{font-size:clamp(24px,7vw,44px);font-weight:900;letter-spacing:4px;text-align:center;
+  color:#F5E6C8;padding:0 20px;line-height:1.15;text-shadow:0 0 30px rgba(251,191,36,.5);
+  animation:chapterFade 3s ease}
+@keyframes chapterFade{0%{opacity:0;transform:translateY(15px)}30%,80%{opacity:1;transform:translateY(0)}100%{opacity:1}}
+
+/* Финал под-сцены */
+.end-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:45;background:radial-gradient(ellipse at center,#1a1040,#050510);opacity:0;transition:opacity 1.5s ease;
+  pointer-events:none;padding:30px;text-align:center}
+.end-card.show{opacity:1;pointer-events:auto}
+.end-card-title{font-size:clamp(20px,6vw,32px);font-weight:900;color:#F5E6C8;letter-spacing:3px;
+  margin-bottom:14px;text-shadow:0 0 25px rgba(251,191,36,.4)}
+.end-card-text{font-size:clamp(13px,3.8vw,16px);color:#C4B5FD;letter-spacing:1px;line-height:1.6;
+  max-width:420px;margin-bottom:30px}
+
+/* Пропустить сцену */
+.skip-btn{position:absolute;top:16px;right:16px;z-index:60;padding:9px 16px;
+  background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
+  color:#C4B5FD;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);letter-spacing:1px;transition:all .2s;display:none}
+.skip-btn.show{display:block}
+.skip-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
 
 /* ТОСТ */
 #toastEl{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
@@ -248,7 +299,6 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
 
 <div id="app">
   <div id="stars"></div>
-  <div id="falling-star"></div>
   <div class="fog fog-1"></div>
   <div class="fog fog-2"></div>
   <div class="fog fog-3"></div>
@@ -283,13 +333,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
     <div class="menu-title" id="menuTitle">ГЛАВНОЕ МЕНЮ</div>
     <div class="menu-sub" id="menuSub">Что ты выберешь сегодня?</div>
     <div class="menu-list">
-      <button class="menu-btn" onclick="goToCreator()">
-        <span class="ico">✨</span>
+      <button class="menu-btn" onclick="startGame()">
+        <span class="ico">📖</span>
         <span class="lbl"><span data-i18n="menu_new">Новая история</span><small data-i18n="menu_new_sub">Начать с начала</small></span>
       </button>
-      <button class="menu-btn" onclick="notReady('continue')">
-        <span class="ico">▶</span>
-        <span class="lbl"><span data-i18n="menu_continue">Продолжить</span><small data-i18n="menu_continue_sub">Глава 1 · Скоро</small></span>
+      <button class="menu-btn" onclick="goToCreator()">
+        <span class="ico">✨</span>
+        <span class="lbl"><span data-i18n="menu_hero">Создать героя</span><small data-i18n="menu_hero_sub">Имя, возраст, внешность</small></span>
       </button>
       <button class="menu-btn" onclick="notReady('chars')">
         <span class="ico">👥</span>
@@ -299,25 +349,19 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
         <span class="ico">📖</span>
         <span class="lbl"><span data-i18n="menu_collect">Коллекция</span><small data-i18n="menu_collect_sub">Воспоминания и находки</small></span>
       </button>
-      <button class="menu-btn" onclick="notReady('settings')">
-        <span class="ico">⚙</span>
-        <span class="lbl"><span data-i18n="menu_settings">Настройки</span><small data-i18n="menu_settings_sub">Звук, язык, сложность</small></span>
-      </button>
     </div>
     <div class="divider"></div>
     <div style="font-size:11px;color:#5B21B6;letter-spacing:5px;font-weight:600;opacity:.7">VIOKRISTA</div>
   </div>
 
-  <!-- СОЗДАНИЕ ГЕРОЯ -->
+  <!-- СОЗДАНИЕ ГЕРОЯ (сокращённая версия — переход сразу к игре) -->
   <div class="screen" id="screen-creator">
     <div class="creator-wrap">
-
       <div class="creator-top">
         <button class="btn-ghost" onclick="goToMenu()" style="padding:8px 16px;font-size:12px" data-i18n="back">← Назад</button>
         <div class="creator-dots" id="creatorDots"></div>
-        <div class="creator-step" id="creatorStep">ШАГ 1/6</div>
+        <div class="creator-step" id="creatorStep">ШАГ 1/2</div>
       </div>
-
       <div class="preview-box">
         <div class="preview-glow"></div>
         <div class="hero-container" id="heroContainer">
@@ -325,58 +369,17 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
           <img src="hero.png" alt="Hero" class="hero-img" id="heroImg" onerror="this.style.display='none'">
         </div>
       </div>
-
-      <!-- ИМЯ -->
       <div class="creator-block" id="block-name">
         <div class="creator-label" data-i18n="c_name">Как тебя зовут?</div>
         <input class="input-name" type="text" id="heroName" maxlength="14" placeholder="Имя" data-i18n-ph="c_name_ph">
       </div>
-
-      <!-- ПОЛ -->
       <div class="creator-block" id="block-gender" style="display:none">
-        <div class="creator-label" data-i18n="c_gender">Ты —</div>
-        <div class="gender-row">
-          <button class="gender-btn active" data-gender="girl" onclick="setGender('girl')">
-            <span class="g-ico">👧</span><span data-i18n="c_girl">Девочка</span>
-          </button>
-          <button class="gender-btn" data-gender="boy" onclick="setGender('boy')">
-            <span class="g-ico">👦</span><span data-i18n="c_boy">Мальчик</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- ВОЗРАСТ -->
-      <div class="creator-block" id="block-age" style="display:none">
         <div class="creator-label" data-i18n="c_age">Сколько тебе лет?</div>
         <div class="age-slider">
           <div class="age-value" id="ageValue">10</div>
           <input type="range" id="ageRange" min="6" max="16" value="10" step="1" oninput="setAge(this.value)">
-          <div class="age-desc" id="ageDesc"></div>
         </div>
       </div>
-
-      <!-- ВОЛОСЫ -->
-      <div class="creator-block" id="block-hair" style="display:none">
-        <div class="creator-label" data-i18n="c_hair">Цвет волос</div>
-        <div class="hair-row" id="hairRow"></div>
-      </div>
-
-      <!-- ОДЕЖДА -->
-      <div class="creator-block" id="block-outfit" style="display:none">
-        <div class="creator-label" data-i18n="c_outfit">Стиль одежды</div>
-        <div class="outfit-row" id="outfitRow"></div>
-      </div>
-
-      <!-- ГОЛОС -->
-      <div class="creator-block" id="block-voice" style="display:none">
-        <div class="creator-label" data-i18n="c_voice">Твой голос</div>
-        <div class="option-row">
-          <button class="option-btn" data-voice="high" onclick="setVoice('high')" data-i18n="c_voice_high">Высокий</button>
-          <button class="option-btn active" data-voice="mid" onclick="setVoice('mid')" data-i18n="c_voice_mid">Средний</button>
-          <button class="option-btn" data-voice="low" onclick="setVoice('low')" data-i18n="c_voice_low">Низкий</button>
-        </div>
-      </div>
-
       <div class="creator-actions">
         <button class="btn-ghost" id="prevStep" onclick="prevStep()" style="display:none" data-i18n="c_prev">← Назад</button>
         <button class="btn btn-gold soft-pulse" id="nextStep" onclick="nextStep()" data-i18n="c_next">Далее →</button>
@@ -384,16 +387,98 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;
     </div>
   </div>
 
+  <!-- ============ ИГРОВАЯ СЦЕНА ============ -->
+  <div class="scene" id="scene-game">
+
+    <button class="skip-btn" id="skipBtn" onclick="skipScene()" data-i18n="skip">Пропустить →</button>
+
+    <!-- Под-сцена 1: НЕБО -->
+    <div class="sky-view" id="skyView"></div>
+
+    <!-- Силуэт города -->
+    <div class="city-silhouette" id="citySil">
+      <svg viewBox="0 0 800 250" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cityG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a0518"/>
+            <stop offset="100%" stop-color="#050510"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="250" fill="url(#cityG)"/>
+        <path d="M0 250 L0 180 L40 180 L40 140 L70 140 L70 100 L90 100 L90 140 L120 140 L120 180
+                 L150 180 L150 120 L170 120 L170 90 L185 90 L185 120 L210 120 L210 170
+                 L250 170 L250 130 L280 130 L280 90 L295 90 L295 60 L310 60 L310 90 L325 90 L325 130
+                 L360 130 L360 180 L400 180 L400 140 L430 140 L430 100 L450 100 L450 140 L480 140
+                 L480 180 L520 180 L520 130 L550 130 L550 80 L570 80 L570 130 L600 130 L600 170
+                 L640 170 L640 120 L670 120 L670 80 L690 80 L690 60 L710 60 L710 80 L730 80
+                 L730 120 L760 120 L760 180 L800 180 L800 250 Z" fill="#080312"/>
+        <!-- Окна -->
+        <g fill="#F5E6C8" opacity=".4">
+          <rect x="155" y="130" width="4" height="6"/>
+          <rect x="163" y="130" width="4" height="6"/>
+          <rect x="288" y="100" width="4" height="6"/>
+          <rect x="304" y="100" width="4" height="6"/>
+          <rect x="555" y="95" width="4" height="6"/>
+          <rect x="565" y="105" width="4" height="6"/>
+          <rect x="675" y="90" width="4" height="6"/>
+          <rect x="685" y="100" width="4" height="6"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Под-сцена 2: ГЕРОЙ -->
+    <div class="hero-scene" id="heroScene">
+      <img src="hero.png" class="hero-back" id="heroBack" alt="Hero" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Текст -->
+    <div class="scene-text" id="sceneText">
+      <div class="scene-text-label" data-i18n="scene_sys">СИСТЕМА</div>
+      <div class="scene-text-line" id="sceneTextLine" data-i18n="scene_q1">Ты заметил это?</div>
+    </div>
+
+    <!-- Выбор -->
+    <div class="choice-box" id="choiceBox">
+      <div class="choice-title" data-i18n="scene_choice">Что ты сделаешь?</div>
+      <button class="choice-item" onclick="makeChoice('A')">
+        <span class="c-letter">A</span>
+        <span class="c-txt" data-i18n="choice_a">Посмотреть на небо</span>
+      </button>
+      <button class="choice-item" onclick="makeChoice('B')">
+        <span class="c-letter">B</span>
+        <span class="c-txt" data-i18n="choice_b">Сделать вид, что ничего не произошло</span>
+      </button>
+      <button class="choice-item" onclick="makeChoice('C')">
+        <span class="c-letter">C</span>
+        <span class="c-txt" data-i18n="choice_c">Позвать кого-нибудь</span>
+      </button>
+    </div>
+
+    <!-- Интро главы -->
+    <div class="chapter-intro" id="chapterIntro">
+      <div class="chapter-num" data-i18n="chapter_num">ГЛАВА 1</div>
+      <div class="chapter-name" data-i18n="chapter_name">ЗВЕЗДА, КОТОРАЯ УПАЛА</div>
+    </div>
+
+    <!-- Финал сцены -->
+    <div class="end-card" id="endCard">
+      <div class="end-card-title" id="endCardTitle" data-i18n="end_title">Продолжение следует…</div>
+      <div class="end-card-text" id="endCardText" data-i18n="end_text">Ты сделал первый выбор. Игра запомнила его.</div>
+      <button class="btn btn-gold soft-pulse" onclick="returnToMenu()" data-i18n="end_btn">Вернуться в меню</button>
+    </div>
+  </div>
+
   <div class="credit" id="credit">© VIOKRISTA · 2026</div>
-  <div class="version" id="version">v0.3 · ЭТАП 3</div>
+  <div class="version" id="version">v0.4 · ЭТАП 4</div>
 </div>
 
 <script>
-/* ============ АУДИО-КОНТЕКСТ ============ */
+/* ============ АУДИО ============ */
 let audioCtx = null;
 let soundOn = localStorage.getItem('ls_sound') !== 'off';
 let musicTimer = null;
 let currentMusic = null;
+let ambientGain = null;
 
 function initAudio(){
   if(!audioCtx){
@@ -418,47 +503,48 @@ function playTone(freq, dur, type='sine', vol=0.05){
   }catch(e){}
 }
 
+/* Звук "дзинь" — когда гаснет звезда */
+function sfxDing(){
+  if(!soundOn || !audioCtx) return;
+  try{
+    [1500, 2000, 2500].forEach((f, i) => setTimeout(() => playTone(f, 0.6, 'sine', 0.04), i * 60));
+  }catch(e){}
+}
+
+/* Звук выбора */
+function sfxChoice(){
+  if(!soundOn || !audioCtx) return;
+  playTone(660, 0.12, 'sine', 0.08);
+  setTimeout(() => playTone(880, 0.15, 'sine', 0.06), 100);
+}
+
 /* ============ МУЗЫКА ============ */
 const MusicThemes = {
-  menu: {
-    notes: [220, 261.63, 329.63, 392, 329.63, 261.63, 220, 196],
-    tempo: 900,
-    type: 'sine',
-    vol: 0.035,
-    harmony: 'fifth'
-  },
-  creator: {
-    notes: [261.63, 329.63, 392, 523.25, 440, 392, 329.63, 293.66],
-    tempo: 800,
-    type: 'triangle',
-    vol: 0.04,
-    harmony: 'octave'
-  }
+  menu: { notes: [220, 261.63, 329.63, 392, 329.63, 261.63, 220, 196], tempo: 900, type: 'sine', vol: 0.035, harmony: 'fifth' },
+  creator: { notes: [261.63, 329.63, 392, 523.25, 440, 392, 329.63, 293.66], tempo: 800, type: 'triangle', vol: 0.04, harmony: 'octave' },
+  scene: { notes: [196, 233.08, 293.66, 349.23, 293.66, 233.08, 196, 174.61], tempo: 1100, type: 'sine', vol: 0.03, harmony: 'fifth' },
+  dramatic: { notes: [174.61, 196, 220, 196, 174.61, 155.56, 174.61, 196], tempo: 1300, type: 'sine', vol: 0.028, harmony: 'octave' }
 };
 
 function playMusic(themeName){
   stopMusic();
   if(!soundOn || !audioCtx) return;
-  const cfg = MusicThemes[themeName] || MusicThemes.menu;
+  const cfg = MusicThemes[themeName];
+  if(!cfg) return;
   currentMusic = themeName;
   let idx = 0;
   const playNote = () => {
     if(!soundOn || !audioCtx || currentMusic !== themeName) return;
     const note = cfg.notes[idx % cfg.notes.length];
     playTone(note, cfg.tempo / 1000 * 0.85, cfg.type, cfg.vol);
-    // Гармония
     if(cfg.harmony === 'fifth') playTone(note * 1.5, cfg.tempo / 1000 * 0.85, 'sine', cfg.vol * 0.4);
     if(cfg.harmony === 'octave') playTone(note / 2, cfg.tempo / 1000 * 0.85, 'sine', cfg.vol * 0.5);
-    // Искра сверху изредка
-    if(idx % 4 === 2){
-      setTimeout(() => playTone(note * 2, 0.4, 'sine', cfg.vol * 0.35), cfg.tempo / 2);
-    }
+    if(idx % 4 === 2) setTimeout(() => playTone(note * 2, 0.4, 'sine', cfg.vol * 0.35), cfg.tempo / 2);
     idx++;
   };
   playNote();
   musicTimer = setInterval(playNote, cfg.tempo);
 }
-
 function stopMusic(){
   if(musicTimer){ clearInterval(musicTimer); musicTimer = null; }
   currentMusic = null;
@@ -469,52 +555,58 @@ const translations = {
   ru: {
     start: 'ВОЙТИ В ИСТОРИЮ',
     menu_title: 'ГЛАВНОЕ МЕНЮ', menu_sub: 'Что ты выберешь сегодня?',
-    menu_continue: 'Продолжить', menu_continue_sub: 'Глава 1 · Скоро',
     menu_new: 'Новая история', menu_new_sub: 'Начать с начала',
+    menu_hero: 'Создать героя', menu_hero_sub: 'Имя, возраст, внешность',
     menu_chars: 'Персонажи', menu_chars_sub: 'Луна, Элиан, Флик…',
     menu_collect: 'Коллекция', menu_collect_sub: 'Воспоминания и находки',
-    menu_settings: 'Настройки', menu_settings_sub: 'Звук, язык, сложность',
     not_ready: 'Скоро здесь появится этот раздел ✨',
     back: '← Назад',
     c_name: 'Как тебя зовут?', c_name_ph: 'Введи имя',
-    c_gender: 'Ты —', c_girl: 'Девочка', c_boy: 'Мальчик',
     c_age: 'Сколько тебе лет?',
-    c_hair: 'Цвет волос',
-    c_outfit: 'Стиль одежды',
-    c_voice: 'Твой голос', c_voice_high: 'Высокий', c_voice_mid: 'Средний', c_voice_low: 'Низкий',
     c_prev: '← Назад', c_next: 'Далее →', c_finish: '✨ НАЧАТЬ ИСТОРИЮ',
-    c_step: 'ШАГ',
-    age_6: '5–7 лет · Совсем юный герой', age_8: '8–10 лет · Юный герой',
-    age_11: '11–13 лет · Подросток', age_14: '14–16 лет · Взрослеющий герой',
     need_name: 'Пожалуйста, введи имя ✨',
-    outfit_plaid: 'Плащ', outfit_hoodie: 'Худи', outfit_dress: 'Платье',
-    outfit_shirt: 'Рубашка', outfit_jacket: 'Куртка', outfit_robe: 'Мантия',
-    saved: '✨ Герой создан!'
+    saved: '✨ Герой создан!',
+    skip: 'Пропустить →',
+    scene_sys: 'СИСТЕМА',
+    scene_q1: 'Ты заметил это?',
+    scene_choice: 'Что ты сделаешь?',
+    choice_a: 'Посмотреть на небо',
+    choice_b: 'Сделать вид, что ничего не произошло',
+    choice_c: 'Позвать кого-нибудь',
+    chapter_num: 'ГЛАВА 1',
+    chapter_name: 'ЗВЕЗДА, КОТОРАЯ УПАЛА',
+    end_title: 'Продолжение следует…',
+    end_text: 'Ты сделал первый выбор. Игра запомнила его.',
+    end_btn: 'Вернуться в меню',
+    no_hero: 'Сначала создай героя ✨'
   },
   en: {
     start: 'ENTER THE STORY',
     menu_title: 'MAIN MENU', menu_sub: 'What will you choose today?',
-    menu_continue: 'Continue', menu_continue_sub: 'Chapter 1 · Soon',
     menu_new: 'New story', menu_new_sub: 'Start from the beginning',
+    menu_hero: 'Create hero', menu_hero_sub: 'Name, age, appearance',
     menu_chars: 'Characters', menu_chars_sub: 'Luna, Elian, Flick…',
     menu_collect: 'Collection', menu_collect_sub: 'Memories and finds',
-    menu_settings: 'Settings', menu_settings_sub: 'Sound, language, difficulty',
     not_ready: 'This section will appear soon ✨',
     back: '← Back',
     c_name: 'What is your name?', c_name_ph: 'Enter name',
-    c_gender: 'You are —', c_girl: 'Girl', c_boy: 'Boy',
     c_age: 'How old are you?',
-    c_hair: 'Hair color',
-    c_outfit: 'Outfit style',
-    c_voice: 'Your voice', c_voice_high: 'High', c_voice_mid: 'Medium', c_voice_low: 'Low',
     c_prev: '← Back', c_next: 'Next →', c_finish: '✨ START THE STORY',
-    c_step: 'STEP',
-    age_6: '5–7 · Very young hero', age_8: '8–10 · Young hero',
-    age_11: '11–13 · Teen', age_14: '14–16 · Growing hero',
     need_name: 'Please enter your name ✨',
-    outfit_plaid: 'Cloak', outfit_hoodie: 'Hoodie', outfit_dress: 'Dress',
-    outfit_shirt: 'Shirt', outfit_jacket: 'Jacket', outfit_robe: 'Robe',
-    saved: '✨ Hero created!'
+    saved: '✨ Hero created!',
+    skip: 'Skip →',
+    scene_sys: 'SYSTEM',
+    scene_q1: 'Did you notice this?',
+    scene_choice: 'What will you do?',
+    choice_a: 'Look at the sky',
+    choice_b: 'Pretend nothing happened',
+    choice_c: 'Call someone',
+    chapter_num: 'CHAPTER 1',
+    chapter_name: 'THE STAR THAT FELL',
+    end_title: 'To be continued…',
+    end_text: 'You made your first choice. The game remembered it.',
+    end_btn: 'Return to menu',
+    no_hero: 'Create a hero first ✨'
   }
 };
 let currentLang = localStorage.getItem('ls_lang') || 'ru';
@@ -540,7 +632,6 @@ function applyLang(){
   document.getElementById('titleMain').textContent = currentLang === 'ru' ? 'ПОСЛЕДНИЙ СВЕТ' : 'THE LAST LIGHT';
   document.getElementById('titleSub').textContent = currentLang === 'ru' ? 'ИНТЕРАКТИВНАЯ ИСТОРИЯ' : 'INTERACTIVE STORY';
   document.getElementById('cityName').textContent = currentLang === 'ru' ? 'ГОРОД VIOKRISTA' : 'CITY OF VIOKRISTA';
-  updateStep(); updateAgeDesc(); renderOutfitRow();
 }
 function t(k){ return translations[currentLang][k] || k; }
 
@@ -552,9 +643,9 @@ function toggleSound(){
   if(!soundOn) stopMusic();
   else {
     initAudio();
-    // Возобновить музыку текущего экрана
-    if(document.getElementById('screen-creator').classList.contains('active')) playMusic('creator');
-    else playMusic('menu');
+    if(document.getElementById('scene-game').classList.contains('active')) playMusic('scene');
+    else if(document.getElementById('screen-creator').classList.contains('active')) playMusic('creator');
+    else if(document.getElementById('screen-menu').classList.contains('active')) playMusic('menu');
   }
 }
 function updateSoundBtn(){
@@ -583,62 +674,12 @@ function goToCreator(){
 }
 
 /* ============ ГЕРОЙ ============ */
-const hero = {
-  name: '', gender: 'girl', age: 10,
-  hair: '#3D2A5C', outfit: 'plaid', voice: 'mid',
-  step: 0, totalSteps: 6
-};
+const hero = { name: '', age: 10, step: 0, totalSteps: 2 };
 
-const hairColors = [
-  { c: '#3D2A5C', n: 'Тёмно-коричневый' },
-  { c: '#8B5A2B', n: 'Коричневый' },
-  { c: '#1E1B4B', n: 'Чёрный' },
-  { c: '#C0C0C0', n: 'Серебристый' },
-  { c: '#B45309', n: 'Рыжий' },
-  { c: '#8B5CF6', n: 'Фиолетовый' },
-  { c: '#38BDF8', n: 'Синий' },
-  { c: '#FBBF24', n: 'Золотой' }
-];
-
-const outfits = [
-  { id: 'plaid', ico: '🧥', ru: 'Плащ', en: 'Cloak', color: 'rgba(101,163,13,0.35)' },
-  { id: 'hoodie', ico: '👕', ru: 'Худи', en: 'Hoodie', color: 'rgba(139,92,246,0.3)' },
-  { id: 'dress', ico: '👗', ru: 'Платье', en: 'Dress', color: 'rgba(244,114,182,0.3)' },
-  { id: 'shirt', ico: '👔', ru: 'Рубашка', en: 'Shirt', color: 'rgba(56,189,248,0.3)' },
-  { id: 'jacket', ico: '🧥', ru: 'Куртка', en: 'Jacket', color: 'rgba(30,27,75,0.4)' },
-  { id: 'robe', ico: '🥋', ru: 'Мантия', en: 'Robe', color: 'rgba(180,83,9,0.3)' }
-];
-
-function setGender(g){
-  hero.gender = g;
-  document.querySelectorAll('.gender-btn').forEach(b => b.classList.toggle('active', b.dataset.gender === g));
-  heroHappy();
-}
 function setAge(v){
   hero.age = parseInt(v);
   document.getElementById('ageValue').textContent = v;
-  updateAgeDesc();
   heroHappy();
-}
-function setHair(c){
-  hero.hair = c;
-  document.querySelectorAll('.hair-swatch').forEach(s => s.classList.toggle('active', s.dataset.color === c));
-  heroHappy();
-}
-function setOutfit(id){
-  hero.outfit = id;
-  document.querySelectorAll('.outfit-btn').forEach(b => b.classList.toggle('active', b.dataset.outfit === id));
-  heroHappy();
-}
-function setVoice(v){
-  hero.voice = v;
-  document.querySelectorAll('[data-voice]').forEach(b => b.classList.toggle('active', b.dataset.voice === v));
-}
-function updateAgeDesc(){
-  const a = hero.age;
-  const key = a <= 7 ? 'age_6' : a <= 10 ? 'age_8' : a <= 13 ? 'age_11' : 'age_14';
-  const el = document.getElementById('ageDesc');
-  if(el) el.textContent = t(key);
 }
 function heroHappy(){
   const c = document.getElementById('heroContainer');
@@ -647,81 +688,20 @@ function heroHappy(){
   void c.offsetWidth;
   c.classList.add('happy');
   playTone(880, 0.15, 'sine', 0.06);
-  setTimeout(() => playTone(1100, 0.1, 'sine', 0.05), 100);
 }
-
-/* ============ РЕНДЕР ШАГОВ ============ */
 function renderCreator(){
-  const blocks = ['block-name', 'block-gender', 'block-age', 'block-hair', 'block-outfit', 'block-voice'];
-  blocks.forEach((id, i) => {
-    document.getElementById(id).style.display = (i === hero.step) ? 'block' : 'none';
-  });
+  document.getElementById('block-name').style.display = hero.step === 0 ? 'block' : 'none';
+  document.getElementById('block-gender').style.display = hero.step === 1 ? 'block' : 'none';
   document.getElementById('prevStep').style.display = hero.step === 0 ? 'none' : 'inline-block';
-  document.getElementById('nextStep').textContent = hero.step === hero.totalSteps - 1 ? t('c_finish') : t('c_next');
-  if(hero.step > 0) document.getElementById('heroName').value = hero.name;
-
-  // Hair swatches
-  const hairRow = document.getElementById('hairRow');
-  if(hairRow && !hairRow.dataset.filled){
-    hairColors.forEach(h => {
-      const s = document.createElement('div');
-      s.className = 'hair-swatch' + (h.c === hero.hair ? ' active' : '');
-      s.style.background = h.c;
-      s.dataset.color = h.c;
-      s.title = h.n;
-      s.onclick = () => setHair(h.c);
-      hairRow.appendChild(s);
-    });
-    hairRow.dataset.filled = '1';
-  }
-
-  renderOutfitRow();
-
-  // Dots
+  document.getElementById('nextStep').textContent = hero.step === hero.totalSteps - 1 ? '✨ СОХРАНИТЬ' : t('c_next');
   const dots = document.getElementById('creatorDots');
   if(dots && !dots.dataset.filled){
-    for(let i = 0; i < hero.totalSteps; i++){
-      const d = document.createElement('div');
-      d.className = 'cdot';
-      dots.appendChild(d);
-    }
+    for(let i = 0; i < hero.totalSteps; i++){ const d = document.createElement('div'); d.className = 'cdot'; dots.appendChild(d); }
     dots.dataset.filled = '1';
   }
-  updateStep();
+  if(dots) Array.from(dots.children).forEach((d, i) => d.classList.toggle('active', i <= hero.step));
+  document.getElementById('creatorStep').textContent = t('c_step') + ' ' + (hero.step + 1) + '/' + hero.totalSteps;
 }
-
-function renderOutfitRow(){
-  const row = document.getElementById('outfitRow');
-  if(!row) return;
-  if(!row.dataset.filled){
-    outfits.forEach(o => {
-      const b = document.createElement('button');
-      b.className = 'outfit-btn' + (o.id === hero.outfit ? ' active' : '');
-      b.dataset.outfit = o.id;
-      b.innerHTML = `<span class="o-ico">${o.ico}</span><span>${currentLang === 'ru' ? o.ru : o.en}</span>`;
-      b.onclick = () => setOutfit(o.id);
-      row.appendChild(b);
-    });
-    row.dataset.filled = '1';
-  } else {
-    // Обновить активный класс
-    row.querySelectorAll('.outfit-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.outfit === hero.outfit);
-      const o = outfits.find(x => x.id === b.dataset.outfit);
-      if(o) b.querySelector('span:last-child').textContent = currentLang === 'ru' ? o.ru : o.en;
-    });
-  }
-}
-
-function updateStep(){
-  const dots = document.querySelectorAll('#creatorDots .cdot');
-  dots.forEach((d, i) => d.classList.toggle('active', i <= hero.step));
-  const step = document.getElementById('creatorStep');
-  if(step) step.textContent = t('c_step') + ' ' + (hero.step + 1) + '/' + hero.totalSteps;
-  const nextBtn = document.getElementById('nextStep');
-  if(nextBtn) nextBtn.textContent = (hero.step === hero.totalSteps - 1) ? t('c_finish') : t('c_next');
-}
-
 function nextStep(){
   if(hero.step === 0){
     const v = document.getElementById('heroName').value.trim();
@@ -729,7 +709,7 @@ function nextStep(){
     hero.name = v;
   }
   if(hero.step === hero.totalSteps - 1){
-    saveHero();
+    localStorage.setItem('ls_hero', JSON.stringify(hero));
     showToast(t('saved'));
     playTone(660, 0.2, 'sine', 0.08);
     setTimeout(() => playTone(880, 0.2, 'sine', 0.08), 150);
@@ -740,12 +720,187 @@ function nextStep(){
   hero.step++;
   renderCreator();
 }
-function prevStep(){
-  if(hero.step === 0) return;
-  hero.step--;
-  renderCreator();
+function prevStep(){ if(hero.step === 0) return; hero.step--; renderCreator(); }
+
+/* ============ ИГРА (Этап 4) ============ */
+let sceneFlags = JSON.parse(localStorage.getItem('ls_flags') || '{}');
+let skyStars = [];
+let starsDimming = false;
+let sceneTimeline = [];
+
+function startGame(){
+  initAudio();
+  // Проверяем, создан ли герой
+  const savedHero = JSON.parse(localStorage.getItem('ls_hero') || 'null');
+  if(!savedHero){
+    showToast(t('no_hero'));
+    setTimeout(() => goToCreator(), 900);
+    return;
+  }
+  hero.name = savedHero.name || hero.name;
+  hero.age = savedHero.age || hero.age;
+
+  showScreen('scene-game');
+  document.getElementById('scene-game').classList.add('active');
+
+  // Сброс под-сцен
+  document.getElementById('skyView').classList.remove('hidden');
+  document.getElementById('citySil').classList.remove('hidden');
+  document.getElementById('heroScene').classList.remove('show');
+  document.getElementById('sceneText').classList.remove('show');
+  document.getElementById('choiceBox').classList.remove('show');
+  document.getElementById('chapterIntro').classList.remove('hidden');
+  document.getElementById('endCard').classList.remove('show');
+
+  // Создать звёзды в небе
+  createSkyStars();
+
+  // Запустить таймлайн
+  runChapterIntro();
 }
-function saveHero(){ localStorage.setItem('ls_hero', JSON.stringify(hero)); }
+
+function runChapterIntro(){
+  // Показать интро главы 3 секунды
+  setTimeout(() => {
+    document.getElementById('chapterIntro').classList.add('hidden');
+    if(soundOn) playMusic('scene');
+    // Запустить первую под-сцену
+    setTimeout(runSkyScene, 800);
+  }, 3000);
+}
+
+function runSkyScene(){
+  // Под-сцена 1: небо. Звёзды гаснут одна за одной.
+  setTimeout(() => {
+    // Начать гашение
+    dimStarsProgressively();
+  }, 1500);
+
+  // Через 8 секунд — переход к герою
+  setTimeout(() => {
+    if(!document.getElementById('scene-game').classList.contains('active')) return;
+    runHeroScene();
+  }, 8000);
+}
+
+function runHeroScene(){
+  // Спрятать небо, показать город и героя
+  document.getElementById('skyView').classList.add('hidden');
+  document.getElementById('citySil').classList.remove('hidden');
+  document.getElementById('heroScene').classList.add('show');
+
+  // Через 2 сек — показать текст
+  setTimeout(() => {
+    document.getElementById('sceneText').classList.add('show');
+  }, 2000);
+
+  // Через 6 сек — показать выбор
+  setTimeout(() => {
+    document.getElementById('choiceBox').classList.add('show');
+  }, 6500);
+}
+
+function makeChoice(letter){
+  initAudio();
+  sfxChoice();
+  sceneFlags.firstChoice = letter;
+  localStorage.setItem('ls_flags', JSON.stringify(sceneFlags));
+
+  // Визуальный отклик
+  const btn = event.currentTarget;
+  btn.style.background = 'linear-gradient(135deg,rgba(251,191,36,.5),rgba(180,83,9,.5))';
+  btn.style.borderColor = '#FBBF24';
+
+  // Скрыть выбор, показать финал
+  setTimeout(() => {
+    document.getElementById('choiceBox').classList.remove('show');
+    document.getElementById('sceneText').classList.remove('show');
+    setTimeout(() => {
+      document.getElementById('endCard').classList.add('show');
+      playTone(660, 0.3, 'sine', 0.08);
+      setTimeout(() => playTone(880, 0.3, 'sine', 0.08), 200);
+      setTimeout(() => playTone(1100, 0.5, 'sine', 0.08), 400);
+    }, 800);
+  }, 500);
+}
+
+function returnToMenu(){
+  document.getElementById('scene-game').classList.remove('active');
+  goToMenu();
+}
+
+function skipScene(){
+  // Пропустить под-сцены — перейти сразу к выбору
+  document.getElementById('skyView').classList.add('hidden');
+  document.getElementById('heroScene').classList.add('show');
+  document.getElementById('sceneText').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('choiceBox').classList.add('show');
+  }, 300);
+}
+
+/* ============ ЗВЁЗДЫ В НЕБЕ (для сцены) ============ */
+function createSkyStars(){
+  const cont = document.getElementById('stars');
+  cont.innerHTML = '';
+  skyStars = [];
+  const count = Math.min(160, Math.floor(window.innerWidth / 5));
+  for(let i = 0; i < count; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.2 + 0.6;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = (Math.random() * 70) + '%'; // только верхние 70%
+    s.style.animation = `twinkle ${3 + Math.random() * 5}s infinite ease-in-out`;
+    s.style.animationDelay = (Math.random() * 5) + 's';
+    if(Math.random() < 0.12){ s.style.background = '#F5E6C8'; s.style.boxShadow = '0 0 6px rgba(251,191,36,.6)'; }
+    cont.appendChild(s);
+    skyStars.push(s);
+  }
+}
+
+function dimStarsProgressively(){
+  if(starsDimming) return;
+  starsDimming = true;
+  // Выбрать 8-10 звёзд для гашения
+  const toDim = skyStars
+    .map((s, i) => ({ s, i, r: Math.random() }))
+    .sort((a, b) => a.r - b.r)
+    .slice(0, 8);
+
+  toDim.forEach((item, idx) => {
+    setTimeout(() => {
+      item.s.classList.add('dim');
+      sfxDing();
+      // Создать падающую звезду с этого места
+      createShootingStar(item.s.style.left, item.s.style.top);
+    }, idx * 700);
+  });
+
+  // Через 1.5 секунды после последней — остановить музыку на пару секунд
+  setTimeout(() => {
+    stopMusic();
+  }, toDim.length * 700 + 800);
+
+  // Через 4 секунды — вернуть музыку
+  setTimeout(() => {
+    if(soundOn && document.getElementById('scene-game').classList.contains('active') && !document.getElementById('heroScene').classList.contains('show')) {
+      playMusic('dramatic');
+    }
+  }, toDim.length * 700 + 3000);
+}
+
+function createShootingStar(leftStr, topStr){
+  const star = document.createElement('div');
+  star.className = 'shooting-star';
+  star.style.left = leftStr;
+  star.style.top = topStr;
+  star.style.animation = 'shoot 1.8s ease-in forwards';
+  document.getElementById('scene-game').appendChild(star);
+  setTimeout(() => star.remove(), 2000);
+}
 
 /* ============ УТИЛИТЫ ============ */
 function showToast(text){
@@ -764,31 +919,16 @@ function showToast(text){
 }
 function notReady(section){ showToast(t('not_ready')); }
 
-/* ============ ЗВЁЗДЫ / ЧАСТИЦЫ ============ */
-function createStars(){
-  const cont = document.getElementById('stars');
-  cont.innerHTML = '';
-  const count = Math.min(120, Math.floor(window.innerWidth / 7));
-  for(let i = 0; i < count; i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 1.6 + 0.5;
-    s.style.width = size + 'px'; s.style.height = size + 'px';
-    s.style.left = Math.random() * 100 + '%';
-    s.style.top = Math.random() * 100 + '%';
-    s.style.animation = `twinkle ${3 + Math.random() * 5}s infinite ease-in-out`;
-    s.style.animationDelay = (Math.random() * 5) + 's';
-    if(Math.random() < 0.08){ s.style.background = '#F5E6C8'; s.style.boxShadow = '0 0 6px rgba(251,191,36,.6)'; }
-    cont.appendChild(s);
-  }
-}
+/* ============ ФОН / ЧАСТИЦЫ ============ */
 function launchFallingStar(){
-  const star = document.getElementById('falling-star');
+  // декоративно — для меню
+  const star = document.createElement('div');
+  star.className = 'shooting-star';
   star.style.left = (30 + Math.random() * 40) + '%';
   star.style.top = '10%';
-  star.style.animation = 'none';
-  void star.offsetWidth;
-  star.style.animation = 'fall 2.8s ease-in forwards';
+  star.style.animation = 'shoot 2.8s ease-in forwards';
+  document.getElementById('app').appendChild(star);
+  setTimeout(() => star.remove(), 3000);
 }
 setInterval(() => {
   if(document.getElementById('screen-menu').classList.contains('active')) launchFallingStar();
@@ -813,24 +953,22 @@ setInterval(spawnParticle, 700);
 
 /* ============ СТАРТ ============ */
 window.addEventListener('load', () => {
-  createStars();
   applyLang();
   updateSoundBtn();
   renderCreator();
+  createSkyStars();
   setTimeout(launchFallingStar, 1800);
-  // Первый тап пользователя запускает аудио
   const unlockAudio = () => {
     initAudio();
-    if(soundOn && document.getElementById('screen-load').classList.contains('active')){
-      playTone(660, 0.15, 'sine', 0.05);
-    }
     document.removeEventListener('touchstart', unlockAudio);
     document.removeEventListener('click', unlockAudio);
   };
   document.addEventListener('touchstart', unlockAudio, { once: true });
   document.addEventListener('click', unlockAudio, { once: true });
 });
-window.addEventListener('resize', createStars);
+window.addEventListener('resize', () => {
+  if(document.getElementById('screen-menu').classList.contains('active')) createSkyStars();
+});
 </script>
 </body>
 </html>
