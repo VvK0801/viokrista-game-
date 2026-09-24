@@ -9,23 +9,15 @@
 html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a14;color:#fff}
 #game{position:fixed;inset:0;overflow:hidden}
 
-/* === ФОН И СЛОИ === */
 .bg-layer{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity 1.2s ease, transform 2s ease;opacity:0}
 .bg-layer.active{opacity:1}
 .bg-layer.zoomed{transform:scale(1.08)}
 
-/* Частицы */
 .particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .particle{position:absolute;border-radius:50%;pointer-events:none;opacity:.7}
 
-/* Затемнение кадра */
 .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.7) 100%);z-index:5}
 
-/* Мерцание света */
-.flicker{animation:flicker 3s infinite alternate}
-@keyframes flicker{0%,100%{opacity:.6}50%{opacity:1}}
-
-/* === ДИАЛОГ === */
 .dialogue-box{position:absolute;left:0;right:0;bottom:0;padding:20px;z-index:20;
   background:linear-gradient(to top,rgba(10,10,20,.98) 0%,rgba(10,10,20,.9) 70%,transparent 100%);
   transform:translateY(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);padding-bottom:30px}
@@ -34,7 +26,10 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
 .speaker{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-left:5px}
 .speaker-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#A78BFA);
   display:flex;align-items:center;justify-content:center;font-size:26px;border:2px solid #FBBF24;
-  box-shadow:0 0 20px rgba(251,191,36,.5);flex-shrink:0}
+  box-shadow:0 0 20px rgba(251,191,36,.5);flex-shrink:0;position:relative}
+.speaker-avatar.speaking::after{content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid #FBBF24;animation:speakRing 1s infinite}
+@keyframes speakRing{0%{transform:scale(1);opacity:1}100%{transform:scale(1.3);opacity:0}}
 .speaker-name{font-size:17px;font-weight:800;color:#FBBF24;letter-spacing:.5px}
 .speaker-name.thought{color:#A78BFA;font-style:italic}
 
@@ -42,13 +37,11 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
   min-height:70px;max-width:700px;margin:0 auto;padding:0 5px;letter-spacing:.2px}
 .dialogue-text.thought{color:#C4B5FD;font-style:italic;opacity:.9}
 
-/* Индикатор "дальше" */
 .next-arrow{position:absolute;right:25px;bottom:15px;color:#FBBF24;font-size:22px;
   animation:bounceDown 1.2s infinite;opacity:0;transition:opacity .3s;pointer-events:none}
 .next-arrow.show{opacity:1}
 @keyframes bounceDown{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
-/* === ВЫБОРЫ === */
 .choices{position:absolute;left:0;right:0;bottom:0;padding:20px;z-index:25;
   display:none;flex-direction:column;gap:12px;max-width:700px;margin:0 auto;
   transform:translateY(20px);opacity:0;transition:all .4s ease}
@@ -62,7 +55,6 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
   transform:translateX(6px);box-shadow:0 5px 25px rgba(251,191,36,.3)}
 .choice-btn .tag{font-size:11px;color:#FBBF24;font-weight:600;display:block;margin-top:4px;opacity:.8}
 
-/* === ПЕРСОНАЖИ (SVG) === */
 .character{position:absolute;bottom:0;height:75vh;max-height:600px;width:auto;
   opacity:0;transition:opacity .8s ease, transform 1.5s ease;pointer-events:none;z-index:10;
   filter:drop-shadow(0 20px 40px rgba(0,0,0,.6))}
@@ -74,22 +66,21 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
 .character.center{left:50%;transform:translateX(-50%) translateY(20px)}
 .character.center.show{transform:translateX(-50%) translateY(0)}
 
-/* Рот персонажа (lip-sync имитация) */
 .mouth{transform-origin:center;transition:transform .12s ease}
 .character.talking .mouth{animation:talkMouth .25s infinite alternate}
 @keyframes talkMouth{0%{transform:scaleY(1)}100%{transform:scaleY(1.8)}}
 
-/* === HUD === */
 .hud-top{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;
   align-items:center;z-index:30;pointer-events:none}
 .chapter-label{padding:8px 16px;background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);
   border-radius:20px;font-size:13px;font-weight:700;color:#FBBF24;backdrop-filter:blur(10px)}
-.lang-btn{padding:8px 14px;background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);
-  border-radius:20px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
-  backdrop-filter:blur(10px);pointer-events:auto;transition:all .2s}
-.lang-btn:hover{background:rgba(139,92,246,.4);border-color:#FBBF24}
+.hud-right{display:flex;gap:8px;pointer-events:auto}
+.icon-btn{padding:8px 12px;background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);
+  border-radius:20px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(10px);transition:all .2s;min-width:44px}
+.icon-btn:hover{background:rgba(139,92,246,.4);border-color:#FBBF24}
+.icon-btn.off{opacity:.4;text-decoration:line-through}
 
-/* Кнопка меню */
 .menu-btn{position:absolute;top:15px;left:15px;z-index:30;padding:8px 14px;
   background:rgba(26,26,46,.8);border:1px solid rgba(139,92,246,.4);border-radius:20px;
   color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
@@ -97,13 +88,11 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
 .menu-btn.show{display:block}
 .menu-btn:hover{background:rgba(139,92,246,.4);border-color:#FBBF24}
 
-/* Прогресс-бар главы */
 .progress-dots{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);
   display:flex;gap:6px;z-index:30;pointer-events:none}
 .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s}
 .dot.active{background:#FBBF24;width:24px;border-radius:4px}
 
-/* === ЭКРАН КОНЦА ГЛАВЫ === */
 .end-screen{position:absolute;inset:0;background:radial-gradient(ellipse at center,#1a1a2e,#0a0a14);
   display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:30px;
   text-align:center;opacity:0;transition:opacity 1.5s ease}
@@ -111,13 +100,12 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
 .end-title{font-size:clamp(28px,7vw,48px);font-weight:900;margin-bottom:20px;
   background:linear-gradient(90deg,#FBBF24,#F472B6,#A78BFA);-webkit-background-clip:text;
   -webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}
-.end-sub{font-size:clamp(14px,4vw,18px);color:#C4B5FD;margin-bottom:30px;line-height:1.6;max-width:500px}
+.end-sub{font-size:clamp(13px,3.8vw,17px);color:#C4B5FD;margin-bottom:30px;line-height:1.7;max-width:500px}
 .end-btn{padding:16px 40px;font-size:17px;font-weight:700;border:none;border-radius:50px;
   background:linear-gradient(90deg,#FBBF24,#F59E0B);color:#0a0a14;cursor:pointer;
   font-family:inherit;box-shadow:0 10px 30px rgba(251,191,36,.5);transition:transform .15s}
 .end-btn:active{transform:scale(.95)}
 
-/* === ЭКРАН ЗАГРУЗКИ === */
 .loader{position:absolute;inset:0;background:#0a0a14;display:flex;flex-direction:column;
   align-items:center;justify-content:center;z-index:200;transition:opacity 1s ease;gap:20px}
 .loader.hide{opacity:0;pointer-events:none}
@@ -130,54 +118,45 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
   font-family:inherit;box-shadow:0 10px 30px rgba(139,92,246,.5);transition:transform .15s}
 .loader-btn:active{transform:scale(.95)}
 
-/* Заголовок сцены (кинематографичная подпись) */
 .scene-caption{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   font-size:clamp(18px,5vw,28px);font-weight:700;color:#FBBF24;text-align:center;
   opacity:0;transition:opacity 1.5s ease;pointer-events:none;z-index:15;padding:0 30px;
   text-shadow:0 0 30px rgba(251,191,36,.8);letter-spacing:2px}
 .scene-caption.show{opacity:1}
 
-/* Тряска камеры */
 .shake{animation:shake .5s}
 @keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-5px,3px)}
   50%{transform:translate(5px,-3px)}75%{transform:translate(-3px,-5px)}}
-
-/* Пульс для интерактивных объектов */
-.pulse{animation:pulseObj 2s infinite}
-@keyframes pulseObj{0%,100%{filter:drop-shadow(0 0 0 rgba(251,191,36,0))}
-  50%{filter:drop-shadow(0 0 20px rgba(251,191,36,.9))}}
 </style>
 </head>
 <body>
 <div id="game">
 
-  <!-- ЭКРАН ЗАГРУЗКИ -->
   <div class="loader" id="loader">
     <div class="loader-title">ХРОНИКИ<br>ТИХОГО СВЕТА</div>
     <div class="loader-sub" id="loaderSub">Некоторые двери открываются только для тех,<br>кто потерял что-то важное.</div>
     <button class="loader-btn" id="startBtn">Начать историю</button>
   </div>
 
-  <!-- ФОНОВЫЕ СЛОИ -->
   <div class="bg-layer" id="bg1"></div>
   <div class="bg-layer" id="bg2"></div>
   <div class="particles" id="particles"></div>
   <div class="vignette"></div>
 
-  <!-- ПОДПИСЬ СЦЕНЫ -->
   <div class="scene-caption" id="sceneCaption"></div>
-
-  <!-- ПЕРСОНАЖИ -->
   <div id="charLayer"></div>
 
-  <!-- HUD -->
   <div class="hud-top">
     <div class="chapter-label" id="chapterLabel">Глава 1</div>
-    <button class="lang-btn" id="langBtn">🌐 RU</button>
+    <div class="hud-right">
+      <button class="icon-btn" id="soundBtn" title="Звук">🔊</button>
+      <button class="icon-btn" id="musicBtn" title="Музыка">🎵</button>
+      <button class="icon-btn" id="voiceBtn" title="Озвучка">🎙</button>
+      <button class="icon-btn" id="langBtn" title="Язык">🌐 RU</button>
+    </div>
   </div>
   <button class="menu-btn" id="menuBtn">☰ Меню</button>
 
-  <!-- ДИАЛОГ -->
   <div class="dialogue-box" id="dialogueBox">
     <div class="speaker">
       <div class="speaker-avatar" id="speakerAvatar">👤</div>
@@ -187,50 +166,202 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
     <div class="next-arrow" id="nextArrow">▼</div>
   </div>
 
-  <!-- ВЫБОРЫ -->
   <div class="choices" id="choices"></div>
-
-  <!-- ПРОГРЕСС -->
   <div class="progress-dots" id="progressDots"></div>
 
-  <!-- ЭКРАН КОНЦА -->
   <div class="end-screen" id="endScreen">
     <div class="end-title" id="endTitle">Конец главы 1</div>
     <div class="end-sub" id="endSub"></div>
     <button class="end-btn" id="endBtn">Продолжить путь</button>
   </div>
-
 </div>
 
 <script>
-/* ============ АУДИО ============ */
-let audioCtx=null;
-function initAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}}
-function playTone(f,d,t='sine',v=.08){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+/* ============ НАСТРОЙКИ ЗВУКА ============ */
+let soundOn = localStorage.getItem('ts_sound') !== 'off';
+let musicOn = localStorage.getItem('ts_music') !== 'off';
+let voiceOn = localStorage.getItem('ts_voice') !== 'off';
+
+/* ============ АУДИО-КОНТЕКСТ ============ */
+let audioCtx = null;
+function initAudio(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  }
+  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playTone(f,d,t='sine',v=.08){
+  if(!soundOn||!audioCtx) return;
+  try{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type=t;o.frequency.value=f;
+    g.gain.setValueAtTime(v,audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);
+    o.connect(g);g.connect(audioCtx.destination);
+    o.start();o.stop(audioCtx.currentTime+d);
+  }catch(e){}
+}
 function sfxClick(){playTone(700,.06,'square',.08);}
 function sfxChoice(){playTone(900,.12,'sine',.1);setTimeout(()=>playTone(1200,.1,'sine',.08),100);}
-function sfxPage(){playTone(500,.08,'sine',.06);}
+function sfxPage(){playTone(500,.05,'sine',.04);}
 function sfxMagic(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.3,'sine',.08),i*120));}
-function sfxWind(){playTone(180,1.2,'sine',.04);}
-function playAmbient(type){
-  // Фоновый гул через Web Audio
-  if(!audioCtx) return;
-  try{
-    if(window.ambientOsc){window.ambientOsc.stop();window.ambientOsc=null;}
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.type='sine';
-    o.frequency.value = type==='night'?90:type==='magic'?140:type==='train'?70:110;
-    g.gain.value=.015;
-    o.connect(g);g.connect(audioCtx.destination);o.start();
-    window.ambientOsc=o;
-  }catch(e){}
+
+/* ============ МУЗЫКА (Web Audio, генерируется кодом) ============ */
+let musicTimer = null;
+let musicGain = null;
+function stopMusic(){
+  if(musicTimer){ clearInterval(musicTimer); musicTimer = null; }
+  if(musicGain){ try{ musicGain.disconnect(); }catch(e){} musicGain = null; }
+  if(window.musicNodes){ window.musicNodes.forEach(n=>{try{n.stop();}catch(e){}}); window.musicNodes=[]; }
+}
+
+/* Прогрессии аккордов для каждой сцены */
+const MusicScenes = {
+  // Машина: меланхолия, ля-минор
+  car: {
+    notes: [220, 261.63, 329.63, 392, 329.63, 261.63],
+    tempo: 800,
+    type: 'sine',
+    vol: 0.04
+  },
+  // Дом: тепло и тайна, ре-минор
+  house: {
+    notes: [293.66, 349.23, 440, 523.25, 440, 349.23],
+    tempo: 900,
+    type: 'triangle',
+    vol: 0.05
+  },
+  // Ночь: тревога, низкие ноты
+  night: {
+    notes: [174.61, 196, 220, 196, 174.61, 155.56],
+    tempo: 1200,
+    type: 'sine',
+    vol: 0.04
+  },
+  // Тихий Свет: волшебство, высокие
+  magic: {
+    notes: [523.25, 659.25, 783.99, 1046.5, 783.99, 659.25],
+    tempo: 700,
+    type: 'sine',
+    vol: 0.045
+  },
+  // Пустой дом: загадка
+  room: {
+    notes: [246.94, 293.66, 349.23, 293.66, 246.94, 220],
+    tempo: 1000,
+    type: 'triangle',
+    vol: 0.04
+  }
+};
+
+function playMusic(sceneName){
+  stopMusic();
+  if(!musicOn||!soundOn||!audioCtx) return;
+  const cfg = MusicScenes[sceneName] || MusicScenes.night;
+  let idx = 0;
+  // Основная мелодия
+  musicTimer = setInterval(()=>{
+    if(!musicOn||!soundOn||!audioCtx) return;
+    const note = cfg.notes[idx % cfg.notes.length];
+    // Основная нота
+    playTone(note, cfg.tempo/1000*0.9, cfg.type, cfg.vol);
+    // Гармония (ниже на октаву, тише)
+    if(idx % 2 === 0){
+      playTone(note/2, cfg.tempo/1000*0.9, 'sine', cfg.vol*0.6);
+    }
+    // Искра (высокая нота) изредка
+    if(idx % 4 === 2){
+      setTimeout(()=>playTone(note*2, 0.4, 'sine', cfg.vol*0.4), cfg.tempo/2);
+    }
+    idx++;
+  }, cfg.tempo);
+}
+
+/* ============ ОЗВУЧКА (Web Speech API) ============ */
+let voices = [];
+function loadVoices(){
+  if(!('speechSynthesis' in window)) return;
+  voices = speechSynthesis.getVoices();
+}
+if('speechSynthesis' in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+/* Голосовые профили для персонажей */
+const VoiceProfiles = {
+  // Герой Тим — детский/подростковый
+  'Тим': { rate:1.0, pitch:1.2, preferGender:'male', preferLang:'ru' },
+  'Тим (мысли)': { rate:0.9, pitch:1.3, preferGender:'male', preferLang:'ru', volume:0.7 },
+  'Tim': { rate:1.0, pitch:1.2, preferGender:'male', preferLang:'en' },
+  'Tim (thoughts)': { rate:0.9, pitch:1.3, preferGender:'male', preferLang:'en', volume:0.7 },
+  // Мама — женский, средний
+  'Мама': { rate:0.95, pitch:1.0, preferGender:'female', preferLang:'ru' },
+  'Mom': { rate:0.95, pitch:1.0, preferGender:'female', preferLang:'en' },
+  // Папа — мужской, низкий
+  'Папа': { rate:0.9, pitch:0.8, preferGender:'male', preferLang:'ru' },
+  'Dad': { rate:0.9, pitch:0.8, preferGender:'male', preferLang:'en' },
+  // Бумажка — детский, высокий
+  'Бумажка': { rate:1.15, pitch:1.6, preferGender:'female', preferLang:'ru' },
+  'Paper': { rate:1.15, pitch:1.6, preferGender:'female', preferLang:'en' },
+  // Ника — загадочный женский
+  'Ника': { rate:0.9, pitch:1.1, preferGender:'female', preferLang:'ru' },
+  'Nika': { rate:0.9, pitch:1.1, preferGender:'female', preferLang:'en' },
+  '???': { rate:0.9, pitch:1.1, preferGender:'female', preferLang:'ru' },
+  // Рассказчик / мысли — нейтральный
+  '': { rate:0.95, pitch:1.0, preferGender:null, preferLang:'ru' }
+};
+
+function pickVoice(profile){
+  if(!voices.length) return null;
+  const langPrefix = profile.preferLang === 'en' ? 'en' : 'ru';
+  let candidates = voices.filter(v => v.lang.toLowerCase().startsWith(langPrefix));
+  if(!candidates.length) candidates = voices;
+  // Попробуем найти по полу (эвристика по названию голоса)
+  if(profile.preferGender){
+    const femaleHints = ['female','woman','girl','svetlana','milena','irina','katya','anna','maria','alena','samantha','victoria','karen','moira','tessa','fiona','zira'];
+    const maleHints = ['male','man','boy','dmitri','yuri','pavel','maxim','alex','daniel','fred','thomas','oliver'];
+    const hints = profile.preferGender === 'female' ? femaleHints : maleHints;
+    const byGender = candidates.find(v => hints.some(h => v.name.toLowerCase().includes(h)));
+    if(byGender) return byGender;
+  }
+  return candidates[0];
+}
+
+let currentUtterance = null;
+function speak(text, profile){
+  if(!voiceOn || !soundOn) return;
+  if(!('speechSynthesis' in window)) return;
+  // Прервать предыдущую речь
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(!text || !text.trim()) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  const p = profile || VoiceProfiles[''];
+  utter.rate = p.rate || 1.0;
+  utter.pitch = p.pitch || 1.0;
+  utter.volume = (p.volume !== undefined ? p.volume : 1) * 0.9;
+  const v = pickVoice(p);
+  if(v) utter.voice = v;
+  utter.lang = p.preferLang === 'en' ? 'en-US' : 'ru-RU';
+  // Подсветка аватара во время речи
+  const avatar = document.getElementById('speakerAvatar');
+  utter.onstart = ()=>{ avatar && avatar.classList.add('speaking'); };
+  utter.onend = ()=>{ avatar && avatar.classList.remove('speaking'); };
+  utter.onerror = ()=>{ avatar && avatar.classList.remove('speaking'); };
+  currentUtterance = utter;
+  try{ speechSynthesis.speak(utter); }catch(e){}
+}
+function stopSpeaking(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const avatar = document.getElementById('speakerAvatar');
+  if(avatar) avatar.classList.remove('speaking');
 }
 
 /* ============ ЧАСТИЦЫ ============ */
 function startParticles(type){
   const cont=document.getElementById('particles');
   cont.innerHTML='';
-  const colors={night:'#A78BFA',magic:'#FBBF24',train:'#C4B5FD',house:'#FBBF24',void:'#8B5CF6'};
+  const colors={night:'#A78BFA',magic:'#FBBF24',train:'#C4B5FD',house:'#FBBF24',void:'#8B5CF6',car:'#FBBF24'};
   const c=colors[type]||'#A78BFA';
   for(let i=0;i<25;i++){
     const p=document.createElement('div');
@@ -245,139 +376,87 @@ function startParticles(type){
     cont.appendChild(p);
   }
 }
-const style=document.createElement('style');
-style.textContent=`@keyframes floatUp{0%{transform:translateY(0) translateX(0);opacity:0}
-  10%{opacity:.7}90%{opacity:.4}100%{transform:translateY(-110vh) translateX(${Math.random()*40-20}px);opacity:0}}`;
-document.head.appendChild(style);
+const styleEl=document.createElement('style');
+styleEl.textContent=`@keyframes floatUp{0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.7}90%{opacity:.4}100%{transform:translateY(-110vh) translateX(20px);opacity:0}}`;
+document.head.appendChild(styleEl);
 
-/* ============ ФОНЫ (SVG как data-URI) ============ */
+/* ============ ФОНЫ ============ */
 function svgBg(svg){return 'url("data:image/svg+xml;utf8,'+encodeURIComponent(svg)+'")';}
 
 const BGs = {
   car: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-    <defs>
-      <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#FFB88C"/><stop offset="50%" stop-color="#DE6262"/>
-        <stop offset="100%" stop-color="#3A1C71"/>
-      </linearGradient>
-    </defs>
+    <defs><linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFB88C"/><stop offset="50%" stop-color="#DE6262"/>
+      <stop offset="100%" stop-color="#3A1C71"/></linearGradient></defs>
     <rect width="800" height="600" fill="url(#sky1)"/>
     <circle cx="650" cy="150" r="60" fill="#FFEAA7" opacity=".9"/>
     <circle cx="650" cy="150" r="90" fill="#FFEAA7" opacity=".3"/>
     <rect y="380" width="800" height="220" fill="#2D1B4E"/>
     <rect y="380" width="800" height="10" fill="#1A0F2E"/>
-    <!-- дома -->
     <rect x="50" y="300" width="80" height="90" fill="#3D2A5C"/>
     <rect x="150" y="270" width="100" height="120" fill="#4A3269"/>
     <rect x="270" y="320" width="70" height="70" fill="#3D2A5C"/>
     <rect x="360" y="250" width="120" height="140" fill="#4A3269"/>
     <rect x="500" y="290" width="90" height="100" fill="#3D2A5C"/>
     <rect x="610" y="260" width="110" height="130" fill="#4A3269"/>
-    <!-- окна -->
     <g fill="#FFEAA7" opacity=".9">
       <rect x="70" y="320" width="15" height="20"/><rect x="100" y="320" width="15" height="20"/>
       <rect x="180" y="300" width="18" height="22"/><rect x="220" y="300" width="18" height="22"/>
       <rect x="390" y="280" width="20" height="25"/><rect x="430" y="280" width="20" height="25"/>
       <rect x="530" y="320" width="18" height="22"/><rect x="640" y="290" width="20" height="25"/>
-    </g>
-  </svg>`),
+    </g></svg>`),
   house: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-    <defs>
-      <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#1A0F2E"/><stop offset="60%" stop-color="#2D1B4E"/>
-        <stop offset="100%" stop-color="#0F0820"/>
-      </linearGradient>
-    </defs>
+    <defs><linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A0F2E"/><stop offset="60%" stop-color="#2D1B4E"/>
+      <stop offset="100%" stop-color="#0F0820"/></linearGradient></defs>
     <rect width="800" height="600" fill="url(#sky2)"/>
     <circle cx="650" cy="120" r="40" fill="#E9D5FF" opacity=".9"/>
     <circle cx="650" cy="120" r="70" fill="#E9D5FF" opacity=".2"/>
-    <!-- дом -->
     <polygon points="200,300 400,180 600,300" fill="#5B3E7A"/>
     <rect x="220" y="300" width="360" height="250" fill="#4A3269"/>
     <rect x="240" y="320" width="60" height="70" fill="#FFEAA7" opacity=".8"/>
-    <rect x="500" y="320" width="60" height="70" fill="#FFEAA7" opacity=".8"/>
-    <rect x="370" y="420" width="60" height="130" fill="#2D1B4E"/>
-    <!-- окно со светом -->
     <rect x="500" y="320" width="60" height="70" fill="#FBBF24" opacity=".95"/>
     <rect x="500" y="320" width="60" height="70" fill="none" stroke="#2D1B4E" stroke-width="4"/>
     <line x1="530" y1="320" x2="530" y2="390" stroke="#2D1B4E" stroke-width="4"/>
     <line x1="500" y1="355" x2="560" y2="355" stroke="#2D1B4E" stroke-width="4"/>
-    <!-- деревья -->
+    <rect x="370" y="420" width="60" height="130" fill="#2D1B4E"/>
     <ellipse cx="120" cy="450" rx="60" ry="80" fill="#2D1B4E"/>
-    <ellipse cx="690" cy="470" rx="70" ry="90" fill="#2D1B4E"/>
-  </svg>`),
+    <ellipse cx="690" cy="470" rx="70" ry="90" fill="#2D1B4E"/></svg>`),
   room: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
     <rect width="800" height="600" fill="#2D1B4E"/>
     <rect x="0" y="0" width="800" height="400" fill="#3D2A5C"/>
     <rect x="0" y="400" width="800" height="200" fill="#1A0F2E"/>
-    <!-- окно -->
     <rect x="550" y="100" width="180" height="240" fill="#1A0F2E"/>
     <rect x="550" y="100" width="180" height="240" fill="none" stroke="#5B3E7A" stroke-width="8"/>
     <line x1="640" y1="100" x2="640" y2="340" stroke="#5B3E7A" stroke-width="6"/>
     <line x1="550" y1="220" x2="730" y2="220" stroke="#5B3E7A" stroke-width="6"/>
     <circle cx="680" cy="160" r="30" fill="#E9D5FF" opacity=".7"/>
-    <!-- кровать -->
     <rect x="80" y="380" width="300" height="100" fill="#5B3E7A" rx="10"/>
     <rect x="80" y="350" width="300" height="40" fill="#8B5CF6" rx="10"/>
     <rect x="100" y="330" width="80" height="40" fill="#E9D5FF" rx="10"/>
-    <!-- стол -->
     <rect x="420" y="420" width="120" height="80" fill="#5B3E7A"/>
     <rect x="420" y="410" width="120" height="15" fill="#8B5CF6"/>
-    <!-- тетрадь на столе -->
-    <rect x="450" y="400" width="60" height="20" fill="#FBBF24" transform="rotate(-10 480 410)"/>
-  </svg>`),
+    <rect x="450" y="400" width="60" height="20" fill="#FBBF24" transform="rotate(-10 480 410)"/></svg>`),
   void: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-    <defs>
-      <radialGradient id="voidg" cx="50%" cy="50%" r="70%">
-        <stop offset="0%" stop-color="#4C1D95"/>
-        <stop offset="50%" stop-color="#2D1B4E"/>
-        <stop offset="100%" stop-color="#0A0A14"/>
-      </radialGradient>
-    </defs>
+    <defs><radialGradient id="voidg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#4C1D95"/><stop offset="50%" stop-color="#2D1B4E"/>
+      <stop offset="100%" stop-color="#0A0A14"/></radialGradient></defs>
     <rect width="800" height="600" fill="url(#voidg)"/>
     <g fill="#FBBF24">
       <circle cx="100" cy="80" r="2"/><circle cx="250" cy="150" r="3"/>
       <circle cx="400" cy="60" r="2"/><circle cx="600" cy="120" r="3"/>
       <circle cx="700" cy="200" r="2"/><circle cx="150" cy="300" r="2"/>
       <circle cx="500" cy="250" r="3"/><circle cx="680" cy="400" r="2"/>
-      <circle cx="200" cy="500" r="3"/><circle cx="550" cy="480" r="2"/>
-    </g>
+      <circle cx="200" cy="500" r="3"/><circle cx="550" cy="480" r="2"/></g>
     <g fill="#A78BFA" opacity=".5">
       <circle cx="350" cy="400" r="4"/><circle cx="620" cy="300" r="4"/>
-      <circle cx="80" cy="450" r="3"/><circle cx="450" cy="150" r="3"/>
-    </g>
-    <!-- силуэты домов на заднем плане -->
+      <circle cx="80" cy="450" r="3"/><circle cx="450" cy="150" r="3"/></g>
     <rect x="50" y="400" width="100" height="200" fill="#1A0F2E" opacity=".6"/>
     <rect x="200" y="350" width="80" height="250" fill="#1A0F2E" opacity=".5"/>
     <rect x="320" y="420" width="120" height="180" fill="#1A0F2E" opacity=".6"/>
     <rect x="480" y="380" width="90" height="220" fill="#1A0F2E" opacity=".5"/>
-    <rect x="620" y="440" width="140" height="160" fill="#1A0F2E" opacity=".6"/>
-  </svg>`),
-  train: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-    <defs>
-      <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#0F0820"/><stop offset="70%" stop-color="#2D1B4E"/>
-        <stop offset="100%" stop-color="#4C1D95"/>
-      </linearGradient>
-    </defs>
-    <rect width="800" height="600" fill="url(#sky3)"/>
-    <circle cx="150" cy="100" r="35" fill="#E9D5FF" opacity=".8"/>
-    <!-- поезд -->
-    <rect x="100" y="350" width="600" height="150" fill="#2D1B4E" rx="10"/>
-    <rect x="100" y="350" width="600" height="20" fill="#5B3E7A"/>
-    <g fill="#FBBF24" opacity=".9">
-      <rect x="140" y="380" width="60" height="50" rx="5"/>
-      <rect x="240" y="380" width="60" height="50" rx="5"/>
-      <rect x="340" y="380" width="60" height="50" rx="5"/>
-      <rect x="440" y="380" width="60" height="50" rx="5"/>
-      <rect x="540" y="380" width="60" height="50" rx="5"/>
-    </g>
-    <circle cx="180" cy="510" r="25" fill="#1A0F2E"/>
-    <circle cx="620" cy="510" r="25" fill="#1A0F2E"/>
-    <!-- рельсы -->
-    <rect x="0" y="550" width="800" height="8" fill="#5B3E7A"/>
-    <rect x="0" y="570" width="800" height="8" fill="#5B3E7A"/>
-  </svg>`)
+    <rect x="620" y="440" width="140" height="160" fill="#1A0F2E" opacity=".6"/></svg>`)
 };
 
 function setBg(name){
@@ -387,82 +466,37 @@ function setBg(name){
   next.style.backgroundImage=BGs[name]||BGs.void;
   next.classList.add('active');
   if(current){current.classList.remove('active');current.classList.remove('zoomed');}
-  // лёгкий zoom-in для кинематографичности
   setTimeout(()=>next.classList.add('zoomed'),100);
 }
 
-/* ============ ПЕРСОНАЖИ (SVG) ============ */
+/* ============ ПЕРСОНАЖИ ============ */
 const Characters = {
-  hero: {
-    name:{ru:'Тим',en:'Tim'},
-    avatar:'👤',
-    svg:`<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
-      <!-- тело -->
-      <ellipse cx="150" cy="400" rx="80" ry="100" fill="#4C1D95"/>
-      <rect x="80" y="330" width="140" height="120" fill="#8B5CF6" rx="20"/>
-      <!-- шея -->
-      <rect x="130" y="290" width="40" height="50" fill="#F4C8A8"/>
-      <!-- голова -->
-      <ellipse cx="150" cy="240" rx="65" ry="75" fill="#F4C8A8"/>
-      <!-- волосы -->
-      <path d="M85 220 Q85 160 150 160 Q215 160 215 220 Q210 200 180 195 Q150 190 120 195 Q90 200 85 220 Z" fill="#3D2A5C"/>
-      <!-- глаза -->
-      <ellipse cx="125" cy="235" rx="9" ry="11" fill="#1A0F2E"/>
-      <ellipse cx="175" cy="235" rx="9" ry="11" fill="#1A0F2E"/>
-      <circle cx="127" cy="232" r="3" fill="#fff"/>
-      <circle cx="177" cy="232" r="3" fill="#fff"/>
-      <!-- брови -->
-      <path d="M115 218 Q125 214 135 218" stroke="#3D2A5C" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M165 218 Q175 214 185 218" stroke="#3D2A5C" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <!-- рот -->
-      <ellipse class="mouth" cx="150" cy="275" rx="12" ry="6" fill="#8B2C2C"/>
-      <!-- румяна -->
-      <ellipse cx="110" cy="262" rx="12" ry="7" fill="#F472B6" opacity=".5"/>
-      <ellipse cx="190" cy="262" rx="12" ry="7" fill="#F472B6" opacity=".5"/>
-    </svg>`
-  },
   paper: {
-    name:{ru:'Бумажка',en:'Paper'},
-    avatar:'📄',
     svg:`<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      <!-- бумажный кораблик -->
       <polygon points="60,200 150,120 240,200 150,260" fill="#F5F0E1"/>
       <polygon points="60,200 150,120 150,200" fill="#E8E0CC"/>
       <polygon points="150,120 240,200 150,200" fill="#FFF8E7"/>
-      <!-- глаза -->
       <circle cx="125" cy="180" r="8" fill="#1A0F2E"/>
       <circle cx="175" cy="180" r="8" fill="#1A0F2E"/>
       <circle cx="128" cy="177" r="3" fill="#fff"/>
       <circle cx="178" cy="177" r="3" fill="#fff"/>
-      <!-- рот -->
       <ellipse class="mouth" cx="150" cy="205" rx="8" ry="4" fill="#1A0F2E"/>
-      <!-- румяна -->
       <circle cx="105" cy="200" r="8" fill="#F472B6" opacity=".5"/>
       <circle cx="195" cy="200" r="8" fill="#F472B6" opacity=".5"/>
-      <!-- блик -->
       <circle cx="110" cy="150" r="4" fill="#FBBF24" opacity=".8"/>
       <circle cx="190" cy="140" r="3" fill="#FBBF24" opacity=".6"/>
     </svg>`
   },
   nika: {
-    name:{ru:'Ника',en:'Nika'},
-    avatar:'💫',
     svg:`<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
-      <!-- тело-призрак -->
       <path d="M80 500 Q80 380 110 340 Q150 300 190 340 Q220 380 220 500 Z" fill="#A78BFA" opacity=".65"/>
-      <!-- голова -->
       <ellipse cx="150" cy="250" rx="60" ry="70" fill="#C4B5FD" opacity=".85"/>
-      <!-- волосы -->
       <path d="M90 230 Q90 170 150 170 Q210 170 210 230 Q200 195 150 195 Q100 195 90 230 Z" fill="#8B5CF6"/>
-      <!-- глаза -->
       <ellipse cx="128" cy="245" rx="10" ry="12" fill="#4C1D95"/>
       <ellipse cx="172" cy="245" rx="10" ry="12" fill="#4C1D95"/>
       <circle cx="130" cy="242" r="3" fill="#fff"/>
       <circle cx="174" cy="242" r="3" fill="#fff"/>
-      <!-- улыбка -->
-      <path d="M130 275 Q150 290 170 275" stroke="#4C1D95" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <ellipse class="mouth" cx="150" cy="280" rx="10" ry="5" fill="#4C1D95" opacity=".7"/>
-      <!-- свечение -->
+      <ellipse class="mouth" cx="150" cy="280" rx="10" ry="5" fill="#4C1D95"/>
       <ellipse cx="150" cy="360" rx="90" ry="140" fill="#A78BFA" opacity=".15"/>
     </svg>`
   }
@@ -470,13 +504,9 @@ const Characters = {
 
 function showCharacter(who,pos='center'){
   const layer=document.getElementById('charLayer');
-  // убрать старых (кроме одного в той же позиции)
-  Array.from(layer.children).forEach(c=>{
-    if(c.dataset.who!==who) c.remove();
-  });
+  Array.from(layer.children).forEach(c=>{ if(c.dataset.who!==who) c.remove(); });
   if(document.querySelector(`[data-who="${who}"]`)) return;
-  const ch=Characters[who];
-  if(!ch) return;
+  const ch=Characters[who]; if(!ch) return;
   const el=document.createElement('div');
   el.className='character '+pos;
   el.dataset.who=who;
@@ -493,181 +523,167 @@ function hideCharacter(who){
 }
 
 /* ============ СЦЕНАРИЙ ============ */
-// Каждый шаг: {type:'text'|'choice'|'scene', ...}
 const Script = {
   ru:[
-    // Сцена 0 — машина
-    {type:'scene', bg:'car', caption:'Глава 1. Дом на Краю Улицы', ambient:'night', particles:'night'},
-    {type:'text', who:'', avatar:'🌇', name:'', text:'Дорога вьётся между домами. За окном мелькают деревья, вывески, чужие окна.', thought:true},
-    {type:'text', who:'', avatar:'👩', name:'Мама', text:'...и бабушкин дом, конечно, старый, но такой уютный. Ты помнишь его?'},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Я не помню. Я вообще не помню бабушку. Только запах — кажется, корицы и старой бумаги.)', thought:true},
-    {type:'text', who:'', avatar:'👨', name:'Папа', text:'Тим, ты слушаешь?'},
+    {type:'scene', bg:'car', caption:'Глава 1. Дом на Краю Улицы', music:'car', particles:'car'},
+    {type:'text', avatar:'🌇', name:'', text:'Дорога вьётся между домами. За окном мелькают деревья, вывески, чужие окна.', thought:true, narrate:true},
+    {type:'text', avatar:'👩', name:'Мама', text:'...и бабушкин дом, конечно, старый, но такой уютный. Ты помнишь его?'},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Я не помню. Я вообще не помню бабушку. Только запах — кажется, корицы и старой бумаги.)', thought:true},
+    {type:'text', avatar:'👨', name:'Папа', text:'Тим, ты слушаешь?'},
     {type:'choice', options:[
       {text:'«Да, пап».', tag:'+Доверие', effects:{trust:1}},
       {text:'«Ага».', tag:'нейтрально', effects:{}},
       {text:'Молчать.', tag:'+Самостоятельность', effects:{independence:1}}
     ]},
-
-    // Сцена 1 — дом снаружи
-    {type:'scene', bg:'house', caption:'Дом бабушки. Вечер.', ambient:'night', particles:'house'},
-    {type:'text', who:'', avatar:'🏡', name:'', text:'Дом старый, но красивый. Двухэтажный. Окна с резными рамами. Сад, заросший, но живой.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Почему у меня такое чувство, будто я уже здесь был?..)', thought:true},
-
-    // Сцена 2 — внутри
-    {type:'scene', bg:'room', caption:'Внутри дома. Пахнет корицей.', ambient:'night', particles:'house'},
-    {type:'text', who:'', avatar:'📸', name:'', text:'На стенах — старые фотографии. Камера медленно проходит по ним.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(На фото — женщина с добрыми глазами. Это бабушка? Почему я её не помню?)', thought:true},
-    {type:'text', who:'', avatar:'📷', name:'', text:'На одной из фотографий — маленький Тим на руках у бабушки. Но её лицо... размыто.', thought:true},
+    {type:'scene', bg:'house', caption:'Дом бабушки. Вечер.', music:'house', particles:'house'},
+    {type:'text', avatar:'🏡', name:'', text:'Дом старый, но красивый. Двухэтажный. Окна с резными рамами. Сад, заросший, но живой.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Почему у меня такое чувство, будто я уже здесь был?..)', thought:true},
+    {type:'scene', bg:'room', caption:'Внутри дома. Пахнет корицей.', music:'room', particles:'house'},
+    {type:'text', avatar:'📸', name:'', text:'На стенах — старые фотографии. Камера медленно проходит по ним.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(На фото — женщина с добрыми глазами. Это бабушка? Почему я её не помню?)', thought:true},
+    {type:'text', avatar:'📷', name:'', text:'На одной из фотографий — маленький Тим на руках у бабушки. Но её лицо... размыто.', thought:true, narrate:true},
     {type:'choice', options:[
       {text:'Взять фотографию в руки.', tag:'+Наблюдательность', effects:{observation:1}, then:[
-        {type:'text', who:'', avatar:'📷', name:'', text:'Фотография тёплая на ощупь. Тёплая, как живая.', thought:true}
+        {type:'text', avatar:'📷', name:'', text:'Фотография тёплая на ощупь. Тёплая, как живая.', thought:true, narrate:true}
       ]},
       {text:'Пройти мимо.', tag:'нейтрально', effects:{}},
       {text:'Позвать маму.', tag:'+Доверие', effects:{trust:1}}
     ]},
-
-    // Сцена 3 — ночь, свет в окне
-    {type:'scene', bg:'house', caption:'Ночь. Свет в окне соседнего дома.', ambient:'night', particles:'house'},
-    {type:'text', who:'', avatar:'📖', name:'', text:'В тетради бабушки — рисунки: дом, сад, поезд, маяк, дверь. И подпись: «Тихий Свет не гаснет, пока кто-то помнит».', thought:true},
-    {type:'text', who:'', avatar:'💡', name:'', text:'Свет в окне соседнего дома. Того, который пустует уже много лет.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Там же никто не живёт... Почему горит свет?)', thought:true},
+    {type:'scene', bg:'house', caption:'Ночь. Свет в окне соседнего дома.', music:'night', particles:'house'},
+    {type:'text', avatar:'📖', name:'', text:'В тетради бабушки — рисунки: дом, сад, поезд, маяк, дверь. И подпись: «Тихий Свет не гаснет, пока кто-то помнит».', thought:true, narrate:true},
+    {type:'text', avatar:'💡', name:'', text:'Свет в окне соседнего дома. Того, который пустует уже много лет.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Там же никто не живёт... Почему горит свет?)', thought:true},
     {type:'choice', options:[
       {text:'Пойти посмотреть.', tag:'+Любопытство +Смелость', effects:{curiosity:1,courage:1}},
       {text:'Закрыть штору.', tag:'+Самостоятельность', effects:{independence:1}},
       {text:'Позвать родителей.', tag:'+Доверие −Смелость', effects:{trust:1,courage:-1}}
     ]},
-
-    // Сцена 4 — пустой дом, знакомство с Бумажкой
-    {type:'scene', bg:'room', caption:'Пустой дом. Кто-то ждёт внутри.', ambient:'magic', particles:'magic', magic:true},
-    {type:'text', who:'', avatar:'🚪', name:'', text:'Дверь скрипит. Внутри темно, но свет идёт из одной комнаты.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Тут пахнет... корицей. Как в бабушкином доме. Но это другой дом.)', thought:true},
-    {type:'showChar', who:'paper', pos:'center', magic:true},
-    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой! Ты... ты меня видишь?', talking:true},
+    {type:'scene', bg:'room', caption:'Пустой дом. Кто-то ждёт внутри.', music:'room', particles:'magic'},
+    {type:'text', avatar:'🚪', name:'', text:'Дверь скрипит. Внутри темно, но свет идёт из одной комнаты.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Тут пахнет... корицей. Как в бабушкином доме. Но это другой дом.)', thought:true},
+    {type:'showChar', who:'paper', pos:'center'},
+    {type:'text', avatar:'📄', name:'Бумажка', text:'Ой! Ты... ты меня видишь?', talking:true},
     {type:'choice', options:[
       {text:'«Вижу. Ты кто?»', tag:'+Любопытство', effects:{curiosity:1}, then:[
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Я... я Бумажка. Я потерялся. Я всегда теряюсь. Но сегодня — особенно. Потому что Тихий Свет тускнеет!', talking:true}
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Я... я Бумажка. Я потерялся. Я всегда теряюсь. Но сегодня — особенно. Потому что Тихий Свет тускнеет!', talking:true}
       ]},
       {text:'«Не бойся, я помогу».', tag:'+Доброта', effects:{kindness:1}, then:[
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой... Спасибо! Ты... ты добрый. Ты, наверное, Проводник!', talking:true}
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Ой... Спасибо! Ты... ты добрый. Ты, наверное, Проводник!', talking:true}
       ]},
       {text:'«Что ты такое?»', tag:'нейтрально', effects:{}, then:[
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Я — Потеряшка! Раньше я был бумажным корабликом. А теперь я... вот такой. Маленький и живой.', talking:true}
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Я — Потеряшка! Раньше я был бумажным корабликом. А теперь я... вот такой. Маленький и живой.', talking:true}
       ]},
       {text:'Молча наблюдать.', tag:'+Наблюдательность', effects:{observation:1}, then:[
-        {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Он дрожит. Но не от страха. От холода. Или от одиночества.)', thought:true},
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ты... ты молчишь. Но ты меня видишь. Это уже хорошо.', talking:true}
+        {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Он дрожит. Но не от страха. От холода. Или от одиночества.)', thought:true},
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Ты... ты молчишь. Но ты меня видишь. Это уже хорошо.', talking:true}
       ]}
     ]},
-    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой! Ты не знаешь, что такое Тихий Свет? Тогда тебе нужно туда попасть. Ты ведь что-то потерял, да?', talking:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Я потерял... что? Я не помню.)', thought:true},
-
-    // Сцена 5 — переход в Тихий Свет
-    {type:'scene', bg:'void', caption:'Тихий Свет. Первый взгляд.', ambient:'magic', particles:'void', magic:true, shake:true},
+    {type:'text', avatar:'📄', name:'Бумажка', text:'Ой! Ты не знаешь, что такое Тихий Свет? Тогда тебе нужно туда попасть. Ты ведь что-то потерял, да?', talking:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Я потерял... что? Я не помню.)', thought:true},
+    {type:'scene', bg:'void', caption:'Тихий Свет. Первый взгляд.', music:'magic', particles:'void', shake:true, magic:true},
     {type:'hideChar', who:'paper'},
-    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ой-ой-ой. Начинается. Держись за меня!', talking:true},
-    {type:'showChar', who:'paper', pos:'center', magic:true},
-    {type:'text', who:'', avatar:'✨', name:'', text:'Свет становится ярче. Комната растворяется. Стены исчезают. Появляется место, которого не должно быть.', thought:true},
-    {type:'text', who:'', avatar:'🌌', name:'', text:'Вокруг — дома, которых нет на карте. Небо фиолетовое, с золотыми звёздами. Пахнет корицей и старой бумагой.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Где я? Что это за место?)', thought:true},
-    {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Добро пожаловать в Тихий Свет! Тут живёт всё, что люди забыли.', talking:true},
+    {type:'text', avatar:'📄', name:'Бумажка', text:'Ой-ой-ой. Начинается. Держись за меня!', talking:true},
+    {type:'showChar', who:'paper', pos:'center'},
+    {type:'text', avatar:'✨', name:'', text:'Свет становится ярче. Комната растворяется. Стены исчезают. Появляется место, которого не должно быть.', thought:true, narrate:true},
+    {type:'text', avatar:'🌌', name:'', text:'Вокруг — дома, которых нет на карте. Небо фиолетовое, с золотыми звёздами. Пахнет корицей и старой бумагой.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Где я? Что это за место?)', thought:true},
+    {type:'text', avatar:'📄', name:'Бумажка', text:'Добро пожаловать в Тихий Свет! Тут живёт всё, что люди забыли.', talking:true},
     {type:'choice', options:[
       {text:'«Как я сюда попал?»', tag:'+Любопытство', effects:{curiosity:1}, then:[
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Ты попал сюда, потому что ты что-то потерял. И Тихий Свет тебя выбрал.', talking:true}
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Ты попал сюда, потому что ты что-то потерял. И Тихий Свет тебя выбрал.', talking:true}
       ]},
       {text:'«Я хочу домой».', tag:'+Самостоятельность', effects:{independence:1}, then:[
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Домой? Но ты только пришёл! И... кажется, ты нужен здесь.', talking:true}
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Домой? Но ты только пришёл! И... кажется, ты нужен здесь.', talking:true}
       ]},
       {text:'«Это... красиво».', tag:'+Творчество', effects:{creativity:1}, then:[
-        {type:'text', who:'paper', avatar:'📄', name:'Бумажка', text:'Красиво? Ой... ты первый, кто так говорит. Обычно все пугаются.', talking:true}
+        {type:'text', avatar:'📄', name:'Бумажка', text:'Красиво? Ой... ты первый, кто так говорит. Обычно все пугаются.', talking:true}
       ]}
     ]},
-
-    // Сцена 6 — финал главы
-    {type:'scene', bg:'room', caption:'Утро. Всё было сном?', ambient:'night', particles:'house'},
+    {type:'scene', bg:'room', caption:'Утро. Всё было сном?', music:'room', particles:'house'},
     {type:'hideChar', who:'paper'},
-    {type:'text', who:'', avatar:'🌅', name:'', text:'Тим открывает глаза. Он снова в своей комнате. Утро. В руке — маленький бумажный кораблик. Он спит.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Тим (мысли)', text:'(Это был сон? Или...)', thought:true},
-    {type:'text', who:'', avatar:'📖', name:'', text:'На столе — рисунок. Тот же, что был в тетради бабушки. Но теперь на нём появилась новая деталь: маленькая девочка с фонарём.', thought:true},
-    {type:'text', who:'', avatar:'💫', name:'Тим (мысли)', text:'(Кто ты?)', thought:true},
-    {type:'showChar', who:'nika', pos:'right', magic:true},
-    {type:'text', who:'nika', avatar:'💫', name:'???', text:'Скоро узнаешь.', talking:true},
-    {type:'hideChar', who:'nika', magic:true},
-    {type:'text', who:'', avatar:'🌙', name:'', text:'В окне мелькнуло отражение девочки. Она улыбнулась. И исчезла.', thought:true},
+    {type:'text', avatar:'🌅', name:'', text:'Тим открывает глаза. Он снова в своей комнате. Утро. В руке — маленький бумажный кораблик. Он спит.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Тим (мысли)', text:'(Это был сон? Или...)', thought:true},
+    {type:'text', avatar:'📖', name:'', text:'На столе — рисунок. Тот же, что был в тетради бабушки. Но теперь на нём появилась новая деталь: маленькая девочка с фонарём.', thought:true, narrate:true},
+    {type:'text', avatar:'💫', name:'Тим (мысли)', text:'(Кто ты?)', thought:true},
+    {type:'showChar', who:'nika', pos:'right'},
+    {type:'text', avatar:'💫', name:'???', text:'Скоро узнаешь.', talking:true},
+    {type:'hideChar', who:'nika'},
+    {type:'text', avatar:'🌙', name:'', text:'В окне мелькнуло отражение девочки. Она улыбнулась. И исчезла.', thought:true, narrate:true},
     {type:'end'}
   ],
   en:[
-    {type:'scene', bg:'car', caption:'Chapter 1. The House at the Edge of the Street', ambient:'night', particles:'night'},
-    {type:'text', who:'', avatar:'🌇', name:'', text:'The road winds between houses. Trees, signs, strangers\' windows flash by.', thought:true},
-    {type:'text', who:'', avatar:'👩', name:'Mom', text:'...and grandma\'s house is old, of course, but so cozy. Do you remember it?'},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(I don\'t remember. I don\'t remember grandma at all. Only a smell — cinnamon and old paper.)', thought:true},
-    {type:'text', who:'', avatar:'👨', name:'Dad', text:'Tim, are you listening?'},
+    {type:'scene', bg:'car', caption:'Chapter 1. The House at the Edge of the Street', music:'car', particles:'car'},
+    {type:'text', avatar:'🌇', name:'', text:'The road winds between houses. Trees, signs, strangers\' windows flash by.', thought:true, narrate:true},
+    {type:'text', avatar:'👩', name:'Mom', text:'...and grandma\'s house is old, of course, but so cozy. Do you remember it?'},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(I don\'t remember. I don\'t remember grandma at all. Only a smell — cinnamon and old paper.)', thought:true},
+    {type:'text', avatar:'👨', name:'Dad', text:'Tim, are you listening?'},
     {type:'choice', options:[
       {text:'"Yes, Dad."', tag:'+Trust', effects:{trust:1}},
       {text:'"Uh-huh."', tag:'neutral', effects:{}},
       {text:'Stay silent.', tag:'+Independence', effects:{independence:1}}
     ]},
-    {type:'scene', bg:'house', caption:'Grandma\'s house. Evening.', ambient:'night', particles:'house'},
-    {type:'text', who:'', avatar:'🏡', name:'', text:'The house is old but beautiful. Two stories. Carved window frames. An overgrown but living garden.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Why do I feel like I\'ve been here before?..)', thought:true},
-    {type:'scene', bg:'room', caption:'Inside the house. Smells of cinnamon.', ambient:'night', particles:'house'},
-    {type:'text', who:'', avatar:'📸', name:'', text:'Old photographs on the walls. The camera slowly moves past them.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(A woman with kind eyes. Is that grandma? Why don\'t I remember her?)', thought:true},
-    {type:'text', who:'', avatar:'📷', name:'', text:'In one photo — little Tim in grandma\'s arms. But her face... is blurred.', thought:true},
+    {type:'scene', bg:'house', caption:'Grandma\'s house. Evening.', music:'house', particles:'house'},
+    {type:'text', avatar:'🏡', name:'', text:'The house is old but beautiful. Two stories. Carved window frames. An overgrown but living garden.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(Why do I feel like I\'ve been here before?..)', thought:true},
+    {type:'scene', bg:'room', caption:'Inside the house. Smells of cinnamon.', music:'room', particles:'house'},
+    {type:'text', avatar:'📸', name:'', text:'Old photographs on the walls. The camera slowly moves past them.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(A woman with kind eyes. Is that grandma? Why don\'t I remember her?)', thought:true},
+    {type:'text', avatar:'📷', name:'', text:'In one photo — little Tim in grandma\'s arms. But her face... is blurred.', thought:true, narrate:true},
     {type:'choice', options:[
       {text:'Pick up the photograph.', tag:'+Observation', effects:{observation:1}},
       {text:'Walk past.', tag:'neutral', effects:{}},
       {text:'Call mom.', tag:'+Trust', effects:{trust:1}}
     ]},
-    {type:'scene', bg:'house', caption:'Night. Light in the window next door.', ambient:'night', particles:'house'},
-    {type:'text', who:'', avatar:'📖', name:'', text:'In grandma\'s notebook — drawings: house, garden, train, lighthouse, door. And a note: "The Quiet Light doesn\'t fade while someone remembers."', thought:true},
-    {type:'text', who:'', avatar:'💡', name:'', text:'Light in the window of the house next door. The one that\'s been empty for years.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Nobody lives there... Why is the light on?)', thought:true},
+    {type:'scene', bg:'house', caption:'Night. Light in the window next door.', music:'night', particles:'house'},
+    {type:'text', avatar:'📖', name:'', text:'In grandma\'s notebook — drawings: house, garden, train, lighthouse, door. And a note: "The Quiet Light doesn\'t fade while someone remembers."', thought:true, narrate:true},
+    {type:'text', avatar:'💡', name:'', text:'Light in the window of the house next door. The one that\'s been empty for years.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(Nobody lives there... Why is the light on?)', thought:true},
     {type:'choice', options:[
       {text:'Go check.', tag:'+Curiosity +Courage', effects:{curiosity:1,courage:1}},
       {text:'Close the curtain.', tag:'+Independence', effects:{independence:1}},
       {text:'Call parents.', tag:'+Trust −Courage', effects:{trust:1,courage:-1}}
     ]},
-    {type:'scene', bg:'room', caption:'Empty house. Someone is waiting inside.', ambient:'magic', particles:'magic', magic:true},
-    {type:'text', who:'', avatar:'🚪', name:'', text:'The door creaks. It\'s dark inside, but light comes from one room.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(It smells like... cinnamon. Like grandma\'s house. But this is a different house.)', thought:true},
-    {type:'showChar', who:'paper', pos:'center', magic:true},
-    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'Oh! You... you can see me?', talking:true},
+    {type:'scene', bg:'room', caption:'Empty house. Someone is waiting inside.', music:'room', particles:'magic'},
+    {type:'text', avatar:'🚪', name:'', text:'The door creaks. It\'s dark inside, but light comes from one room.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(It smells like... cinnamon. Like grandma\'s house. But this is a different house.)', thought:true},
+    {type:'showChar', who:'paper', pos:'center'},
+    {type:'text', avatar:'📄', name:'Paper', text:'Oh! You... you can see me?', talking:true},
     {type:'choice', options:[
       {text:'"I see you. Who are you?"', tag:'+Curiosity', effects:{curiosity:1}},
       {text:'"Don\'t be afraid, I\'ll help."', tag:'+Kindness', effects:{kindness:1}},
       {text:'"What are you?"', tag:'neutral', effects:{}},
       {text:'Watch silently.', tag:'+Observation', effects:{observation:1}}
     ]},
-    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'You don\'t know what the Quiet Light is? Then you need to go there. You lost something, right?', talking:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(I lost... what? I don\'t remember.)', thought:true},
-    {type:'scene', bg:'void', caption:'The Quiet Light. First look.', ambient:'magic', particles:'void', magic:true, shake:true},
+    {type:'text', avatar:'📄', name:'Paper', text:'You don\'t know what the Quiet Light is? Then you need to go there. You lost something, right?', talking:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(I lost... what? I don\'t remember.)', thought:true},
+    {type:'scene', bg:'void', caption:'The Quiet Light. First look.', music:'magic', particles:'void', shake:true, magic:true},
     {type:'hideChar', who:'paper'},
-    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'Oh-oh-oh. It\'s starting. Hold on to me!', talking:true},
-    {type:'showChar', who:'paper', pos:'center', magic:true},
-    {type:'text', who:'', avatar:'✨', name:'', text:'Light grows brighter. The room dissolves. Walls disappear. A place appears that shouldn\'t exist.', thought:true},
-    {type:'text', who:'', avatar:'🌌', name:'', text:'Around — houses that aren\'t on any map. Purple sky with golden stars. Smells of cinnamon and old paper.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Where am I? What is this place?)', thought:true},
-    {type:'text', who:'paper', avatar:'📄', name:'Paper', text:'Welcome to the Quiet Light! Everything people forgot lives here.', talking:true},
+    {type:'text', avatar:'📄', name:'Paper', text:'Oh-oh-oh. It\'s starting. Hold on to me!', talking:true},
+    {type:'showChar', who:'paper', pos:'center'},
+    {type:'text', avatar:'✨', name:'', text:'Light grows brighter. The room dissolves. Walls disappear. A place appears that shouldn\'t exist.', thought:true, narrate:true},
+    {type:'text', avatar:'🌌', name:'', text:'Around — houses that aren\'t on any map. Purple sky with golden stars. Smells of cinnamon and old paper.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(Where am I? What is this place?)', thought:true},
+    {type:'text', avatar:'📄', name:'Paper', text:'Welcome to the Quiet Light! Everything people forgot lives here.', talking:true},
     {type:'choice', options:[
       {text:'"How did I get here?"', tag:'+Curiosity', effects:{curiosity:1}},
       {text:'"I want to go home."', tag:'+Independence', effects:{independence:1}},
       {text:'"It\'s... beautiful."', tag:'+Creativity', effects:{creativity:1}}
     ]},
-    {type:'scene', bg:'room', caption:'Morning. Was it a dream?', ambient:'night', particles:'house'},
+    {type:'scene', bg:'room', caption:'Morning. Was it a dream?', music:'room', particles:'house'},
     {type:'hideChar', who:'paper'},
-    {type:'text', who:'', avatar:'🌅', name:'', text:'Tim opens his eyes. He\'s back in his room. Morning. In his hand — a small paper boat. It\'s sleeping.', thought:true},
-    {type:'text', who:'', avatar:'👤', name:'Tim (thoughts)', text:'(Was it a dream? Or...)', thought:true},
-    {type:'text', who:'', avatar:'📖', name:'', text:'On the table — a drawing. The same one from grandma\'s notebook. But now there\'s a new detail: a little girl with a lantern.', thought:true},
-    {type:'text', who:'', avatar:'💫', name:'Tim (thoughts)', text:'(Who are you?)', thought:true},
-    {type:'showChar', who:'nika', pos:'right', magic:true},
-    {type:'text', who:'nika', avatar:'💫', name:'???', text:'You\'ll find out soon.', talking:true},
-    {type:'hideChar', who:'nika', magic:true},
-    {type:'text', who:'', avatar:'🌙', name:'', text:'A girl\'s reflection flashed in the window. She smiled. And disappeared.', thought:true},
+    {type:'text', avatar:'🌅', name:'', text:'Tim opens his eyes. He\'s back in his room. Morning. In his hand — a small paper boat. It\'s sleeping.', thought:true, narrate:true},
+    {type:'text', avatar:'👤', name:'Tim (thoughts)', text:'(Was it a dream? Or...)', thought:true},
+    {type:'text', avatar:'📖', name:'', text:'On the table — a drawing. The same one from grandma\'s notebook. But now there\'s a new detail: a little girl with a lantern.', thought:true, narrate:true},
+    {type:'text', avatar:'💫', name:'Tim (thoughts)', text:'(Who are you?)', thought:true},
+    {type:'showChar', who:'nika', pos:'right'},
+    {type:'text', avatar:'💫', name:'???', text:'You\'ll find out soon.', talking:true},
+    {type:'hideChar', who:'nika'},
+    {type:'text', avatar:'🌙', name:'', text:'A girl\'s reflection flashed in the window. She smiled. And disappeared.', thought:true, narrate:true},
     {type:'end'}
   ]
 };
 
-/* ============ ИГРОВОЙ ДВИЖОК ============ */
+/* ============ ДВИЖОК ============ */
 let currentLang = localStorage.getItem('ts_lang') || 'ru';
 let script = Script[currentLang];
 let index = 0;
@@ -699,7 +715,6 @@ function updateDots(){
   Array.from(dots.children).forEach((d,i)=>{d.classList.toggle('active',i<done);});
 }
 
-function setBackground(name){ setBg(name); }
 function caption(text){
   const c=document.getElementById('sceneCaption');
   c.textContent=text;
@@ -724,7 +739,6 @@ function typeText(text, cb){
     }
     dlgText.textContent+=typeFullText[typeCharIndex];
     typeCharIndex++;
-    if(typeCharIndex%3===0) sfxPage();
   },28);
 }
 
@@ -735,8 +749,19 @@ function showText(step){
   speakerAvatar.textContent=step.avatar||'👤';
   speakerName.classList.toggle('thought', !!step.thought);
   dlgText.classList.toggle('thought', !!step.thought);
-  typeText(step.text||'');
-  // lip-sync имитация
+  typeText(step.text||'', ()=>{
+    // После окончания печати — озвучка
+    if(step.narrate){
+      speak(step.text, VoiceProfiles['']);
+    } else if(step.name && VoiceProfiles[step.name]){
+      speak(step.text, VoiceProfiles[step.name]);
+    } else if(step.name){
+      // Если имя есть, но профиля нет — используем нейтральный
+      speak(step.text, VoiceProfiles['']);
+    } else {
+      speak(step.text, VoiceProfiles['']);
+    }
+  });
   if(step.talking){
     const c=document.querySelector('.character.show');
     if(c){ c.classList.add('talking'); setTimeout(()=>c.classList.remove('talking'), Math.min(4000, (step.text||'').length*60)); }
@@ -745,6 +770,7 @@ function showText(step){
 
 function showChoices(step){
   dlgBox.classList.remove('show');
+  stopSpeaking();
   choicesBox.innerHTML='';
   step.options.forEach(opt=>{
     const b=document.createElement('button');
@@ -755,7 +781,6 @@ function showChoices(step){
       applyEffects(opt.effects);
       choicesBox.classList.remove('show');
       if(opt.then && opt.then.length){
-        // вставляем под-шаги после текущего
         script.splice(index+1,0,...opt.then);
       }
       index++;
@@ -770,6 +795,8 @@ function showEnd(){
   dlgBox.classList.remove('show');
   choicesBox.classList.remove('show');
   hideAllCharacters();
+  stopSpeaking();
+  stopMusic();
   const es=document.getElementById('endScreen');
   document.getElementById('endTitle').textContent = currentLang==='ru'?'Конец главы 1':'End of Chapter 1';
   const statsText = currentLang==='ru'
@@ -780,7 +807,7 @@ function showEnd(){
     : 'You made the first step into the Quiet Light. But this is only the beginning.<br><br>') + statsText;
   es.classList.add('show');
   sfxMagic();
-  playAmbient('magic');
+  setTimeout(()=>playMusic('magic'), 800);
 }
 
 function playStep(){
@@ -792,9 +819,9 @@ function playStep(){
       document.getElementById('game').classList.add('shake');
       setTimeout(()=>document.getElementById('game').classList.remove('shake'),600);
     }
-    if(step.bg) setBackground(step.bg);
+    if(step.bg) setBg(step.bg);
     if(step.caption) caption(step.caption);
-    if(step.ambient) playAmbient(step.ambient);
+    if(step.music) playMusic(step.music);
     if(step.particles) startParticles(step.particles);
     if(step.magic) sfxMagic();
     index++;
@@ -814,47 +841,81 @@ function playStep(){
     setTimeout(playStep, 600);
     return;
   }
-  if(step.type==='text'){
-    showText(step);
-    return; // ждём клика
-  }
-  if(step.type==='choice'){
-    showChoices(step);
-    return;
-  }
-  if(step.type==='end'){
-    showEnd();
-    return;
-  }
+  if(step.type==='text'){ showText(step); return; }
+  if(step.type==='choice'){ showChoices(step); return; }
+  if(step.type==='end'){ showEnd(); return; }
 }
 
 function advance(){
   if(isTyping){
-    // мгновенно показать текст
     clearInterval(typingTimer);
     dlgText.textContent=typeFullText;
     isTyping=false;
     nextArrow.classList.add('show');
+    // Озвучить сразу
+    const step=script[index];
+    if(step && step.text){
+      if(step.narrate) speak(step.text, VoiceProfiles['']);
+      else if(step.name && VoiceProfiles[step.name]) speak(step.text, VoiceProfiles[step.name]);
+      else speak(step.text, VoiceProfiles['']);
+    }
     return;
   }
   if(script[index] && script[index].type==='text'){
+    stopSpeaking();
     index++;
     playStep();
   }
 }
 
-// Клик / тап по экрану
 document.getElementById('game').addEventListener('click',(e)=>{
-  if(e.target.closest('.choice-btn')||e.target.closest('.lang-btn')||e.target.closest('.loader-btn')||e.target.closest('.end-btn')||e.target.closest('.menu-btn')) return;
+  if(e.target.closest('.choice-btn')||e.target.closest('.icon-btn')||e.target.closest('.loader-btn')||e.target.closest('.end-btn')) return;
   initAudio();
   if(document.getElementById('loader').classList.contains('hide')) advance();
 });
 document.getElementById('game').addEventListener('touchstart',(e)=>{
-  if(e.target.closest('.choice-btn')||e.target.closest('.lang-btn')||e.target.closest('.loader-btn')||e.target.closest('.end-btn')||e.target.closest('.menu-btn')) return;
+  if(e.target.closest('.choice-btn')||e.target.closest('.icon-btn')||e.target.closest('.loader-btn')||e.target.closest('.end-btn')) return;
   e.preventDefault();
   initAudio();
   if(document.getElementById('loader').classList.contains('hide')) advance();
 },{passive:false});
+
+/* === КНОПКИ === */
+const soundBtn = document.getElementById('soundBtn');
+const musicBtn = document.getElementById('musicBtn');
+const voiceBtn = document.getElementById('voiceBtn');
+function updateButtons(){
+  soundBtn.classList.toggle('off', !soundOn);
+  musicBtn.classList.toggle('off', !musicOn);
+  voiceBtn.classList.toggle('off', !voiceOn);
+  soundBtn.textContent = soundOn?'🔊':'🔇';
+  musicBtn.textContent = musicOn?'🎵':'🎵';
+  voiceBtn.textContent = voiceOn?'🎙':'🎙';
+}
+soundBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  soundOn = !soundOn;
+  localStorage.setItem('ts_sound', soundOn?'on':'off');
+  updateButtons();
+  if(!soundOn){ stopMusic(); stopSpeaking(); }
+  else { sfxClick(); const cur=script[index]; if(cur && cur.music) playMusic(cur.music); }
+});
+musicBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  musicOn = !musicOn;
+  localStorage.setItem('ts_music', musicOn?'on':'off');
+  updateButtons();
+  if(!musicOn) stopMusic();
+  else { const cur=script[index]; if(cur && cur.music) playMusic(cur.music); }
+});
+voiceBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  voiceOn = !voiceOn;
+  localStorage.setItem('ts_voice', voiceOn?'on':'off');
+  updateButtons();
+  if(!voiceOn) stopSpeaking();
+});
+updateButtons();
 
 /* === ЯЗЫК === */
 function applyLang(){
@@ -868,10 +929,10 @@ function applyLang(){
 }
 document.getElementById('langBtn').addEventListener('click',(e)=>{
   e.stopPropagation();
+  stopSpeaking();
   currentLang = currentLang==='ru'?'en':'ru';
   localStorage.setItem('ts_lang',currentLang);
   script = Script[currentLang];
-  // перезапуск с начала при смене языка
   index = 0;
   applyLang();
   document.getElementById('endScreen').classList.remove('show');
@@ -884,35 +945,35 @@ document.getElementById('startBtn').addEventListener('click',(e)=>{
   e.stopPropagation();
   initAudio();
   sfxMagic();
-  playAmbient('night');
   document.getElementById('loader').classList.add('hide');
+  // Сначала сцена, потом музыка
   setTimeout(()=>{
     playStep();
   },600);
 });
 document.getElementById('endBtn').addEventListener('click',(e)=>{
   e.stopPropagation();
-  // Начать заново (для теста)
   index=0;
   document.getElementById('endScreen').classList.remove('show');
   hideAllCharacters();
   playStep();
 });
 
-/* Двойной тап для быстрого перехода */
+/* Быстрый двойной тап */
 let lastTap=0;
 document.getElementById('game').addEventListener('touchend',(e)=>{
   const now=Date.now();
-  if(now-lastTap<300 && !e.target.closest('.choice-btn') && !e.target.closest('.lang-btn')){
+  if(now-lastTap<300 && !e.target.closest('.choice-btn') && !e.target.closest('.icon-btn')){
     if(isTyping){ clearInterval(typingTimer); dlgText.textContent=typeFullText; isTyping=false; nextArrow.classList.add('show'); }
   }
   lastTap=now;
 });
 
-// Инициализация
+/* Стартовая инициализация */
 applyLang();
-startParticles('night');
+startParticles('car');
 setBg('car');
+window.addEventListener('beforeunload', stopMusic);
 </script>
 </body>
 </html>
