@@ -3,28 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ПОСЛЕДНИЙ СВЕТ · VioKrista</title>
+<title>Последний Свет · VioKrista</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#050510;color:#fff}
 #app{position:fixed;inset:0;overflow:hidden}
 
-/* ===== ЗВЁЗДНОЕ НЕБО ===== */
+/* ===== ЗВЁЗДЫ ===== */
 #stars{position:absolute;inset:0;z-index:1}
-.star{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8)}
-@keyframes twinkle{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+.star{position:absolute;border-radius:50%;background:#fff}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.85;transform:scale(1.15)}}
 
 /* ===== ПАДАЮЩАЯ ЗВЕЗДА ===== */
-#falling-star{position:absolute;width:4px;height:4px;background:#fff;border-radius:50%;
-  box-shadow:0 0 20px 4px #FBBF24,0 0 40px 8px rgba(251,191,36,.5);z-index:2;opacity:0}
+#falling-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
+  box-shadow:0 0 8px 2px rgba(251,191,36,.7);z-index:2;opacity:0}
 @keyframes fall{
   0%{opacity:0;transform:translate(0,0) scale(0)}
   10%{opacity:1;transform:translate(0,0) scale(1)}
   100%{opacity:0;transform:translate(-80vw,80vh) scale(0.3)}
 }
 
-/* ===== ТУМАН НА ФОНЕ ===== */
-.fog{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;pointer-events:none;z-index:3}
+/* ===== ТУМАН ===== */
+.fog{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:3}
 .fog-1{width:500px;height:500px;background:#4C1D95;top:-100px;left:-100px;animation:drift1 25s infinite ease-in-out}
 .fog-2{width:600px;height:600px;background:#1E1B4B;bottom:-200px;right:-200px;animation:drift2 30s infinite ease-in-out}
 .fog-3{width:400px;height:400px;background:#5B21B6;top:30%;left:40%;animation:drift3 20s infinite ease-in-out}
@@ -32,138 +32,128 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,-80px)}}
 @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,100px)}}
 
-/* ===== ВИНЬЕТКА И СВЕЧЕНИЕ ===== */
+/* ===== ВИНЬЕТКА ===== */
 .vignette{position:absolute;inset:0;pointer-events:none;z-index:4;
-  background:radial-gradient(ellipse at center,transparent 30%,rgba(5,5,16,.9) 100%)}
-.warm-glow{position:absolute;inset:0;pointer-events:none;z-index:4;
-  background:radial-gradient(circle at 50% 80%,rgba(251,191,36,.08),transparent 60%)}
+  background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,16,.95) 100%)}
+
+/* ===== ЛЁГКОЕ СВЕЧЕНИЕ СНИЗУ (загадочное, не яркое) ===== */
+.mystic-glow{position:absolute;inset:0;pointer-events:none;z-index:4;
+  background:radial-gradient(ellipse at 50% 110%,rgba(139,92,246,.15) 0%,transparent 55%)}
 
 /* ===== ЧАСТИЦЫ ===== */
 #particles{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
-.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:#FBBF24;
-  box-shadow:0 0 10px #FBBF24;opacity:0}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:#A78BFA;
+  box-shadow:0 0 6px #A78BFA;opacity:0}
 @keyframes floatP{
   0%{opacity:0;transform:translateY(0) translateX(0)}
-  10%{opacity:.9}
-  90%{opacity:.6}
+  15%{opacity:.65}
+  85%{opacity:.4}
   100%{opacity:0;transform:translateY(-100vh) translateX(var(--dx,20px))}
 }
 
-/* ===== ЭКРАН ЗАГРУЗКИ ===== */
+/* ===== ЭКРАНЫ ===== */
 .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:20px}
 .screen.active{display:flex;animation:fadeIn .8s ease}
 @keyframes fadeIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:scale(1)}}
 
-.title-main{font-size:clamp(34px,10vw,72px);font-weight:900;letter-spacing:6px;
-  background:linear-gradient(180deg,#FFF8DC 0%,#FBBF24 50%,#B45309 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  text-align:center;line-height:1;margin-bottom:8px;
-  filter:drop-shadow(0 0 30px rgba(251,191,36,.6));
-  animation:titleGlow 3s infinite alternate}
-@keyframes titleGlow{
-  0%{filter:drop-shadow(0 0 30px rgba(251,191,36,.5))}
-  100%{filter:drop-shadow(0 0 50px rgba(251,191,36,.9))}
+/* ===== ЗАГОЛОВКИ ===== */
+.title-main{font-size:clamp(32px,9.5vw,64px);font-weight:900;letter-spacing:5px;
+  color:#F5E6C8;text-align:center;line-height:1.05;margin-bottom:6px;
+  text-shadow:0 0 20px rgba(251,191,36,.25),0 0 40px rgba(251,191,36,.15);
+  animation:titleBreath 5s infinite ease-in-out}
+@keyframes titleBreath{
+  0%,100%{text-shadow:0 0 20px rgba(251,191,36,.2),0 0 40px rgba(251,191,36,.1)}
+  50%{text-shadow:0 0 30px rgba(251,191,36,.35),0 0 60px rgba(251,191,36,.2)}
 }
 
-.title-sub{font-size:clamp(11px,3vw,14px);letter-spacing:8px;color:#C4B5FD;
-  font-weight:600;margin-bottom:30px;opacity:.8;text-transform:uppercase}
+.title-sub{font-size:clamp(11px,3vw,14px);letter-spacing:6px;color:#A78BFA;
+  font-weight:500;margin-bottom:8px;text-transform:uppercase;opacity:.75;text-align:center}
 
-.title-brand{font-size:clamp(14px,4vw,18px);letter-spacing:4px;
-  background:linear-gradient(90deg,#FBBF24,#F472B6,#A78BFA);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  font-weight:800;margin-top:20px;opacity:.9}
+/* VioKrista — название города */
+.city-name{font-size:clamp(13px,3.8vw,17px);letter-spacing:8px;font-weight:600;
+  color:#C4B5FD;text-transform:uppercase;margin-bottom:35px;
+  text-shadow:0 0 15px rgba(167,139,250,.4);opacity:.9}
 
-.divider{width:80px;height:2px;background:linear-gradient(90deg,transparent,#FBBF24,transparent);margin:25px 0}
+.divider{width:70px;height:1px;background:linear-gradient(90deg,transparent,rgba(251,191,36,.6),transparent);margin:22px 0}
 
 /* ===== КНОПКИ ===== */
-.btn{padding:16px 44px;font-size:clamp(15px,4vw,18px);font-weight:700;border:none;border-radius:50px;
-  cursor:pointer;font-family:inherit;letter-spacing:1px;position:relative;overflow:hidden;
-  transition:transform .2s ease,box-shadow .2s ease}
+.btn{padding:16px 40px;font-size:clamp(14px,3.8vw,17px);font-weight:700;border:none;border-radius:50px;
+  cursor:pointer;font-family:inherit;letter-spacing:1.5px;position:relative;overflow:hidden;
+  transition:transform .2s ease,box-shadow .3s ease}
 .btn:active{transform:scale(.96)}
 
-.btn-gold{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 50%,#B45309 100%);color:#1a0f2e;
-  box-shadow:0 10px 40px rgba(251,191,36,.5),inset 0 1px 0 rgba(255,255,255,.3)}
-.btn-gold:hover{box-shadow:0 15px 50px rgba(251,191,36,.7),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-gold{background:linear-gradient(135deg,#B45309 0%,#92400E 50%,#78350F 100%);
+  color:#FFF8DC;border:1px solid rgba(251,191,36,.5);
+  box-shadow:0 8px 30px rgba(180,83,9,.5),inset 0 1px 0 rgba(251,191,36,.3);
+  text-shadow:0 0 10px rgba(251,191,36,.4)}
+.btn-gold:hover{box-shadow:0 10px 40px rgba(251,191,36,.5),inset 0 1px 0 rgba(251,191,36,.5)}
 
-.btn-ghost{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.5);color:#E9D5FF;
-  box-shadow:0 5px 25px rgba(139,92,246,.2)}
-.btn-ghost:hover{background:rgba(139,92,246,.3);border-color:#A78BFA}
-
-/* Пульсация для главной кнопки */
-@keyframes pulse{0%,100%{box-shadow:0 10px 40px rgba(251,191,36,.5)}
-  50%{box-shadow:0 10px 50px rgba(251,191,36,.9),0 0 60px rgba(251,191,36,.4)}}
-.pulse{animation:pulse 2s infinite}
+@keyframes softPulse{
+  0%,100%{box-shadow:0 8px 30px rgba(180,83,9,.4),inset 0 1px 0 rgba(251,191,36,.3)}
+  50%{box-shadow:0 8px 40px rgba(251,191,36,.6),inset 0 1px 0 rgba(251,191,36,.5),0 0 40px rgba(251,191,36,.2)}
+}
+.soft-pulse{animation:softPulse 3s infinite ease-in-out}
 
 /* ===== МЕНЮ ===== */
-.menu-title{font-size:clamp(24px,7vw,44px);font-weight:900;letter-spacing:3px;
-  background:linear-gradient(180deg,#FFF8DC,#FBBF24);-webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:10px;text-align:center;filter:drop-shadow(0 0 20px rgba(251,191,36,.5))}
-.menu-sub{font-size:clamp(12px,3.5vw,15px);color:#C4B5FD;margin-bottom:35px;text-align:center;letter-spacing:2px;opacity:.8}
+.menu-title{font-size:clamp(22px,6.5vw,40px);font-weight:900;letter-spacing:4px;
+  color:#F5E6C8;margin-bottom:6px;text-align:center;
+  text-shadow:0 0 20px rgba(251,191,36,.25)}
+.menu-sub{font-size:clamp(12px,3.2vw,14px);color:#A78BFA;margin-bottom:30px;text-align:center;
+  letter-spacing:2px;opacity:.8}
 
-.menu-list{display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
-.menu-btn{padding:16px 24px;background:rgba(30,27,75,.7);border:2px solid rgba(139,92,246,.4);
-  border-radius:16px;color:#E9D5FF;font-size:clamp(15px,4vw,17px);font-weight:700;
+.menu-list{display:flex;flex-direction:column;gap:11px;width:100%;max-width:340px}
+.menu-btn{padding:15px 22px;background:rgba(30,27,75,.6);border:1.5px solid rgba(139,92,246,.35);
+  border-radius:14px;color:#E9D5FF;font-size:clamp(14px,3.8vw,16px);font-weight:600;
   cursor:pointer;font-family:inherit;text-align:left;transition:all .25s ease;
   backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;letter-spacing:.5px;
-  box-shadow:0 5px 20px rgba(0,0,0,.3)}
-.menu-btn:hover,.menu-btn:active{background:rgba(139,92,246,.35);border-color:#FBBF24;
-  transform:translateX(6px);box-shadow:0 5px 30px rgba(251,191,36,.3);color:#fff}
-.menu-btn .ico{font-size:22px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(251,191,36,.4))}
+  box-shadow:0 4px 18px rgba(0,0,0,.3)}
+.menu-btn:hover,.menu-btn:active{background:rgba(139,92,246,.28);border-color:rgba(251,191,36,.6);
+  transform:translateX(5px);box-shadow:0 4px 25px rgba(139,92,246,.25);color:#fff}
+.menu-btn .ico{font-size:20px;flex-shrink:0;opacity:.9}
 .menu-btn .lbl{flex:1}
-.menu-btn .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:500;
-  letter-spacing:1px;margin-top:2px;opacity:.8}
+.menu-btn .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:400;
+  letter-spacing:.8px;margin-top:2px;opacity:.8}
 
 /* ===== ЯЗЫК ===== */
-.lang-btn{position:absolute;top:16px;right:16px;z-index:50;padding:10px 16px;
-  background:rgba(20,17,45,.85);border:2px solid rgba(139,92,246,.5);border-radius:50px;
-  color:#E9D5FF;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
+.lang-btn{position:absolute;top:16px;right:16px;z-index:50;padding:9px 15px;
+  background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
+  color:#C4B5FD;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
   backdrop-filter:blur(10px);letter-spacing:1px;transition:all .2s}
-.lang-btn:hover{background:rgba(139,92,246,.4);border-color:#FBBF24;color:#fff}
+.lang-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
 
-/* ===== НИЖНЯЯ ПОДПИСЬ ===== */
+/* ===== ПОДПИСИ ===== */
 .credit{position:absolute;bottom:20px;left:0;right:0;text-align:center;
-  font-size:11px;color:#6D28D9;letter-spacing:2px;z-index:10;opacity:.7}
-
-/* ===== СВЕЧЕНИЕ ЛОГОТИПА (звёздочка) ===== */
-.star-logo{width:clamp(60px,18vw,100px);height:clamp(60px,18vw,100px);margin-bottom:20px;
-  position:relative;filter:drop-shadow(0 0 30px rgba(251,191,36,.8))}
-.star-logo svg{width:100%;height:100%;animation:spin 20s linear infinite}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.star-pulse{position:absolute;inset:-20px;border-radius:50%;
-  background:radial-gradient(circle,rgba(251,191,36,.4),transparent 70%);animation:starPulse 2s infinite}
-@keyframes starPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.3);opacity:1}}
-
-/* ===== ВЕРСИЯ ===== */
+  font-size:10px;color:#5B21B6;letter-spacing:2px;z-index:10;opacity:.6}
 .version{position:absolute;bottom:50px;left:20px;font-size:10px;color:#4C1D95;
-  letter-spacing:1px;z-index:10;font-weight:700}
+  letter-spacing:1px;z-index:10;font-weight:600;opacity:.6}
+
+/* ===== ЗВЕЗДА-ЛОГОТИП ===== */
+.star-logo{width:clamp(55px,16vw,90px);height:clamp(55px,16vw,90px);margin-bottom:22px;
+  position:relative}
+.star-logo svg{width:100%;height:100%;animation:spin 30s linear infinite;opacity:.9;
+  filter:drop-shadow(0 0 15px rgba(251,191,36,.4))}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.star-pulse{position:absolute;inset:-15px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.2),transparent 70%);
+  animation:starPulse 4s infinite ease-in-out}
+@keyframes starPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.2);opacity:.7}}
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- ЗВЁЗДЫ -->
   <div id="stars"></div>
-
-  <!-- ПАДАЮЩАЯ ЗВЕЗДА -->
   <div id="falling-star"></div>
-
-  <!-- ТУМАН -->
   <div class="fog fog-1"></div>
   <div class="fog fog-2"></div>
   <div class="fog fog-3"></div>
-
-  <!-- ЧАСТИЦЫ -->
   <div id="particles"></div>
-
-  <!-- ВИНЬЕТКА + СВЕЧЕНИЕ -->
   <div class="vignette"></div>
-  <div class="warm-glow"></div>
+  <div class="mystic-glow"></div>
 
-  <!-- КНОПКА ЯЗЫКА -->
   <button class="lang-btn" id="langBtn" onclick="toggleLang()">🌐 RU</button>
 
-  <!-- ============ ЭКРАН 1: ЗАГРУЗКА ============ -->
+  <!-- ========== ЗАГРУЗКА ========== -->
   <div class="screen active" id="screen-load">
     <div class="star-logo">
       <div class="star-pulse"></div>
@@ -171,62 +161,56 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
         <defs>
           <radialGradient id="starG">
             <stop offset="0%" stop-color="#FFF8DC"/>
-            <stop offset="50%" stop-color="#FBBF24"/>
+            <stop offset="60%" stop-color="#FBBF24"/>
             <stop offset="100%" stop-color="#B45309"/>
           </radialGradient>
         </defs>
-        <polygon points="50,5 61,38 96,38 68,58 79,92 50,72 21,92 32,58 4,38 39,38"
-          fill="url(#starG)" stroke="#FBBF24" stroke-width="1"/>
+        <polygon points="50,8 60,40 94,40 66,60 76,92 50,74 24,92 34,60 6,40 40,40"
+          fill="url(#starG)"/>
       </svg>
     </div>
 
     <div class="title-main" id="titleMain">ПОСЛЕДНИЙ СВЕТ</div>
-    <div class="title-sub" id="titleSub">ГОРОД, КОТОРЫЙ ПОМНИТ</div>
+    <div class="title-sub" id="titleSub">ИНТЕРАКТИВНАЯ ИСТОРИЯ</div>
+    <div class="city-name" id="cityName">ГОРОД VIOKRISTA</div>
 
     <div class="divider"></div>
 
-    <button class="btn btn-gold pulse" id="startBtn" onclick="goToMenu()" data-i18n="start">✨ ВОЙТИ В ИСТОРИЮ</button>
-
-    <div class="title-brand">VIOKRISTA</div>
+    <button class="btn btn-gold soft-pulse" id="startBtn" onclick="goToMenu()" data-i18n="start">ВОЙТИ В ИСТОРИЮ</button>
   </div>
 
-  <!-- ============ ЭКРАН 2: МЕНЮ ============ -->
+  <!-- ========== МЕНЮ ========== -->
   <div class="screen" id="screen-menu">
     <div class="menu-title" id="menuTitle">ГЛАВНОЕ МЕНЮ</div>
     <div class="menu-sub" id="menuSub">Что ты выберешь сегодня?</div>
 
     <div class="menu-list">
       <button class="menu-btn" onclick="notReady('continue')">
-        <span class="ico">▶️</span>
-        <span class="lbl"><span data-i18n="menu_continue">Продолжить</span><small id="continueInfo" data-i18n="menu_continue_sub">Глава 1 · Скоро</small></span>
+        <span class="ico">▶</span>
+        <span class="lbl"><span data-i18n="menu_continue">Продолжить</span><small data-i18n="menu_continue_sub">Глава 1 · Скоро</small></span>
       </button>
-
       <button class="menu-btn" onclick="notReady('new')">
         <span class="ico">✨</span>
         <span class="lbl"><span data-i18n="menu_new">Новая история</span><small data-i18n="menu_new_sub">Начать с начала</small></span>
       </button>
-
       <button class="menu-btn" onclick="notReady('chars')">
         <span class="ico">👥</span>
         <span class="lbl"><span data-i18n="menu_chars">Персонажи</span><small data-i18n="menu_chars_sub">Луна, Элиан, Флик…</small></span>
       </button>
-
       <button class="menu-btn" onclick="notReady('collect')">
         <span class="ico">📖</span>
         <span class="lbl"><span data-i18n="menu_collect">Коллекция</span><small data-i18n="menu_collect_sub">Воспоминания и находки</small></span>
       </button>
-
       <button class="menu-btn" onclick="notReady('settings')">
-        <span class="ico">⚙️</span>
+        <span class="ico">⚙</span>
         <span class="lbl"><span data-i18n="menu_settings">Настройки</span><small data-i18n="menu_settings_sub">Звук, язык, сложность</small></span>
       </button>
     </div>
 
     <div class="divider"></div>
-    <div style="font-size:12px;color:#6D28D9;letter-spacing:3px;font-weight:700" id="menuBrand">VIOKRISTA</div>
+    <div style="font-size:11px;color:#5B21B6;letter-spacing:5px;font-weight:600;opacity:.7" id="menuBrand">VIOKRISTA</div>
   </div>
 
-  <!-- НИЖНЯЯ ПОДПИСЬ -->
   <div class="credit" id="credit">© VIOKRISTA · 2026</div>
   <div class="version" id="version">v0.1 · ЭТАП 1</div>
 </div>
@@ -235,7 +219,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 /* ============ ЯЗЫКИ ============ */
 const translations = {
   ru: {
-    start: '✨ ВОЙТИ В ИСТОРИЮ',
+    start: 'ВОЙТИ В ИСТОРИЮ',
     menu_title: 'ГЛАВНОЕ МЕНЮ',
     menu_sub: 'Что ты выберешь сегодня?',
     menu_continue: 'Продолжить',
@@ -251,7 +235,7 @@ const translations = {
     not_ready: 'Скоро здесь появится этот раздел ✨'
   },
   en: {
-    start: '✨ ENTER THE STORY',
+    start: 'ENTER THE STORY',
     menu_title: 'MAIN MENU',
     menu_sub: 'What will you choose today?',
     menu_continue: 'Continue',
@@ -280,17 +264,28 @@ function applyLang(){
   document.documentElement.lang = currentLang;
   const btn = document.getElementById('langBtn');
   if(btn) btn.textContent = '🌐 ' + currentLang.toUpperCase();
+
+  // Универсальные переводы
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.dataset.i18n;
     if(translations[currentLang][k]) el.textContent = translations[currentLang][k];
   });
-  // Обновить заголовки
+
+  // Заголовки
   const mt = document.getElementById('menuTitle');
   if(mt) mt.textContent = translations[currentLang].menu_title;
   const ms = document.getElementById('menuSub');
   if(ms) ms.textContent = translations[currentLang].menu_sub;
-  const ci = document.getElementById('continueInfo');
-  if(ci) ci.textContent = translations[currentLang].menu_continue_sub;
+
+  // Название города — всегда латиницей, но с переводом слова «ГОРОД»
+  const cn = document.getElementById('cityName');
+  if(cn) cn.textContent = currentLang === 'ru' ? 'ГОРОД VIOKRISTA' : 'CITY OF VIOKRISTA';
+
+  const ts = document.getElementById('titleSub');
+  if(ts) ts.textContent = currentLang === 'ru' ? 'ИНТЕРАКТИВНАЯ ИСТОРИЯ' : 'INTERACTIVE STORY';
+
+  const tm = document.getElementById('titleMain');
+  if(tm) tm.textContent = currentLang === 'ru' ? 'ПОСЛЕДНИЙ СВЕТ' : 'THE LAST LIGHT';
 }
 
 function t(k){ return translations[currentLang][k] || k; }
@@ -300,30 +295,25 @@ function goToMenu(){
   const load = document.getElementById('screen-load');
   const menu = document.getElementById('screen-menu');
   load.classList.remove('active');
-  setTimeout(() => {
-    menu.classList.add('active');
-  }, 400);
-  // Проиграть магический эффект
+  setTimeout(() => menu.classList.add('active'), 400);
   launchFallingStar();
   burstParticles();
 }
 
 function notReady(section){
-  // Мягкое сообщение, что раздел в разработке
   showToast(t('not_ready'));
 }
 
 function showToast(text){
-  // Создать тост
   let toast = document.getElementById('toastEl');
   if(!toast){
     toast = document.createElement('div');
     toast.id = 'toastEl';
     toast.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
-      background:linear-gradient(135deg,#FBBF24,#F59E0B);color:#1a0f2e;padding:14px 28px;border-radius:50px;
-      font-weight:800;font-size:15px;box-shadow:0 10px 40px rgba(251,191,36,.6);z-index:200;
+      background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#F5E6C8;padding:14px 26px;border-radius:50px;
+      font-weight:600;font-size:14px;box-shadow:0 8px 30px rgba(76,29,149,.6);z-index:200;
       opacity:0;transition:all .4s ease;pointer-events:none;text-align:center;max-width:88vw;
-      letter-spacing:.5px;font-family:inherit`;
+      letter-spacing:.5px;font-family:inherit;border:1px solid rgba(167,139,250,.4)`;
     document.body.appendChild(toast);
   }
   toast.textContent = text;
@@ -342,23 +332,26 @@ function showToast(text){
 function createStars(){
   const cont = document.getElementById('stars');
   cont.innerHTML = '';
-  const count = Math.min(140, Math.floor(window.innerWidth / 6));
+  const count = Math.min(120, Math.floor(window.innerWidth / 7));
   for(let i = 0; i < count; i++){
     const s = document.createElement('div');
     s.className = 'star';
-    const size = Math.random() * 2.2 + 0.6;
+    const size = Math.random() * 1.6 + 0.5;
     s.style.width = size + 'px';
     s.style.height = size + 'px';
     s.style.left = Math.random() * 100 + '%';
     s.style.top = Math.random() * 100 + '%';
-    const dur = 2 + Math.random() * 4;
-    const delay = Math.random() * 5;
+    const dur = 3 + Math.random() * 5;
     s.style.animation = `twinkle ${dur}s infinite ease-in-out`;
-    s.style.animationDelay = delay + 's';
-    // Некоторые звёзды золотые
-    if(Math.random() < 0.15){
-      s.style.background = '#FBBF24';
-      s.style.boxShadow = '0 0 10px #FBBF24, 0 0 20px rgba(251,191,36,.5)';
+    s.style.animationDelay = (Math.random() * 5) + 's';
+    // Мягкое свечение обычным звёздам
+    if(size > 1.4){
+      s.style.boxShadow = '0 0 4px rgba(255,255,255,.5)';
+    }
+    // Редкие золотые звёзды, едва заметные
+    if(Math.random() < 0.08){
+      s.style.background = '#F5E6C8';
+      s.style.boxShadow = '0 0 6px rgba(251,191,36,.6)';
     }
     cont.appendChild(s);
   }
@@ -371,15 +364,14 @@ function launchFallingStar(){
   star.style.top = '10%';
   star.style.animation = 'none';
   void star.offsetWidth;
-  star.style.animation = 'fall 2.5s ease-in forwards';
+  star.style.animation = 'fall 2.8s ease-in forwards';
 }
 
-/* Периодически запускать */
 setInterval(() => {
   if(document.getElementById('screen-menu').classList.contains('active')){
     launchFallingStar();
   }
-}, 8000);
+}, 9000);
 
 /* ============ ЧАСТИЦЫ ============ */
 function spawnParticle(){
@@ -390,48 +382,38 @@ function spawnParticle(){
   p.style.top = (90 + Math.random() * 15) + '%';
   const dx = (Math.random() * 80 - 40) + 'px';
   p.style.setProperty('--dx', dx);
-  const dur = 6 + Math.random() * 8;
+  const dur = 7 + Math.random() * 8;
   p.style.animation = `floatP ${dur}s linear forwards`;
+  // Случайный оттенок — фиолетовый или золотой
+  const isGold = Math.random() < 0.3;
+  const col = isGold ? '#FBBF24' : '#A78BFA';
+  p.style.background = col;
+  p.style.boxShadow = '0 0 6px ' + col;
   cont.appendChild(p);
   setTimeout(() => p.remove(), dur * 1000 + 200);
 }
 
 function burstParticles(){
-  for(let i = 0; i < 25; i++){
-    setTimeout(spawnParticle, i * 40);
+  for(let i = 0; i < 15; i++){
+    setTimeout(spawnParticle, i * 60);
   }
 }
 
-// Постоянный поток частиц
-setInterval(spawnParticle, 400);
+setInterval(spawnParticle, 700);
 
-/* ============ СОБЫТИЯ ============ */
+/* ============ СТАРТ ============ */
 window.addEventListener('load', () => {
   createStars();
   applyLang();
-  // Показать первую падающую звезду через 1.5 секунды
-  setTimeout(launchFallingStar, 1500);
+  setTimeout(launchFallingStar, 1800);
 });
 
-window.addEventListener('resize', () => {
-  createStars();
-});
+window.addEventListener('resize', createStars);
 
-// Клик по фону — эффект
+// Клик по фону — эффект частиц
 document.getElementById('app').addEventListener('click', (e) => {
   if(e.target.closest('button')) return;
   burstParticles();
-});
-
-// Свайп/тап — быстрая перезагрузка звёзд на всякий случай
-let lastTap = 0;
-document.getElementById('app').addEventListener('touchend', () => {
-  const now = Date.now();
-  if(now - lastTap < 300){
-    createStars();
-    burstParticles();
-  }
-  lastTap = now;
 });
 </script>
 </body>
