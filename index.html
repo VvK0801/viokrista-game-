@@ -86,7 +86,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
   background:linear-gradient(90deg,#FBBF24,#F472B6,#A78BFA);-webkit-background-clip:text;
   -webkit-text-fill-color:transparent;background-clip:text;text-align:center;padding:0 20px}
 .loader-sub{font-size:clamp(12px,3.5vw,16px);color:#C4B5FD;text-align:center;padding:0 20px;line-height:1.5}
-.loader-btn{margin-top:20px;padding:16px 40px;font-size:17px;font-weight:700;border:none;
+.loader-btn{margin-top:20px;padding:18px 44px;font-size:18px;font-weight:700;border:none;
   border-radius:50px;background:linear-gradient(90deg,#8B5CF6,#A78BFA);color:#fff;cursor:pointer;
   font-family:inherit;box-shadow:0 10px 30px rgba(139,92,246,.5);transition:transform .15s}
 .loader-btn:active{transform:scale(.95)}
@@ -95,7 +95,6 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
   opacity:0;transition:opacity 1.5s ease;pointer-events:none;z-index:15;padding:0 30px;
   text-shadow:0 0 30px rgba(251,191,36,.8);letter-spacing:2px}
 .scene-caption.show{opacity:1}
-/* Индикатор звука */
 .sound-status{position:absolute;top:60px;left:50%;transform:translateX(-50%);
   padding:8px 20px;background:rgba(34,197,94,.9);color:#fff;border-radius:20px;
   font-size:13px;font-weight:700;z-index:50;opacity:0;transition:opacity .3s;pointer-events:none}
@@ -108,7 +107,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
     <div class="loader-title">ХРОНИКИ<br>ТИХОГО СВЕТА</div>
     <div class="loader-sub" id="loaderSub">Некоторые двери открываются только для тех,<br>кто потерял что-то важное.</div>
     <button class="loader-btn" id="startBtn">🔊 Начать историю</button>
-    <div style="font-size:12px;color:#8B5CF6;margin-top:10px;text-align:center">Нажми кнопку — звук включится автоматически</div>
+    <div style="font-size:12px;color:#8B5CF6;margin-top:10px;text-align:center;max-width:280px">Тапни кнопку — музыка включится автоматически</div>
   </div>
   <div class="bg-layer" id="bg1"></div>
   <div class="bg-layer" id="bg2"></div>
@@ -119,11 +118,12 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
   <div class="hud-top">
     <div class="chapter-label" id="chapterLabel">Глава 1</div>
     <div class="hud-right">
-      <button class="icon-btn" id="soundBtn" title="Звук">🔊</button>
+      <button class="icon-btn" id="soundBtn" title="Музыка">🔊</button>
+      <button class="icon-btn" id="voiceBtn" title="Озвучка">🎙</button>
       <button class="icon-btn" id="langBtn" title="Язык">🌐 RU</button>
     </div>
   </div>
-  <div class="sound-status" id="soundStatus">🔊 Звук включён</div>
+  <div class="sound-status" id="soundStatus"></div>
   <div class="dialogue-box" id="dialogueBox">
     <div class="speaker">
       <div class="speaker-avatar" id="speakerAvatar">👤</div>
@@ -139,33 +139,47 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-seri
     <div class="end-sub" id="endSub"></div>
     <button class="end-btn" id="endBtn">Продолжить путь</button>
   </div>
+
+  <!-- ФОНОВАЯ МУЗЫКА (HTML5 audio, работает везде) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="music1.mp3" type="audio/mpeg">
+  </audio>
 </div>
 
 <script>
-/* ===== НАСТРОЙКИ ===== */
-let soundOn = localStorage.getItem('ts_sound') !== 'off';
+/* ============ НАСТРОЙКИ ============ */
+let musicOn = localStorage.getItem('ts_music') !== 'off';
+let voiceOn = localStorage.getItem('ts_voice') !== 'off';
 
-/* ===== АУДИО-КОНТЕКСТ ===== */
+/* ============ МУЗЫКА (HTML5 audio) ============ */
+const bgMusic = document.getElementById('bgMusic');
+bgMusic.volume = 0.35; // тихий фон
+
+function startMusic(){
+  if(!musicOn) return;
+  try{
+    bgMusic.volume = 0.35;
+    const p = bgMusic.play();
+    if(p && p.catch){ p.catch(err => console.log('Music play error:', err)); }
+  }catch(e){ console.log('Music error:', e); }
+}
+function stopMusic(){
+  try{ bgMusic.pause(); }catch(e){}
+}
+function setMusicVolume(v){ bgMusic.volume = Math.max(0, Math.min(1, v)); }
+
+/* ============ ЗВУКИ-ЭФФЕКТЫ (Web Audio — короткие, работают) ============ */
 let audioCtx = null;
-let musicLoopTimer = null;
-let currentMusicScene = null;
-
 function initAudio(){
   if(!audioCtx){
-    try{
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }catch(e){ console.log('AudioContext not supported'); return false; }
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
   }
-  if(audioCtx.state === 'suspended'){
-    audioCtx.resume().then(()=>{
-      console.log('AudioContext resumed');
-    });
+  if(audioCtx && audioCtx.state === 'suspended'){
+    audioCtx.resume();
   }
-  return true;
 }
-
-function playTone(freq, dur, type='sine', vol=0.08){
-  if(!soundOn || !audioCtx) return;
+function playTone(freq, dur, type='sine', vol=0.06){
+  if(!audioCtx) return;
   try{
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -181,57 +195,11 @@ function playTone(freq, dur, type='sine', vol=0.08){
     osc.stop(now + dur);
   }catch(e){}
 }
+function sfxClick(){ playTone(600, 0.06, 'sine', 0.06); }
+function sfxChoice(){ playTone(800, 0.12, 'sine', 0.08); setTimeout(()=>playTone(1100, 0.1, 'sine', 0.06), 100); }
+function sfxMagic(){ [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 0.35, 'sine', 0.07), i * 140)); }
 
-function sfxClick(){ playTone(700, 0.08, 'square', 0.12); }
-function sfxChoice(){ playTone(900, 0.1, 'sine', 0.14); setTimeout(()=>playTone(1200, 0.1, 'sine', 0.12), 100); }
-function sfxMagic(){ [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 0.3, 'sine', 0.12), i * 120)); }
-
-/* ===== МУЗЫКА ===== */
-const MusicScenes = {
-  car:   { notes: [220, 261.63, 329.63, 392, 329.63, 261.63], tempo: 750, type: 'sine', vol: 0.06 },
-  house: { notes: [293.66, 349.23, 440, 523.25, 440, 349.23], tempo: 850, type: 'triangle', vol: 0.06 },
-  night: { notes: [174.61, 196, 220, 196, 174.61, 155.56], tempo: 1100, type: 'sine', vol: 0.05 },
-  magic: { notes: [523.25, 659.25, 783.99, 1046.5, 783.99, 659.25], tempo: 650, type: 'sine', vol: 0.06 },
-  room:  { notes: [246.94, 293.66, 349.23, 293.66, 246.94, 220], tempo: 950, type: 'triangle', vol: 0.055 }
-};
-
-function playMusic(sceneName){
-  stopMusic();
-  if(!soundOn) return;
-  if(!audioCtx) return;
-  const cfg = MusicScenes[sceneName] || MusicScenes.night;
-  currentMusicScene = sceneName;
-  let idx = 0;
-  // Сразу играем первую ноту
-  playMusicNote(cfg, idx);
-  idx++;
-  musicLoopTimer = setInterval(()=>{
-    if(!soundOn || !audioCtx){ return; }
-    playMusicNote(cfg, idx);
-    idx++;
-  }, cfg.tempo);
-}
-
-function playMusicNote(cfg, idx){
-  const note = cfg.notes[idx % cfg.notes.length];
-  // Основная нота
-  playTone(note, cfg.tempo / 1000 * 0.9, cfg.type, cfg.vol);
-  // Гармония снизу
-  if(idx % 2 === 0){
-    playTone(note / 2, cfg.tempo / 1000 * 0.9, 'sine', cfg.vol * 0.6);
-  }
-  // Верхняя искра иногда
-  if(idx % 4 === 2){
-    setTimeout(() => playTone(note * 2, 0.35, 'sine', cfg.vol * 0.5), cfg.tempo / 2);
-  }
-}
-
-function stopMusic(){
-  if(musicLoopTimer){ clearInterval(musicLoopTimer); musicLoopTimer = null; }
-  currentMusicScene = null;
-}
-
-/* ===== ОЗВУЧКА (если работает) ===== */
+/* ============ ОЗВУЧКА (мягче) ============ */
 let voices = [];
 function loadVoices(){
   if(!('speechSynthesis' in window)) return;
@@ -242,45 +210,57 @@ if('speechSynthesis' in window){
   speechSynthesis.onvoiceschanged = loadVoices;
 }
 
+/* Мягкие профили — медленнее, ниже, тише */
 const VoiceProfiles = {
-  'Тим': { rate: 1.0, pitch: 1.2, lang: 'ru' },
-  'Тим (мысли)': { rate: 0.9, pitch: 1.3, lang: 'ru', vol: 0.7 },
-  'Tim': { rate: 1.0, pitch: 1.2, lang: 'en' },
-  'Tim (thoughts)': { rate: 0.9, pitch: 1.3, lang: 'en', vol: 0.7 },
-  'Мама': { rate: 0.95, pitch: 1.0, lang: 'ru' },
-  'Mom': { rate: 0.95, pitch: 1.0, lang: 'en' },
-  'Папа': { rate: 0.9, pitch: 0.8, lang: 'ru' },
-  'Dad': { rate: 0.9, pitch: 0.8, lang: 'en' },
-  'Бумажка': { rate: 1.15, pitch: 1.6, lang: 'ru' },
-  'Paper': { rate: 1.15, pitch: 1.6, lang: 'en' },
-  'Ника': { rate: 0.9, pitch: 1.1, lang: 'ru' },
-  'Nika': { rate: 0.9, pitch: 1.1, lang: 'en' },
-  '???': { rate: 0.9, pitch: 1.1, lang: 'ru' },
-  '': { rate: 0.95, pitch: 1.0, lang: 'ru' }
+  'Тим': { rate: 0.85, pitch: 1.05, vol: 0.6 },
+  'Тим (мысли)': { rate: 0.8, pitch: 1.1, vol: 0.5 },
+  'Tim': { rate: 0.85, pitch: 1.05, vol: 0.6 },
+  'Tim (thoughts)': { rate: 0.8, pitch: 1.1, vol: 0.5 },
+  'Мама': { rate: 0.88, pitch: 0.95, vol: 0.6 },
+  'Mom': { rate: 0.88, pitch: 0.95, vol: 0.6 },
+  'Папа': { rate: 0.85, pitch: 0.75, vol: 0.6 },
+  'Dad': { rate: 0.85, pitch: 0.75, vol: 0.6 },
+  'Бумажка': { rate: 0.95, pitch: 1.35, vol: 0.55 },
+  'Paper': { rate: 0.95, pitch: 1.35, vol: 0.55 },
+  'Ника': { rate: 0.85, pitch: 1.0, vol: 0.55 },
+  'Nika': { rate: 0.85, pitch: 1.0, vol: 0.55 },
+  '???': { rate: 0.85, pitch: 1.0, vol: 0.55 },
+  '': { rate: 0.9, pitch: 0.95, vol: 0.5 }
 };
 
 function pickVoice(profile){
   if(!voices.length) return null;
-  const langPrefix = profile.lang === 'en' ? 'en' : 'ru';
+  const isEn = currentLang === 'en';
+  const langPrefix = isEn ? 'en' : 'ru';
   let candidates = voices.filter(v => v.lang.toLowerCase().startsWith(langPrefix));
-  if(!candidates.length) candidates = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+  if(!candidates.length) candidates = voices.filter(v => v.lang.toLowerCase().startsWith('ru'));
   if(!candidates.length) candidates = voices;
+  // Предпочитаем женские/мужские по названию
+  const name = (profile.name || '').toLowerCase();
+  if(name === 'мама' || name === 'mom' || name === 'бумажка' || name === 'paper' || name === 'ника' || name === 'nika'){
+    const female = candidates.find(v => /female|woman|girl|svetlana|milena|irina|anna|maria|alena|samantha|victoria|karen|tessa|zira|katya/i.test(v.name));
+    if(female) return female;
+  }
+  if(name === 'папа' || name === 'dad'){
+    const male = candidates.find(v => /male|man|boy|dmitri|yuri|pavel|maxim|alex|daniel|fred|thomas|oliver/i.test(v.name));
+    if(male) return male;
+  }
   return candidates[0];
 }
 
 function speak(text, profile){
-  if(!soundOn) return;
+  if(!voiceOn) return;
   if(!('speechSynthesis' in window)) return;
   if(!text) return;
   try{ speechSynthesis.cancel(); }catch(e){}
   const utter = new SpeechSynthesisUtterance(text);
   const p = profile || VoiceProfiles[''];
-  utter.rate = p.rate || 1.0;
-  utter.pitch = p.pitch || 1.0;
-  utter.volume = (p.vol !== undefined ? p.vol : 1) * 0.9;
+  utter.rate = p.rate || 0.9;
+  utter.pitch = p.pitch || 0.95;
+  utter.volume = p.vol !== undefined ? p.vol : 0.5;
   const v = pickVoice(p);
   if(v) utter.voice = v;
-  utter.lang = p.lang === 'en' ? 'en-US' : 'ru-RU';
+  utter.lang = currentLang === 'en' ? 'en-US' : 'ru-RU';
   const avatar = document.getElementById('speakerAvatar');
   utter.onstart = () => avatar && avatar.classList.add('speaking');
   utter.onend = () => avatar && avatar.classList.remove('speaking');
@@ -293,7 +273,7 @@ function stopSpeaking(){
   if(avatar) avatar.classList.remove('speaking');
 }
 
-/* ===== ЧАСТИЦЫ ===== */
+/* ============ ЧАСТИЦЫ ============ */
 function startParticles(type){
   const cont = document.getElementById('particles');
   cont.innerHTML = '';
@@ -319,7 +299,7 @@ styleEl.textContent = `@keyframes floatUp{0%{transform:translateY(0) translateX(
   10%{opacity:.7}90%{opacity:.4}100%{transform:translateY(-110vh) translateX(20px);opacity:0}}`;
 document.head.appendChild(styleEl);
 
-/* ===== ФОНЫ ===== */
+/* ============ ФОНЫ ============ */
 function svgBg(svg){ return 'url("data:image/svg+xml;utf8,' + encodeURIComponent(svg) + '")'; }
 const BGs = {
   car: svgBg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFB88C"/><stop offset="50%" stop-color="#DE6262"/><stop offset="100%" stop-color="#3A1C71"/></linearGradient></defs><rect width="800" height="600" fill="url(#s1)"/><circle cx="650" cy="150" r="60" fill="#FFEAA7" opacity=".9"/><rect y="380" width="800" height="220" fill="#2D1B4E"/><rect x="50" y="300" width="80" height="90" fill="#3D2A5C"/><rect x="150" y="270" width="100" height="120" fill="#4A3269"/><rect x="270" y="320" width="70" height="70" fill="#3D2A5C"/><rect x="360" y="250" width="120" height="140" fill="#4A3269"/><rect x="500" y="290" width="90" height="100" fill="#3D2A5C"/><rect x="610" y="260" width="110" height="130" fill="#4A3269"/><g fill="#FFEAA7"><rect x="70" y="320" width="15" height="20"/><rect x="100" y="320" width="15" height="20"/><rect x="180" y="300" width="18" height="22"/><rect x="220" y="300" width="18" height="22"/><rect x="390" y="280" width="20" height="25"/><rect x="430" y="280" width="20" height="25"/><rect x="530" y="320" width="18" height="22"/><rect x="640" y="290" width="20" height="25"/></g></svg>`),
@@ -336,7 +316,7 @@ function setBg(name){
   if(current) current.classList.remove('active');
 }
 
-/* ===== ПЕРСОНАЖИ ===== */
+/* ============ ПЕРСОНАЖИ ============ */
 const Characters = {
   paper: { svg: `<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><polygon points="60,200 150,120 240,200 150,260" fill="#F5F0E1"/><polygon points="60,200 150,120 150,200" fill="#E8E0CC"/><polygon points="150,120 240,200 150,200" fill="#FFF8E7"/><circle cx="125" cy="180" r="8" fill="#1A0F2E"/><circle cx="175" cy="180" r="8" fill="#1A0F2E"/><circle cx="128" cy="177" r="3" fill="#fff"/><circle cx="178" cy="177" r="3" fill="#fff"/><ellipse class="mouth" cx="150" cy="205" rx="8" ry="4" fill="#1A0F2E"/><circle cx="105" cy="200" r="8" fill="#F472B6" opacity=".5"/><circle cx="195" cy="200" r="8" fill="#F472B6" opacity=".5"/></svg>` },
   nika: { svg: `<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg"><path d="M80 500 Q80 380 110 340 Q150 300 190 340 Q220 380 220 500 Z" fill="#A78BFA" opacity=".65"/><ellipse cx="150" cy="250" rx="60" ry="70" fill="#C4B5FD" opacity=".85"/><path d="M90 230 Q90 170 150 170 Q210 170 210 230 Q200 195 150 195 Q100 195 90 230 Z" fill="#8B5CF6"/><ellipse cx="128" cy="245" rx="10" ry="12" fill="#4C1D95"/><ellipse cx="172" cy="245" rx="10" ry="12" fill="#4C1D95"/><circle cx="130" cy="242" r="3" fill="#fff"/><circle cx="174" cy="242" r="3" fill="#fff"/><ellipse class="mouth" cx="150" cy="280" rx="10" ry="5" fill="#4C1D95"/></svg>` }
@@ -356,10 +336,10 @@ function showCharacter(who, pos){
 function hideAllCharacters(){ document.querySelectorAll('.character').forEach(c => { c.classList.remove('show'); setTimeout(() => c.remove(), 800); }); }
 function hideCharacter(who){ const c = document.querySelector(`[data-who="${who}"]`); if(c){ c.classList.remove('show'); setTimeout(() => c.remove(), 800); } }
 
-/* ===== СЦЕНАРИЙ (сокращённый, но полный) ===== */
+/* ============ СЦЕНАРИЙ ============ */
 const Script = {
   ru: [
-    { type: 'scene', bg: 'car', caption: 'Глава 1. Дом на Краю Улицы', music: 'car', particles: 'car' },
+    { type: 'scene', bg: 'car', caption: 'Глава 1. Дом на Краю Улицы', particles: 'car' },
     { type: 'text', avatar: '🌇', name: '', text: 'Дорога вьётся между домами. За окном мелькают деревья, вывески, чужие окна.', thought: true, narrate: true },
     { type: 'text', avatar: '👩', name: 'Мама', text: '...и бабушкин дом, конечно, старый, но такой уютный. Ты помнишь его?' },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(Я не помню. Я вообще не помню бабушку. Только запах — кажется, корицы и старой бумаги.)', thought: true },
@@ -369,10 +349,10 @@ const Script = {
       { text: '«Ага».', tag: 'нейтрально', effects: {} },
       { text: 'Молчать.', tag: '+Самостоятельность', effects: { independence: 1 } }
     ]},
-    { type: 'scene', bg: 'house', caption: 'Дом бабушки. Вечер.', music: 'house', particles: 'house' },
+    { type: 'scene', bg: 'house', caption: 'Дом бабушки. Вечер.', particles: 'house' },
     { type: 'text', avatar: '🏡', name: '', text: 'Дом старый, но красивый. Двухэтажный. Окна с резными рамами. Сад, заросший, но живой.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(Почему у меня такое чувство, будто я уже здесь был?..)', thought: true },
-    { type: 'scene', bg: 'room', caption: 'Внутри дома. Пахнет корицей.', music: 'room', particles: 'house' },
+    { type: 'scene', bg: 'room', caption: 'Внутри дома. Пахнет корицей.', particles: 'house' },
     { type: 'text', avatar: '📸', name: '', text: 'На стенах — старые фотографии. Камера медленно проходит по ним.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(На фото — женщина с добрыми глазами. Это бабушка? Почему я её не помню?)', thought: true },
     { type: 'choice', options: [
@@ -382,7 +362,7 @@ const Script = {
       { text: 'Пройти мимо.', tag: 'нейтрально', effects: {} },
       { text: 'Позвать маму.', tag: '+Доверие', effects: { trust: 1 } }
     ]},
-    { type: 'scene', bg: 'house', caption: 'Ночь. Свет в окне соседнего дома.', music: 'night', particles: 'house' },
+    { type: 'scene', bg: 'house', caption: 'Ночь. Свет в окне соседнего дома.', particles: 'house' },
     { type: 'text', avatar: '📖', name: '', text: 'В тетради бабушки — рисунки: дом, сад, поезд, маяк, дверь. И подпись: «Тихий Свет не гаснет, пока кто-то помнит».', thought: true, narrate: true },
     { type: 'text', avatar: '💡', name: '', text: 'Свет в окне соседнего дома. Того, который пустует уже много лет.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(Там же никто не живёт... Почему горит свет?)', thought: true },
@@ -391,7 +371,7 @@ const Script = {
       { text: 'Закрыть штору.', tag: '+Самостоятельность', effects: { independence: 1 } },
       { text: 'Позвать родителей.', tag: '+Доверие −Смелость', effects: { trust: 1, courage: -1 } }
     ]},
-    { type: 'scene', bg: 'room', caption: 'Пустой дом. Кто-то ждёт внутри.', music: 'room', particles: 'magic' },
+    { type: 'scene', bg: 'room', caption: 'Пустой дом. Кто-то ждёт внутри.', particles: 'magic' },
     { type: 'text', avatar: '🚪', name: '', text: 'Дверь скрипит. Внутри темно, но свет идёт из одной комнаты.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(Тут пахнет... корицей. Как в бабушкином доме. Но это другой дом.)', thought: true },
     { type: 'showChar', who: 'paper', pos: 'center' },
@@ -413,7 +393,7 @@ const Script = {
     ]},
     { type: 'text', avatar: '📄', name: 'Бумажка', text: 'Ой! Ты не знаешь, что такое Тихий Свет? Тогда тебе нужно туда попасть. Ты ведь что-то потерял, да?', talking: true },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(Я потерял... что? Я не помню.)', thought: true },
-    { type: 'scene', bg: 'void', caption: 'Тихий Свет. Первый взгляд.', music: 'magic', particles: 'void', magic: true },
+    { type: 'scene', bg: 'void', caption: 'Тихий Свет. Первый взгляд.', particles: 'void', magic: true },
     { type: 'hideChar', who: 'paper' },
     { type: 'text', avatar: '📄', name: 'Бумажка', text: 'Ой-ой-ой. Начинается. Держись за меня!', talking: true },
     { type: 'showChar', who: 'paper', pos: 'center' },
@@ -432,7 +412,7 @@ const Script = {
         { type: 'text', avatar: '📄', name: 'Бумажка', text: 'Красиво? Ой... ты первый, кто так говорит.', talking: true }
       ]}
     ]},
-    { type: 'scene', bg: 'room', caption: 'Утро. Всё было сном?', music: 'room', particles: 'house' },
+    { type: 'scene', bg: 'room', caption: 'Утро. Всё было сном?', particles: 'house' },
     { type: 'hideChar', who: 'paper' },
     { type: 'text', avatar: '🌅', name: '', text: 'Тим открывает глаза. Он снова в своей комнате. Утро. В руке — маленький бумажный кораблик.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Тим (мысли)', text: '(Это был сон? Или...)', thought: true },
@@ -445,7 +425,7 @@ const Script = {
     { type: 'end' }
   ],
   en: [
-    { type: 'scene', bg: 'car', caption: 'Chapter 1. The House at the Edge of the Street', music: 'car', particles: 'car' },
+    { type: 'scene', bg: 'car', caption: 'Chapter 1. The House at the Edge of the Street', particles: 'car' },
     { type: 'text', avatar: '🌇', name: '', text: 'The road winds between houses. Trees, signs, strangers\' windows flash by.', thought: true, narrate: true },
     { type: 'text', avatar: '👩', name: 'Mom', text: '...and grandma\'s house is old, of course, but so cozy. Do you remember it?' },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(I don\'t remember. I don\'t remember grandma at all. Only a smell — cinnamon and old paper.)', thought: true },
@@ -455,10 +435,10 @@ const Script = {
       { text: '"Uh-huh."', tag: 'neutral', effects: {} },
       { text: 'Stay silent.', tag: '+Independence', effects: { independence: 1 } }
     ]},
-    { type: 'scene', bg: 'house', caption: 'Grandma\'s house. Evening.', music: 'house', particles: 'house' },
+    { type: 'scene', bg: 'house', caption: 'Grandma\'s house. Evening.', particles: 'house' },
     { type: 'text', avatar: '🏡', name: '', text: 'The house is old but beautiful. Carved window frames. An overgrown but living garden.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(Why do I feel like I\'ve been here before?..)', thought: true },
-    { type: 'scene', bg: 'room', caption: 'Inside the house. Smells of cinnamon.', music: 'room', particles: 'house' },
+    { type: 'scene', bg: 'room', caption: 'Inside the house. Smells of cinnamon.', particles: 'house' },
     { type: 'text', avatar: '📸', name: '', text: 'Old photographs on the walls.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(A woman with kind eyes. Is that grandma? Why don\'t I remember her?)', thought: true },
     { type: 'choice', options: [
@@ -466,7 +446,7 @@ const Script = {
       { text: 'Walk past.', tag: 'neutral', effects: {} },
       { text: 'Call mom.', tag: '+Trust', effects: { trust: 1 } }
     ]},
-    { type: 'scene', bg: 'house', caption: 'Night. Light in the window next door.', music: 'night', particles: 'house' },
+    { type: 'scene', bg: 'house', caption: 'Night. Light in the window next door.', particles: 'house' },
     { type: 'text', avatar: '📖', name: '', text: 'In grandma\'s notebook — drawings: house, garden, train, lighthouse, door.', thought: true, narrate: true },
     { type: 'text', avatar: '💡', name: '', text: 'Light in the window of the house next door. The one that\'s been empty for years.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(Nobody lives there... Why is the light on?)', thought: true },
@@ -475,7 +455,7 @@ const Script = {
       { text: 'Close the curtain.', tag: '+Independence', effects: { independence: 1 } },
       { text: 'Call parents.', tag: '+Trust −Courage', effects: { trust: 1, courage: -1 } }
     ]},
-    { type: 'scene', bg: 'room', caption: 'Empty house. Someone is waiting inside.', music: 'room', particles: 'magic' },
+    { type: 'scene', bg: 'room', caption: 'Empty house. Someone is waiting inside.', particles: 'magic' },
     { type: 'text', avatar: '🚪', name: '', text: 'The door creaks. It\'s dark inside, but light comes from one room.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(It smells like... cinnamon. Like grandma\'s house. But this is a different house.)', thought: true },
     { type: 'showChar', who: 'paper', pos: 'center' },
@@ -488,7 +468,7 @@ const Script = {
     ]},
     { type: 'text', avatar: '📄', name: 'Paper', text: 'You don\'t know what the Quiet Light is? Then you need to go there. You lost something, right?', talking: true },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(I lost... what? I don\'t remember.)', thought: true },
-    { type: 'scene', bg: 'void', caption: 'The Quiet Light. First look.', music: 'magic', particles: 'void', magic: true },
+    { type: 'scene', bg: 'void', caption: 'The Quiet Light. First look.', particles: 'void', magic: true },
     { type: 'hideChar', who: 'paper' },
     { type: 'text', avatar: '📄', name: 'Paper', text: 'Oh-oh-oh. It\'s starting. Hold on to me!', talking: true },
     { type: 'showChar', who: 'paper', pos: 'center' },
@@ -501,7 +481,7 @@ const Script = {
       { text: '"I want to go home."', tag: '+Independence', effects: { independence: 1 } },
       { text: '"It\'s... beautiful."', tag: '+Creativity', effects: { creativity: 1 } }
     ]},
-    { type: 'scene', bg: 'room', caption: 'Morning. Was it a dream?', music: 'room', particles: 'house' },
+    { type: 'scene', bg: 'room', caption: 'Morning. Was it a dream?', particles: 'house' },
     { type: 'hideChar', who: 'paper' },
     { type: 'text', avatar: '🌅', name: '', text: 'Tim opens his eyes. Morning. In his hand — a small paper boat.', thought: true, narrate: true },
     { type: 'text', avatar: '👤', name: 'Tim (thoughts)', text: '(Was it a dream? Or...)', thought: true },
@@ -515,7 +495,7 @@ const Script = {
   ]
 };
 
-/* ===== ДВИЖОК ===== */
+/* ============ ДВИЖОК ============ */
 let currentLang = localStorage.getItem('ts_lang') || 'ru';
 let script = Script[currentLang];
 let index = 0;
@@ -581,7 +561,6 @@ function showText(step){
   speakerName.classList.toggle('thought', !!step.thought);
   dlgText.classList.toggle('thought', !!step.thought);
   typeText(step.text || '', () => {
-    // Озвучка после печати
     if(step.narrate) speak(step.text, VoiceProfiles['']);
     else if(step.name && VoiceProfiles[step.name]) speak(step.text, VoiceProfiles[step.name]);
     else speak(step.text, VoiceProfiles['']);
@@ -618,7 +597,6 @@ function showEnd(){
   choicesBox.classList.remove('show');
   hideAllCharacters();
   stopSpeaking();
-  stopMusic();
   const es = document.getElementById('endScreen');
   document.getElementById('endTitle').textContent = currentLang === 'ru' ? 'Конец главы 1' : 'End of Chapter 1';
   const statsText = currentLang === 'ru'
@@ -638,7 +616,6 @@ function playStep(){
   if(step.type === 'scene'){
     if(step.bg) setBg(step.bg);
     if(step.caption) caption(step.caption);
-    if(step.music) playMusic(step.music);
     if(step.particles) startParticles(step.particles);
     if(step.magic) sfxMagic();
     index++;
@@ -678,38 +655,47 @@ document.getElementById('game').addEventListener('click', (e) => {
   initAudio();
   if(document.getElementById('loader').classList.contains('hide')) advance();
 });
+document.getElementById('game').addEventListener('touchstart', (e) => {
+  if(e.target.closest('.choice-btn') || e.target.closest('.icon-btn') || e.target.closest('.loader-btn') || e.target.closest('.end-btn')) return;
+  e.preventDefault();
+  initAudio();
+  if(document.getElementById('loader').classList.contains('hide')) advance();
+}, { passive: false });
 
-/* ===== КНОПКИ ===== */
+/* ============ КНОПКИ ============ */
 const soundBtn = document.getElementById('soundBtn');
+const voiceBtn = document.getElementById('voiceBtn');
 function updateButtons(){
-  soundBtn.classList.toggle('off', !soundOn);
-  soundBtn.textContent = soundOn ? '🔊' : '🔇';
+  soundBtn.classList.toggle('off', !musicOn);
+  voiceBtn.classList.toggle('off', !voiceOn);
+  soundBtn.textContent = musicOn ? '🔊' : '🔇';
+  voiceBtn.textContent = voiceOn ? '🎙' : '🎙';
 }
 soundBtn.addEventListener('click', (e) => {
   e.stopPropagation();
-  soundOn = !soundOn;
-  localStorage.setItem('ts_sound', soundOn ? 'on' : 'off');
+  musicOn = !musicOn;
+  localStorage.setItem('ts_music', musicOn ? 'on' : 'off');
+  if(musicOn){ startMusic(); } else { stopMusic(); }
   updateButtons();
-  if(!soundOn){ stopMusic(); stopSpeaking(); }
-  else {
-    initAudio();
-    sfxClick();
-    // Возобновляем музыку текущей сцены
-    for(let i = index; i >= 0; i--){
-      if(script[i] && script[i].music){ playMusic(script[i].music); break; }
-    }
-  }
-  showSoundStatus();
+  showSoundStatus(musicOn ? '🔊 Музыка включена' : '🔇 Музыка выключена');
 });
-function showSoundStatus(){
+voiceBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  voiceOn = !voiceOn;
+  localStorage.setItem('ts_voice', voiceOn ? 'on' : 'off');
+  if(!voiceOn) stopSpeaking();
+  updateButtons();
+  showSoundStatus(voiceOn ? '🎙 Озвучка включена' : '🎙 Озвучка выключена');
+});
+function showSoundStatus(text){
   const s = document.getElementById('soundStatus');
-  s.textContent = soundOn ? '🔊 Звук включён' : '🔇 Звук выключен';
+  s.textContent = text;
   s.classList.add('show');
   setTimeout(() => s.classList.remove('show'), 1500);
 }
 updateButtons();
 
-/* ===== ЯЗЫК ===== */
+/* ============ ЯЗЫК ============ */
 function applyLang(){
   document.getElementById('langBtn').textContent = '🌐 ' + currentLang.toUpperCase();
   document.getElementById('chapterLabel').textContent = currentLang === 'ru' ? 'Глава 1' : 'Chapter 1';
@@ -732,18 +718,15 @@ document.getElementById('langBtn').addEventListener('click', (e) => {
   playStep();
 });
 
-/* ===== СТАРТ ===== */
+/* ============ СТАРТ ============ */
 document.getElementById('startBtn').addEventListener('click', (e) => {
   e.stopPropagation();
-  // ГЛАВНОЕ: инициализация звука по прямому тапу пользователя
   initAudio();
-  if(audioCtx && audioCtx.state === 'suspended'){
-    audioCtx.resume();
-  }
   sfxClick();
-  setTimeout(() => sfxMagic(), 200);
+  // ГЛАВНОЕ: запуск музыки прямо в обработчике тапа
+  startMusic();
   document.getElementById('loader').classList.add('hide');
-  showSoundStatus();
+  showSoundStatus('🔊 Музыка играет');
   setTimeout(() => { playStep(); }, 600);
 });
 document.getElementById('endBtn').addEventListener('click', (e) => {
@@ -758,6 +741,17 @@ document.getElementById('endBtn').addEventListener('click', (e) => {
 applyLang();
 startParticles('car');
 setBg('car');
+
+/* При сворачивании — пауза музыки */
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){
+    stopMusic();
+  } else if(musicOn){
+    // возобновляем только если игра уже началась
+    if(document.getElementById('loader').classList.contains('hide')) startMusic();
+  }
+});
+
 window.addEventListener('beforeunload', stopMusic);
 </script>
 </body>
