@@ -1,0 +1,129 @@
+/* ============ ЭКРАН ГЛАВ ============ */
+
+#screen-chapters{
+  padding:70px 20px 30px;
+  overflow-y:auto;
+  align-items:center;
+}
+
+.chapters-head{
+  text-align:center;
+  margin-bottom:28px;
+}
+
+.chapters-title{
+  font-size:clamp(22px,6vw,34px);
+  font-weight:900;
+  letter-spacing:6px;
+  color:#F5E6C8;
+  text-shadow:0 0 20px rgba(251,191,36,.3);
+  margin-bottom:6px;
+}
+
+.chapters-sub{
+  font-size:12px;
+  color:#A78BFA;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  opacity:.75;
+}
+
+.chapters-list{
+  width:100%;
+  max-width:520px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* Карточка главы */
+.chapter-card{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:16px 18px;
+  background:rgba(20,17,45,.75);
+  border:1.5px solid rgba(139,92,246,.4);
+  border-radius:16px;
+  cursor:pointer;
+  transition:all .25s;
+  backdrop-filter:blur(12px);
+  box-shadow:0 4px 18px rgba(0,0,0,.35);
+  text-align:left;
+  font-family:inherit;
+  color:inherit;
+  width:100%;
+}
+
+.chapter-card:hover{
+  background:rgba(139,92,246,.3);
+  border-color:rgba(251,191,36,.6);
+  transform:translateX(5px);
+}
+
+.chapter-card.locked{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.chapter-card.locked:hover{
+  transform:none;
+  background:rgba(20,17,45,.75);
+  border-color:rgba(139,92,246,.4);
+}
+
+/* Номер главы */
+.ch-num{
+  width:52px;
+  height:52px;
+  border-radius:14px;
+  flex-shrink:0;
+  background:linear-gradient(135deg,#B45309,#78350F);
+  border:1.5px solid rgba(251,191,36,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:22px;
+  color:#F5E6C8;
+  text-shadow:0 0 12px rgba(251,191,36,.5);
+}
+
+.chapter-card.locked .ch-num{
+  background:rgba(20,17,45,.8);
+  border-color:rgba(139,92,246,.3);
+  color:#6D28D9;
+  text-shadow:none;
+}
+
+/* Информация */
+.ch-info{
+  flex:1;
+  min-width:0;
+}
+
+.ch-name{
+  font-size:clamp(14px,3.8vw,16px);
+  font-weight:700;
+  color:#E9D5FF;
+  letter-spacing:.5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.ch-sub{
+  font-size:11px;
+  color:#A78BFA;
+  margin-top:4px;
+  letter-spacing:1px;
+  opacity:.8;
+  text-transform:uppercase;
+}
+
+/* Статус (▶ или 🔒) */
+.ch-status{
+  font-size:20px;
+  opacity:.85;
+  flex-shrink:0;
+}
