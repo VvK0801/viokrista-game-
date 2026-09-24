@@ -5,1209 +5,964 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>VioKrista: Приключения Вио</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
-
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: #fff;
-    touch-action: manipulation;
-  }
-
-  .stars {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image:
-      radial-gradient(2px 2px at 20% 30%, #fff, transparent),
-      radial-gradient(1px 1px at 60% 70%, #fff, transparent),
-      radial-gradient(1px 1px at 80% 20%, #fff, transparent),
-      radial-gradient(2px 2px at 40% 80%, #fff, transparent),
-      radial-gradient(1px 1px at 90% 50%, #fff, transparent),
-      radial-gradient(1px 1px at 15% 65%, #fff, transparent),
-      radial-gradient(2px 2px at 75% 85%, #fff, transparent);
-    opacity: 0.5;
-    animation: twinkle 4s infinite alternate;
-  }
-
-  @keyframes twinkle {
-    from { opacity: 0.3; }
-    to { opacity: 0.7; }
-  }
-
-  .screen {
-    position: fixed;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 1;
-    overflow-y: auto;
-  }
-
-  .screen.active {
-    display: flex;
-    animation: fadeIn 0.4s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  .logo {
-    font-size: clamp(28px, 8vw, 48px);
-    font-weight: 900;
-    letter-spacing: 2px;
-    background: linear-gradient(90deg, #ffd93d, #ff6b6b, #a29bfe);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-
-  .subtitle {
-    font-size: clamp(14px, 4vw, 20px);
-    opacity: 0.8;
-    margin-bottom: 40px;
-    text-align: center;
-    color: #C4B5FD;
-  }
-
-  .btn {
-    padding: 16px 40px;
-    font-size: clamp(16px, 4.5vw, 20px);
-    font-weight: 700;
-    border: none;
-    border-radius: 50px;
-    background: linear-gradient(90deg, #8B5CF6, #A78BFA);
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-    transition: transform 0.15s ease;
-    font-family: inherit;
-  }
-
-  .btn:active { transform: scale(0.95); }
-
-  .btn-gold {
-    background: linear-gradient(90deg, #FBBF24, #F59E0B);
-    color: #1a1a2e;
-  }
-
-  .lang-switch {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 100;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
-    background: rgba(26, 26, 46, 0.7);
-    color: #fff;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    font-family: inherit;
-  }
-
-  .menu-title {
-    font-size: clamp(20px, 6vw, 32px);
-    font-weight: 800;
-    margin-bottom: 20px;
-    text-align: center;
-    background: linear-gradient(90deg, #ffd93d, #ff6b6b, #a29bfe);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .dragon-wrap {
-    width: min(40vw, 200px);
-    height: min(40vw, 200px);
-    margin-bottom: 20px;
-    cursor: pointer;
-    animation: float 3s infinite ease-in-out;
-    filter: drop-shadow(0 10px 30px rgba(139, 92, 246, 0.6));
-  }
-
-  .dragon-wrap svg { width: 100%; height: 100%; }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  .menu-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 20px;
-  }
-
-  .menu-card {
-    background: rgba(139, 92, 246, 0.15);
-    border: 2px solid rgba(139, 92, 246, 0.4);
-    border-radius: 20px;
-    padding: 20px 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .menu-card:hover, .menu-card:active {
-    background: rgba(139, 92, 246, 0.35);
-    border-color: #A78BFA;
-    transform: scale(1.03);
-  }
-
-  .menu-card .icon { font-size: clamp(28px, 8vw, 40px); }
-  .menu-card .label { font-size: clamp(12px, 3.5vw, 15px); font-weight: 700; color: #E9D5FF; }
-
-  .world-header {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .btn-back {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50px;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  .world-title {
-    font-size: clamp(16px, 4.5vw, 22px);
-    font-weight: 800;
-    color: #FBBF24;
-  }
-
-  .achievements {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .badge {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: rgba(139, 92, 246, 0.2);
-    border: 2px solid rgba(139, 92, 246, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    opacity: 0.4;
-    transition: all 0.3s ease;
-  }
-
-  .badge.earned {
-    opacity: 1;
-    background: linear-gradient(135deg, #FBBF24, #F59E0B);
-    border-color: #FBBF24;
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
-    animation: pop 0.4s ease;
-  }
-
-  @keyframes pop {
-    0% { transform: scale(0.5); }
-    70% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: linear-gradient(90deg, #FBBF24, #F59E0B);
-    color: #1a1a2e;
-    padding: 14px 28px;
-    border-radius: 50px;
-    font-weight: 800;
-    font-size: 16px;
-    box-shadow: 0 10px 30px rgba(251, 191, 36, 0.5);
-    z-index: 200;
-    opacity: 0;
-    transition: all 0.4s ease;
-    pointer-events: none;
-    text-align: center;
-    max-width: 90vw;
-  }
-
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-
-  .loader-dragon {
-    width: min(50vw, 250px);
-    height: min(50vw, 250px);
-    animation: float 2s infinite ease-in-out;
-    filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.8));
-    margin-bottom: 30px;
-  }
-
-  .loader-dragon svg { width: 100%; height: 100%; }
-
-  .loading-hint {
-    font-size: clamp(14px, 4vw, 18px);
-    color: #C4B5FD;
-    margin-top: 20px;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-  }
-
-  /* ============ МИР 1 СПЕЦИФИКА ============ */
-  .world1-container {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .task-menu {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    width: 100%;
-  }
-
-  .task-card {
-    background: rgba(139, 92, 246, 0.15);
-    border: 2px solid rgba(139, 92, 246, 0.4);
-    border-radius: 18px;
-    padding: 16px 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-  }
-
-  .task-card:hover {
-    background: rgba(139, 92, 246, 0.3);
-  }
-
-  .task-card.done {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: #22C55E;
-  }
-
-  .task-card.done::after {
-    content: '✓';
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #22C55E;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 16px;
-  }
-
-  .task-card .icon { font-size: 32px; margin-bottom: 6px; }
-  .task-card .label { font-size: 12px; font-weight: 700; color: #E9D5FF; line-height: 1.3; }
-
-  .progress-bar {
-    width: 100%;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 10px;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #FBBF24, #F59E0B);
-    transition: width 0.5s ease;
-    border-radius: 10px;
-  }
-
-  .progress-text {
-    font-size: 14px;
-    color: #C4B5FD;
-    margin-top: 6px;
-    text-align: center;
-  }
-
-  /* ============ ЗАДАНИЕ ЭКРАНА ============ */
-  .task-screen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 50;
-  }
-
-  .task-screen.active { display: flex; }
-
-  .task-top {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .task-score {
-    font-size: 18px;
-    font-weight: 800;
-    color: #FBBF24;
-  }
-
-  .task-hint {
-    font-size: clamp(14px, 4vw, 18px);
-    color: #C4B5FD;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-
-  /* --- Игра «Покорми Вио» --- */
-  .feed-dragon {
-    position: relative;
-    width: min(60vw, 220px);
-    height: min(60vw, 220px);
-    margin-bottom: 20px;
-  }
-
-  .feed-dragon svg { width: 100%; height: 100%; }
-
-  .food-item {
-    position: absolute;
-    font-size: 40px;
-    cursor: pointer;
-    transition: transform 0.5s ease, opacity 0.5s ease;
-    z-index: 10;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
-  }
-
-  .food-item.eaten {
-    transform: translate(0, 100px) scale(0.3);
-    opacity: 0;
-  }
-
-  .food-item.spawn {
-    animation: foodPop 0.4s ease;
-  }
-
-  @keyframes foodPop {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-
-  /* --- Игра «Поймай звёзды» --- */
-  .catch-area {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    height: 60vh;
-    max-height: 500px;
-    background: rgba(139, 92, 246, 0.1);
-    border: 2px solid rgba(139, 92, 246, 0.3);
-    border-radius: 24px;
-    overflow: hidden;
-    cursor: crosshair;
-  }
-
-  .star {
-    position: absolute;
-    font-size: 36px;
-    cursor: pointer;
-    animation: starPop 0.3s ease;
-    user-select: none;
-    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6));
-  }
-
-  @keyframes starPop {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.3); }
-    100% { transform: scale(1); }
-  }
-
-  .star.caught {
-    animation: starCaught 0.3s ease forwards;
-  }
-
-  @keyframes starCaught {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(2); opacity: 0; }
-  }
-
-  /* --- Игра «Доберись до замка» --- */
-  .path-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    width: 100%;
-    max-width: 500px;
-  }
-
-  .path-step {
-    width: 100%;
-    padding: 20px;
-    background: rgba(139, 92, 246, 0.15);
-    border: 2px solid rgba(139, 92, 246, 0.4);
-    border-radius: 18px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 700;
-    transition: all 0.2s ease;
-    color: #E9D5FF;
-  }
-
-  .path-step:hover {
-    background: rgba(139, 92, 246, 0.35);
-    transform: scale(1.02);
-  }
-
-  .path-step.done {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: #22C55E;
-    cursor: default;
-  }
-
-  .path-step.locked {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .castle-final {
-    font-size: 80px;
-    margin-top: 10px;
-    animation: float 2s infinite ease-in-out;
-    filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.6));
-  }
-
-  /* --- Модалка победы --- */
-  .win-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 300;
-    padding: 20px;
-  }
-
-  .win-modal.show { display: flex; }
-
-  .win-content {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    border: 3px solid #FBBF24;
-    border-radius: 30px;
-    padding: 40px 30px;
-    text-align: center;
-    max-width: 400px;
-    animation: pop 0.5s ease;
-    box-shadow: 0 0 60px rgba(251, 191, 36, 0.5);
-  }
-
-  .win-emoji { font-size: 80px; margin-bottom: 15px; }
-  .win-title { font-size: 24px; font-weight: 900; color: #FBBF24; margin-bottom: 10px; }
-  .win-text { font-size: 16px; color: #C4B5FD; margin-bottom: 20px; line-height: 1.5; }
-
-  @media (max-width: 400px) {
-    .menu-grid, .task-menu { gap: 8px; }
-    .menu-card, .task-card { padding: 14px 6px; }
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;touch-action:manipulation;position:relative}
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 60% 70%,#fff,transparent),radial-gradient(1px 1px at 80% 20%,#fff,transparent),radial-gradient(2px 2px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 90% 50%,#fff,transparent),radial-gradient(1px 1px at 15% 65%,#fff,transparent),radial-gradient(2px 2px at 75% 85%,#fff,transparent);opacity:.5;animation:twinkle 4s infinite alternate}
+  @keyframes twinkle{from{opacity:.3}to{opacity:.7}}
+  .screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:1;overflow-y:auto}
+  .screen.active{display:flex;animation:fadeIn .4s ease}
+  @keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+  .logo{font-size:clamp(28px,8vw,48px);font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#ffd93d,#ff6b6b,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;text-align:center}
+  .subtitle{font-size:clamp(14px,4vw,20px);opacity:.8;margin-bottom:40px;text-align:center;color:#C4B5FD}
+  .btn{padding:16px 40px;font-size:clamp(16px,4.5vw,20px);font-weight:700;border:none;border-radius:50px;background:linear-gradient(90deg,#8B5CF6,#A78BFA);color:#fff;cursor:pointer;box-shadow:0 8px 25px rgba(139,92,246,.4);transition:transform .15s ease,box-shadow .15s ease;font-family:inherit}
+  .btn:active{transform:scale(.95)}
+  .btn:hover{box-shadow:0 10px 30px rgba(139,92,246,.6)}
+  .btn-gold{background:linear-gradient(90deg,#FBBF24,#F59E0B);color:#1a1a2e;box-shadow:0 8px 25px rgba(251,191,36,.4)}
+  .btn-gold:hover{box-shadow:0 10px 30px rgba(251,191,36,.6)}
+  .lang-switch{position:fixed;top:15px;right:15px;z-index:100;padding:8px 16px;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.3);border-radius:20px;background:rgba(26,26,46,.7);color:#fff;cursor:pointer;backdrop-filter:blur(10px);font-family:inherit;transition:all .2s}
+  .lang-switch:hover{background:rgba(139,92,246,.5);border-color:#8B5CF6}
+  .menu-title{font-size:clamp(20px,6vw,32px);font-weight:800;margin-bottom:20px;text-align:center;background:linear-gradient(90deg,#ffd93d,#ff6b6b,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .dragon-wrap{width:min(40vw,200px);height:min(40vw,200px);margin-bottom:20px;cursor:pointer;animation:float 3s infinite ease-in-out;filter:drop-shadow(0 10px 30px rgba(139,92,246,.6))}
+  .dragon-wrap svg{width:100%;height:100%}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:500px;margin-bottom:20px}
+  .menu-card{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:20px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s ease;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .menu-card:hover,.menu-card:active{background:rgba(139,92,246,.35);border-color:#A78BFA;transform:scale(1.03)}
+  .menu-card .icon{font-size:clamp(28px,8vw,40px)}
+  .menu-card .label{font-size:clamp(12px,3.5vw,15px);font-weight:700;color:#E9D5FF}
+  .world-header{width:100%;max-width:600px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .btn-back{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:50px;color:#fff;padding:10px 20px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+  .btn-back:hover{background:rgba(255,255,255,.2)}
+  .world-title{font-size:clamp(16px,4.5vw,22px);font-weight:800;color:#FBBF24}
+  .achievements{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+  .badge{width:45px;height:45px;border-radius:50%;background:rgba(139,92,246,.2);border:2px solid rgba(139,92,246,.4);display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.4;transition:all .3s ease}
+  .badge.earned{opacity:1;background:linear-gradient(135deg,#FBBF24,#F59E0B);border-color:#FBBF24;box-shadow:0 0 20px rgba(251,191,36,.6);animation:pop .4s ease}
+  @keyframes pop{0%{transform:scale(.5)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(90deg,#FBBF24,#F59E0B);color:#1a1a2e;padding:14px 28px;border-radius:50px;font-weight:800;font-size:16px;box-shadow:0 10px 30px rgba(251,191,36,.5);z-index:200;opacity:0;transition:all .4s ease;pointer-events:none;text-align:center;max-width:90vw}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .loader-dragon{width:min(50vw,250px);height:min(50vw,250px);animation:float 2s infinite ease-in-out;filter:drop-shadow(0 0 40px rgba(139,92,246,.8));margin-bottom:30px}
+  .loader-dragon svg{width:100%;height:100%}
+  .loading-hint{font-size:clamp(14px,4vw,18px);color:#C4B5FD;margin-top:20px;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+  .world1-container{width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;gap:20px}
+  .task-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+  .task-card{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:18px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative}
+  .task-card:hover{background:rgba(139,92,246,.3)}
+  .task-card.done{background:rgba(34,197,94,.2);border-color:#22C55E}
+  .task-card.done::after{content:'✓';position:absolute;top:-8px;right:-8px;width:28px;height:28px;border-radius:50%;background:#22C55E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px}
+  .task-card .icon{font-size:32px;margin-bottom:6px}
+  .task-card .label{font-size:12px;font-weight:700;color:#E9D5FF;line-height:1.3}
+  .progress-bar{width:100%;height:12px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-top:10px}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#FBBF24,#F59E0B);transition:width .5s ease;border-radius:10px}
+  .progress-text{font-size:14px;color:#C4B5FD;margin-top:6px;text-align:center}
+  .task-screen{position:fixed;inset:0;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:50}
+  .task-screen.active{display:flex}
+  .task-top{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:center}
+  .task-score{font-size:16px;font-weight:800;color:#FBBF24;text-align:right}
+  .task-hint{font-size:clamp(14px,4vw,18px);color:#C4B5FD;margin-bottom:15px;text-align:center;max-width:90%;padding-top:40px}
+  .feed-dragon{position:relative;width:min(60vw,220px);height:min(60vw,220px);margin-bottom:20px}
+  .feed-dragon svg{width:100%;height:100%}
+  .food-item{position:absolute;font-size:40px;cursor:pointer;transition:transform .5s ease,opacity .5s ease;z-index:10;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+  .food-item.eaten{transform:translate(0,100px) scale(.3);opacity:0}
+  .food-item.spawn{animation:foodPop .4s ease}
+  @keyframes foodPop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .catch-area{position:relative;width:100%;max-width:500px;height:60vh;max-height:500px;background:rgba(139,92,246,.1);border:2px solid rgba(139,92,246,.3);border-radius:24px;overflow:hidden;cursor:crosshair}
+  .star{position:absolute;font-size:36px;cursor:pointer;animation:starPop .3s ease;user-select:none;filter:drop-shadow(0 0 10px rgba(251,191,36,.6))}
+  @keyframes starPop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+  .star.caught{animation:starCaught .3s ease forwards}
+  @keyframes starCaught{0%{transform:scale(1);opacity:1}100%{transform:scale(2);opacity:0}}
+  .path-area{display:flex;flex-direction:column;align-items:center;gap:15px;width:100%;max-width:500px}
+  .path-step{width:100%;padding:20px;background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:18px;text-align:center;cursor:pointer;font-size:18px;font-weight:700;transition:all .2s ease;color:#E9D5FF}
+  .path-step:hover{background:rgba(139,92,246,.35);transform:scale(1.02)}
+  .path-step.done{background:rgba(34,197,94,.2);border-color:#22C55E;cursor:default}
+  .path-step.locked{opacity:.4;cursor:not-allowed}
+  .castle-final{font-size:80px;margin-top:10px;animation:float 2s infinite ease-in-out;filter:drop-shadow(0 0 20px rgba(251,191,36,.6))}
+  .win-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:300;padding:20px}
+  .win-modal.show{display:flex}
+  .win-content{background:linear-gradient(135deg,#1a1a2e,#16213e);border:3px solid #FBBF24;border-radius:30px;padding:40px 30px;text-align:center;max-width:400px;animation:pop .5s ease;box-shadow:0 0 60px rgba(251,191,36,.5)}
+  .win-emoji{font-size:80px;margin-bottom:15px}
+  .win-title{font-size:24px;font-weight:900;color:#FBBF24;margin-bottom:10px}
+  .win-text{font-size:16px;color:#C4B5FD;margin-bottom:20px;line-height:1.5}
+  /* ===== РАСКРАСКА ===== */
+  .color-area{display:flex;flex-direction:column;align-items:center;gap:15px;width:100%;max-width:600px}
+  .color-canvas-wrap{position:relative;background:#fff;border-radius:20px;padding:10px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+  #colorCanvas{touch-action:none;display:block;border-radius:12px;cursor:crosshair}
+  .palette{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:500px}
+  .color-swatch{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+  .color-swatch:hover{transform:scale(1.1)}
+  .color-swatch.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 20px rgba(255,255,255,.6)}
+  .color-tools{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .tool-btn{padding:12px 22px;border-radius:50px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:15px;transition:all .2s}
+  .tool-btn:hover{background:rgba(255,255,255,.2)}
+  .tool-btn.active{background:linear-gradient(90deg,#8B5CF6,#A78BFA);border-color:#A78BFA}
+  /* ===== ИСТОРИЯ ===== */
+  .story-area{width:100%;max-width:600px;display:flex;flex-direction:column;gap:20px;align-items:center}
+  .story-text{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:24px;padding:30px;font-size:clamp(16px,4.5vw,20px);line-height:1.6;text-align:center;color:#E9D5FF;animation:fadeIn .5s ease}
+  .story-choices{display:flex;flex-direction:column;gap:12px;width:100%}
+  .choice-btn{padding:18px 24px;background:rgba(139,92,246,.2);border:2px solid rgba(139,92,246,.5);border-radius:18px;color:#fff;font-size:clamp(14px,4vw,17px);font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;text-align:left}
+  .choice-btn:hover{background:rgba(139,92,246,.4);transform:translateX(5px);border-color:#A78BFA}
+  /* ===== КВЕСТ ===== */
+  .quest-area{width:100%;max-width:600px;display:flex;flex-direction:column;gap:20px;align-items:center}
+  .quest-map{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+  .wall-card{background:rgba(139,92,246,.15);border:2px solid rgba(139,92,246,.4);border-radius:20px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+  .wall-card:hover{background:rgba(139,92,246,.35);transform:scale(1.03)}
+  .wall-card.found{background:rgba(34,197,94,.2);border-color:#22C55E}
+  .wall-card.found::after{content:'✓';position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:#22C55E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+  .wall-card .wall-icon{font-size:36px;margin-bottom:6px}
+  .wall-card .wall-label{font-size:12px;font-weight:700;color:#E9D5FF}
+  .hero-found{text-align:center;padding:30px;background:rgba(139,92,246,.15);border-radius:24px;border:2px solid rgba(139,92,246,.4);animation:pop .5s ease}
+  .hero-found .big{font-size:80px;margin-bottom:15px;animation:float 2s infinite ease-in-out}
+  .hero-found .name{font-size:22px;font-weight:900;color:#FBBF24;margin-bottom:10px}
+  .hero-found .desc{font-size:15px;color:#C4B5FD;line-height:1.5}
+  @media (max-width:400px){.menu-grid,.task-menu,.quest-map{gap:8px}.menu-card,.task-card{padding:14px 6px}}
 </style>
 </head>
 <body>
-  <div class="stars"></div>
+<div class="stars"></div>
+<button class="lang-switch" id="langSwitch" onclick="toggleLang()">🌐 RU</button>
 
-  <button class="lang-switch" id="langSwitch" onclick="toggleLang()">🌐 RU</button>
-
-  <!-- ========== ЭКРАН 0: ЗАГРУЗКА ========== -->
-  <div class="screen active" id="screen-load">
-    <div class="loader-dragon">
-      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
-        <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
-        <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
-        <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
-        <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
-        <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
-        <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
-        <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
-        <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-        <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-        <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-        <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-        <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
-        <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
-        <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
-        <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
-        <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
-        <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
-        <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
-        <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
-        <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
-        <circle cx="133" cy="99" r="4" fill="#fff"/>
-        <circle cx="177" cy="99" r="4" fill="#fff"/>
-        <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
-        <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
-        <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
-        <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
-        <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity="0.8"/>
-        <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity="0.8"/>
-      </svg>
-    </div>
-    <div class="logo">VioKrista</div>
-    <div class="subtitle" data-i18n="welcome">Приключения Вио</div>
-    <button class="btn btn-gold" onclick="goTo('screen-menu')" data-i18n="start">Начать</button>
-    <div class="loading-hint" data-i18n="tap">Тапни, чтобы начать ✨</div>
+<!-- ЗАГРУЗКА -->
+<div class="screen active" id="screen-load">
+  <div class="loader-dragon">
+    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
+      <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
+      <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
+      <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
+      <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
+      <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
+      <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
+      <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+      <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+      <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+      <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+      <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
+      <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
+      <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
+      <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
+      <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
+      <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
+      <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
+      <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
+      <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
+      <circle cx="133" cy="99" r="4" fill="#fff"/>
+      <circle cx="177" cy="99" r="4" fill="#fff"/>
+      <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
+      <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
+      <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
+      <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
+      <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity=".8"/>
+      <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity=".8"/>
+    </svg>
   </div>
+  <div class="logo">VioKrista</div>
+  <div class="subtitle" data-i18n="welcome">Приключения Вио</div>
+  <button class="btn btn-gold" onclick="goTo('screen-menu')" data-i18n="start">Начать</button>
+  <div class="loading-hint" data-i18n="tap">Тапни, чтобы начать ✨</div>
+</div>
 
-  <!-- ========== ЭКРАН 1: ГЛАВНОЕ МЕНЮ ========== -->
-  <div class="screen" id="screen-menu">
-    <div class="menu-title" data-i18n="menu_title">Выбери приключение</div>
-
-    <div class="dragon-wrap" onclick="dragonSpeak()">
-      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
-        <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
-        <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
-        <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
-        <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
-        <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
-        <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
-        <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
-        <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-        <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-        <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-        <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-        <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
-        <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
-        <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
-        <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
-        <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
-        <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
-        <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
-        <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
-        <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
-        <circle cx="133" cy="99" r="4" fill="#fff"/>
-        <circle cx="177" cy="99" r="4" fill="#fff"/>
-        <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
-        <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
-        <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
-        <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
-        <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity="0.8"/>
-        <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity="0.8"/>
-      </svg>
-    </div>
-
-    <div class="menu-grid">
-      <div class="menu-card" onclick="goTo('screen-world1')">
-        <div class="icon">🌟</div>
-        <div class="label" data-i18n="world1">Оживи стену</div>
-      </div>
-      <div class="menu-card" onclick="goTo('screen-world2')">
-        <div class="icon">🎨</div>
-        <div class="label" data-i18n="world2">Раскрась стену</div>
-      </div>
-      <div class="menu-card" onclick="goTo('screen-world3')">
-        <div class="icon">📖</div>
-        <div class="label" data-i18n="world3">Продолжи историю</div>
-      </div>
-      <div class="menu-card" onclick="goTo('screen-world4')">
-        <div class="icon">🗺️</div>
-        <div class="label" data-i18n="world4">Найди героев</div>
-      </div>
-    </div>
-
-    <div class="achievements" id="achievements">
-      <div class="badge" data-ach="start">🌟</div>
-      <div class="badge" data-ach="world1">🐉</div>
-      <div class="badge" data-ach="world2">🎨</div>
-      <div class="badge" data-ach="world3">📖</div>
-      <div class="badge" data-ach="world4">🗺️</div>
-    </div>
-
-    <div style="font-size:13px; opacity:0.5; margin-top:15px; text-align:center;" data-i18n="hint_dragon">
-      Нажми на Вио, чтобы он заговорил 👆
-    </div>
+<!-- МЕНЮ -->
+<div class="screen" id="screen-menu">
+  <div class="menu-title" data-i18n="menu_title">Выбери приключение</div>
+  <div class="dragon-wrap" onclick="dragonSpeak()">
+    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
+      <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
+      <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
+      <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
+      <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
+      <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
+      <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
+      <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+      <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+      <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+      <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+      <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
+      <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
+      <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
+      <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
+      <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
+      <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
+      <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
+      <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
+      <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
+      <circle cx="133" cy="99" r="4" fill="#fff"/>
+      <circle cx="177" cy="99" r="4" fill="#fff"/>
+      <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
+      <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
+      <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
+      <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
+      <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity=".8"/>
+      <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity=".8"/>
+    </svg>
   </div>
+  <div class="menu-grid">
+    <div class="menu-card" onclick="goTo('screen-world1')"><div class="icon">🌟</div><div class="label" data-i18n="world1">Оживи стену</div></div>
+    <div class="menu-card" onclick="goTo('screen-world2')"><div class="icon">🎨</div><div class="label" data-i18n="world2">Раскрась стену</div></div>
+    <div class="menu-card" onclick="goTo('screen-world3')"><div class="icon">📖</div><div class="label" data-i18n="world3">Продолжи историю</div></div>
+    <div class="menu-card" onclick="goTo('screen-world4')"><div class="icon">🗺️</div><div class="label" data-i18n="world4">Найди героев</div></div>
+  </div>
+  <div class="achievements">
+    <div class="badge" data-ach="start">🌟</div>
+    <div class="badge" data-ach="world1">🐉</div>
+    <div class="badge" data-ach="world2">🎨</div>
+    <div class="badge" data-ach="world3">📖</div>
+    <div class="badge" data-ach="world4">🗺️</div>
+  </div>
+  <div style="font-size:13px;opacity:.5;margin-top:15px;text-align:center" data-i18n="hint_dragon">Нажми на Вио, чтобы он заговорил 👆</div>
+</div>
 
-  <!-- ========== ЭКРАН 2: МИР 1 ========== -->
-  <div class="screen" id="screen-world1">
-    <div class="world-header">
-      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-      <div class="world-title" data-i18n="world1">Оживи стену</div>
-      <div style="width:70px;"></div>
+<!-- МИР 1 -->
+<div class="screen" id="screen-world1">
+  <div class="world-header">
+    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+    <div class="world-title" data-i18n="world1">Оживи стену</div>
+    <div style="width:70px"></div>
+  </div>
+  <div class="world1-container">
+    <div class="task-menu">
+      <div class="task-card" id="task-feed" onclick="startTask('feed')"><div class="icon">🍎</div><div class="label" data-i18n="task_feed">Покорми Вио</div></div>
+      <div class="task-card" id="task-catch" onclick="startTask('catch')"><div class="icon">⭐</div><div class="label" data-i18n="task_catch">Поиграй с Вио</div></div>
+      <div class="task-card" id="task-path" onclick="startTask('path')"><div class="icon">🏰</div><div class="label" data-i18n="task_path">Доберись до замка</div></div>
     </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progressText">Прогресс: 0/3</div>
+    <div style="font-size:13px;opacity:.5;text-align:center;margin-top:10px" data-i18n="world1_hint">Пройди все 3 задания, чтобы завершить мир!</div>
+  </div>
+</div>
 
-    <div class="world1-container">
-      <div class="task-menu">
-        <div class="task-card" id="task-feed" onclick="startTask('feed')">
-          <div class="icon">🍎</div>
-          <div class="label" data-i18n="task_feed">Покорми Вио</div>
-        </div>
-        <div class="task-card" id="task-catch" onclick="startTask('catch')">
-          <div class="icon">⭐</div>
-          <div class="label" data-i18n="task_catch">Поиграй с Вио</div>
-        </div>
-        <div class="task-card" id="task-path" onclick="startTask('path')">
-          <div class="icon">🏰</div>
-          <div class="label" data-i18n="task_path">Доберись до замка</div>
-        </div>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-      </div>
-      <div class="progress-text" id="progressText">Прогресс: 0/3</div>
-
-      <div style="font-size:13px; opacity:0.5; text-align:center; margin-top:10px;" data-i18n="world1_hint">
-        Пройди все 3 задания, чтобы завершить мир!
-      </div>
+<!-- МИР 2: РАСКРАСКА -->
+<div class="screen" id="screen-world2">
+  <div class="world-header">
+    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+    <div class="world-title" data-i18n="world2">Раскрась стену</div>
+    <div style="width:70px"></div>
+  </div>
+  <div class="color-area">
+    <div class="color-canvas-wrap">
+      <canvas id="colorCanvas" width="500" height="400"></canvas>
+    </div>
+    <div class="palette" id="palette"></div>
+    <div class="color-tools">
+      <button class="tool-btn active" id="toolBrush" onclick="setTool('brush')" data-i18n="brush">🖌 Кисть</button>
+      <button class="tool-btn" id="toolEraser" onclick="setTool('eraser')" data-i18n="eraser">🧽 Ластик</button>
+      <button class="tool-btn" onclick="saveDrawing()" data-i18n="save">💾 Сохранить</button>
+      <button class="tool-btn" onclick="clearDrawing()" data-i18n="clear">🗑 Очистить</button>
     </div>
   </div>
+</div>
 
-  <!-- ========== ЭКРАН 3: МИР 2 ========== -->
-  <div class="screen" id="screen-world2">
-    <div class="world-header">
-      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-      <div class="world-title" data-i18n="world2">Раскрась стену</div>
-      <div style="width:70px;"></div>
-    </div>
-    <div style="text-align:center; padding:40px; background:rgba(139,92,246,0.15); border-radius:20px; border:2px dashed rgba(139,92,246,0.5); max-width:500px;">
-      <div style="font-size:60px; margin-bottom:20px;">🎨</div>
-      <div data-i18n="soon2">Здесь будет раскраска</div>
-    </div>
+<!-- МИР 3: ИСТОРИЯ -->
+<div class="screen" id="screen-world3">
+  <div class="world-header">
+    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+    <div class="world-title" data-i18n="world3">Продолжи историю</div>
+    <div style="width:70px"></div>
   </div>
+  <div class="story-area" id="storyArea"></div>
+</div>
 
-  <!-- ========== ЭКРАН 4: МИР 3 ========== -->
-  <div class="screen" id="screen-world3">
-    <div class="world-header">
-      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-      <div class="world-title" data-i18n="world3">Продолжи историю</div>
-      <div style="width:70px;"></div>
-    </div>
-    <div style="text-align:center; padding:40px; background:rgba(139,92,246,0.15); border-radius:20px; border:2px dashed rgba(139,92,246,0.5); max-width:500px;">
-      <div style="font-size:60px; margin-bottom:20px;">📖</div>
-      <div data-i18n="soon3">Здесь будет интерактивная история</div>
-    </div>
+<!-- МИР 4: КВЕСТ -->
+<div class="screen" id="screen-world4">
+  <div class="world-header">
+    <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+    <div class="world-title" data-i18n="world4">Найди героев</div>
+    <div style="width:70px"></div>
   </div>
-
-  <!-- ========== ЭКРАН 5: МИР 4 ========== -->
-  <div class="screen" id="screen-world4">
-    <div class="world-header">
-      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
-      <div class="world-title" data-i18n="world4">Найди героев</div>
-      <div style="width:70px;"></div>
-    </div>
-    <div style="text-align:center; padding:40px; background:rgba(139,92,246,0.15); border-radius:20px; border:2px dashed rgba(139,92,246,0.5); max-width:500px;">
-      <div style="font-size:60px; margin-bottom:20px;">🗺️</div>
-      <div data-i18n="soon4">Здесь будет квест по стенам</div>
-    </div>
+  <div class="quest-area">
+    <div style="text-align:center;color:#C4B5FD;font-size:15px" data-i18n="quest_hint">Найди всех 6 героев на стенах города!</div>
+    <div class="quest-map" id="questMap"></div>
+    <div class="progress-bar" style="max-width:500px"><div class="progress-fill" id="questFill" style="width:0%"></div></div>
+    <div class="progress-text" id="questText">0/6</div>
   </div>
+</div>
 
-  <!-- ========== ЭКРАН ЗАДАНИЯ ========== -->
-  <div class="task-screen" id="taskScreen">
-    <div class="task-top">
-      <button class="btn-back" onclick="closeTask()">← <span data-i18n="back">Назад</span></button>
-      <div class="task-score" id="taskScore"></div>
-    </div>
-    <div class="task-hint" id="taskHint"></div>
-    <div id="taskContent"></div>
+<!-- ЭКРАН ЗАДАНИЯ -->
+<div class="task-screen" id="taskScreen">
+  <div class="task-top">
+    <button class="btn-back" onclick="closeTask()">← <span data-i18n="back">Назад</span></button>
+    <div class="task-score" id="taskScore"></div>
   </div>
+  <div class="task-hint" id="taskHint"></div>
+  <div id="taskContent"></div>
+</div>
 
-  <!-- Модалка победы -->
-  <div class="win-modal" id="winModal">
-    <div class="win-content">
-      <div class="win-emoji" id="winEmoji">🎉</div>
-      <div class="win-title" id="winTitle"></div>
-      <div class="win-text" id="winText"></div>
-      <button class="btn btn-gold" onclick="closeWin()" data-i18n="continue">Продолжить</button>
-    </div>
+<!-- МОДАЛКА ПОБЕДЫ -->
+<div class="win-modal" id="winModal">
+  <div class="win-content">
+    <div class="win-emoji" id="winEmoji">🎉</div>
+    <div class="win-title" id="winTitle"></div>
+    <div class="win-text" id="winText"></div>
+    <button class="btn btn-gold" onclick="closeWin()" data-i18n="continue">Продолжить</button>
   </div>
+</div>
 
-  <div class="toast" id="toast"></div>
+<!-- МОДАЛКА ГЕРОЯ -->
+<div class="win-modal" id="heroModal">
+  <div class="win-content" style="border-color:#8B5CF6;box-shadow:0 0 60px rgba(139,92,246,.5)">
+    <div class="hero-found" style="background:transparent;border:none">
+      <div class="big" id="heroEmoji">🦊</div>
+      <div class="name" id="heroName"></div>
+      <div class="desc" id="heroDesc"></div>
+    </div>
+    <button class="btn btn-gold" onclick="closeHero()" data-i18n="continue">Продолжить</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-  /* ============ ЯЗЫКИ ============ */
-  const translations = {
-    ru: {
-      welcome: 'Приключения Вио',
-      start: 'Начать',
-      tap: 'Тапни, чтобы начать ✨',
-      menu_title: 'Выбери приключение',
-      world1: 'Оживи стену',
-      world2: 'Раскрась стену',
-      world3: 'Продолжи историю',
-      world4: 'Найди героев',
-      back: 'Назад',
-      continue: 'Продолжить',
-      soon2: 'Здесь будет раскраска',
-      soon3: 'Здесь будет интерактивная история',
-      soon4: 'Здесь будет квест по стенам',
-      hint_dragon: 'Нажми на Вио, чтобы он заговорил 👆',
-      task_feed: 'Покорми Вио',
-      task_catch: 'Поиграй с Вио',
-      task_path: 'Доберись до замка',
-      world1_hint: 'Пройди все 3 задания, чтобы завершить мир!',
-      progress: 'Прогресс',
-      /* Задание 1: Покорми */
-      feed_hint: 'Тапай по еде, чтобы покормить Вио!',
-      feed_score: 'Съедено: {n}/{max}',
-      feed_win_title: 'Вио наелся!',
-      feed_win_text: 'Вио говорит спасибо! Он больше не голоден 🍎',
-      /* Задание 2: Лови звёзды */
-      catch_hint: 'Лови звёзды пальцем!',
-      catch_score: 'Поймано: {n}',
-      catch_time: 'Время: {t}с',
-      catch_win_title: 'Отличная игра!',
-      catch_win_text: 'Вио наловил звёзд и очень доволен ⭐',
-      /* Задание 3: Дорожка */
-      path_hint: 'Тапай по шагам, чтобы дойти до замка',
-      path_win_title: 'Ты добрался до замка!',
-      path_win_text: 'Замок открыт! Вио гордится тобой 🏰',
-      path_step: 'Шаг {n}',
-      path_castle: 'Замок!',
-      /* Общие */
-      world_complete: 'Мир 1 пройден!',
-      world_complete_text: 'Ты прошёл все задания и оживил стену! 🎉',
-      ach_start: '🌟 Ты начал приключение!',
-      ach_world1: '🐉 Ты оживил стену!',
-      ach_world2: '🎨 Ты раскрасил стену!',
-      ach_world3: '📖 Ты продолжил историю!',
-      ach_world4: '🗺️ Ты нашёл героев!',
-      dragon_phrases: ['Привет! Я Вио! 👋', 'Давай играть! 🎮', 'Ты меня нашёл! 🌟', 'Я живу на стене! 🧱', 'Ты мой друг! ❤️', 'Ура! 🎉']
-    },
-    en: {
-      welcome: 'Vio\'s Adventures',
-      start: 'Start',
-      tap: 'Tap to start ✨',
-      menu_title: 'Choose an adventure',
-      world1: 'Bring the wall to life',
-      world2: 'Color the wall',
-      world3: 'Continue the story',
-      world4: 'Find the heroes',
-      back: 'Back',
-      continue: 'Continue',
-      soon2: 'Here will be the coloring',
-      soon3: 'Here will be interactive story',
-      soon4: 'Here will be the wall quest',
-      hint_dragon: 'Tap Vio to make him talk 👆',
-      task_feed: 'Feed Vio',
-      task_catch: 'Play with Vio',
-      task_path: 'Reach the castle',
-      world1_hint: 'Complete all 3 tasks to finish the world!',
-      progress: 'Progress',
-      feed_hint: 'Tap the food to feed Vio!',
-      feed_score: 'Eaten: {n}/{max}',
-      feed_win_title: 'Vio is full!',
-      feed_win_text: 'Vio says thanks! He is not hungry anymore 🍎',
-      catch_hint: 'Catch the stars with your finger!',
-      catch_score: 'Caught: {n}',
-      catch_time: 'Time: {t}s',
-      catch_win_title: 'Great game!',
-      catch_win_text: 'Vio caught the stars and is very happy ⭐',
-      path_hint: 'Tap the steps to reach the castle',
-      path_win_title: 'You reached the castle!',
-      path_win_text: 'The castle is open! Vio is proud of you 🏰',
-      path_step: 'Step {n}',
-      path_castle: 'Castle!',
-      world_complete: 'World 1 complete!',
-      world_complete_text: 'You completed all tasks and brought the wall to life! 🎉',
-      ach_start: '🌟 You started the adventure!',
-      ach_world1: '🐉 You brought the wall to life!',
-      ach_world2: '🎨 You colored the wall!',
-      ach_world3: '📖 You continued the story!',
-      ach_world4: '🗺️ You found the heroes!',
-      dragon_phrases: ['Hi! I\'m Vio! 👋', 'Let\'s play! 🎮', 'You found me! 🌟', 'I live on the wall! 🧱', 'You are my friend! ❤️', 'Hooray! 🎉']
-    }
-  };
+/* ============ ЗВУК (Web Audio) ============ */
+let audioCtx = null;
+function initAudio(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
+function playTone(freq, dur, type='sine', vol=0.15){
+  if(!audioCtx) return;
+  try{
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dur);
+  }catch(e){}
+}
+function sfxClick(){ playTone(600, .08, 'square', .1); }
+function sfxPop(){ playTone(880, .1, 'sine', .15); }
+function sfxWin(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.2,'sine',.2),i*100)); }
+function sfxEat(){ playTone(440, .08, 'triangle', .15); }
+function sfxCatch(){ playTone(1200, .06, 'sine', .12); }
 
-  let currentLang = localStorage.getItem('viokrista_lang') || 'ru';
-
-  function toggleLang() {
-    currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    localStorage.setItem('viokrista_lang', currentLang);
-    applyLang();
-  }
-
-  function applyLang() {
-    document.documentElement.lang = currentLang;
-    document.getElementById('langSwitch').textContent = '🌐 ' + currentLang.toUpperCase();
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.dataset.i18n;
-      if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
+/* ============ ЧАСТИЦЫ ============ */
+function burstParticles(x, y, color='#FBBF24', count=12){
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:8px;height:8px;border-radius:50%;background:${color};pointer-events:none;z-index:999;transition:transform .8s ease,opacity .8s ease`;
+    document.body.appendChild(p);
+    const angle = Math.random()*Math.PI*2;
+    const dist = 50 + Math.random()*100;
+    const dx = Math.cos(angle)*dist, dy = Math.sin(angle)*dist;
+    requestAnimationFrame(()=>{
+      p.style.transform = `translate(${dx}px,${dy}px) scale(0)`;
+      p.style.opacity = '0';
     });
-    updateProgress();
+    setTimeout(()=>p.remove(), 900);
   }
-
-  function t(key) { return translations[currentLang][key] || key; }
-
-  /* ============ ЭКРАНЫ ============ */
-  function goTo(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-    if (screenId === 'screen-world1') earnBadge('world1');
-    if (screenId === 'screen-world2') earnBadge('world2');
-    if (screenId === 'screen-world3') earnBadge('world3');
-    if (screenId === 'screen-world4') earnBadge('world4');
-    if (screenId === 'screen-menu') earnBadge('start');
-    if (screenId === 'screen-world1') updateProgress();
-  }
-
-  /* ============ АЧИВКИ ============ */
-  function earnBadge(name) {
-    const badges = JSON.parse(localStorage.getItem('viokrista_badges') || '[]');
-    if (!badges.includes(name)) {
-      badges.push(name);
-      localStorage.setItem('viokrista_badges', JSON.stringify(badges));
-      renderBadges();
-      if (name !== 'start') showToast(t('ach_' + name));
-    }
-  }
-
-  function renderBadges() {
-    const badges = JSON.parse(localStorage.getItem('viokrista_badges') || '[]');
-    document.querySelectorAll('.badge').forEach(b => {
-      if (badges.includes(b.dataset.ach)) b.classList.add('earned');
+}
+function burstConfetti(){
+  const colors = ['#FBBF24','#F472B6','#8B5CF6','#22C55E','#38BDF8','#FF6B6B'];
+  for(let i=0;i<60;i++){
+    const c = document.createElement('div');
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const size = 6+Math.random()*8;
+    c.style.cssText = `position:fixed;top:-20px;left:${Math.random()*100}vw;width:${size}px;height:${size}px;background:${color};pointer-events:none;z-index:999;border-radius:${Math.random()>.5?'50%':'2px'};transition:transform 3s linear,opacity 3s linear`;
+    document.body.appendChild(c);
+    requestAnimationFrame(()=>{
+      c.style.transform = `translateY(${window.innerHeight+50}px) rotate(${Math.random()*720}deg)`;
+      c.style.opacity = '0.3';
     });
+    setTimeout(()=>c.remove(), 3200);
   }
+}
 
-  function showToast(text) {
-    const toast = document.getElementById('toast');
-    toast.textContent = text;
-    toast.classList.add('show');
-    clearTimeout(window.toastTimer);
-    window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+/* ============ ЯЗЫКИ ============ */
+const translations = {
+  ru:{
+    welcome:'Приключения Вио', start:'Начать', tap:'Тапни, чтобы начать ✨', menu_title:'Выбери приключение',
+    world1:'Оживи стену', world2:'Раскрась стену', world3:'Продолжи историю', world4:'Найди героев',
+    back:'Назад', continue:'Продолжить',
+    hint_dragon:'Нажми на Вио, чтобы он заговорил 👆',
+    task_feed:'Покорми Вио', task_catch:'Поиграй с Вио', task_path:'Доберись до замка',
+    world1_hint:'Пройди все 3 задания, чтобы завершить мир!', progress:'Прогресс',
+    feed_hint:'Тапай по еде, чтобы покормить Вио!', feed_score:'Съедено: {n}/{max}',
+    feed_win_title:'Вио наелся!', feed_win_text:'Вио говорит спасибо! Он больше не голоден 🍎',
+    catch_hint:'Лови звёзды пальцем!', catch_score:'Поймано: {n}',
+    catch_time:'Время: {t}с', catch_win_title:'Отличная игра!', catch_win_text:'Вио наловил звёзд и очень доволен ⭐',
+    path_hint:'Тапай по шагам, чтобы дойти до замка', path_win_title:'Ты добрался до замка!',
+    path_win_text:'Замок открыт! Вио гордится тобой 🏰', path_step:'Шаг {n}',
+    world_complete:'Мир 1 пройден!', world_complete_text:'Ты прошёл все задания и оживил стену! 🎉',
+    brush:'🖌 Кисть', eraser:'🧽 Ластик', save:'💾 Сохранить', clear:'🗑 Очистить',
+    color_hint:'Выбери цвет и раскрась картинку пальцем!',
+    color_win_title:'Красиво!', color_win_text:'Ты раскрасил стену! Молодец 🎨',
+    quest_hint:'Найди всех 6 героев на стенах города!',
+    quest_found:'Ты нашёл героя!', quest_complete:'Все герои найдены!',
+    quest_complete_text:'Ты собрал всех героев! Вио гордится тобой 🎉',
+    ach_start:'🌟 Ты начал приключение!', ach_world1:'🐉 Ты оживил стену!',
+    ach_world2:'🎨 Ты раскрасил стену!', ach_world3:'📖 Ты продолжил историю!', ach_world4:'🗺️ Ты нашёл героев!',
+    dragon_phrases:['Привет! Я Вио! 👋','Давай играть! 🎮','Ты меня нашёл! 🌟','Я живу на стене! 🧱','Ты мой друг! ❤️','Ура! 🎉']
+  },
+  en:{
+    welcome:'Vio\'s Adventures', start:'Start', tap:'Tap to start ✨', menu_title:'Choose an adventure',
+    world1:'Bring the wall to life', world2:'Color the wall', world3:'Continue the story', world4:'Find the heroes',
+    back:'Back', continue:'Continue',
+    hint_dragon:'Tap Vio to make him talk 👆',
+    task_feed:'Feed Vio', task_catch:'Play with Vio', task_path:'Reach the castle',
+    world1_hint:'Complete all 3 tasks to finish the world!', progress:'Progress',
+    feed_hint:'Tap the food to feed Vio!', feed_score:'Eaten: {n}/{max}',
+    feed_win_title:'Vio is full!', feed_win_text:'Vio says thanks! He is not hungry anymore 🍎',
+    catch_hint:'Catch the stars with your finger!', catch_score:'Caught: {n}',
+    catch_time:'Time: {t}s', catch_win_title:'Great game!', catch_win_text:'Vio caught the stars and is very happy ⭐',
+    path_hint:'Tap the steps to reach the castle', path_win_title:'You reached the castle!',
+    path_win_text:'The castle is open! Vio is proud of you 🏰', path_step:'Step {n}',
+    world_complete:'World 1 complete!', world_complete_text:'You completed all tasks and brought the wall to life! 🎉',
+    brush:'🖌 Brush', eraser:'🧽 Eraser', save:'💾 Save', clear:'🗑 Clear',
+    color_hint:'Pick a color and color the picture with your finger!',
+    color_win_title:'Beautiful!', color_win_text:'You colored the wall! Well done 🎨',
+    quest_hint:'Find all 6 heroes on the walls of the city!',
+    quest_found:'You found a hero!', quest_complete:'All heroes found!',
+    quest_complete_text:'You collected all heroes! Vio is proud of you 🎉',
+    ach_start:'🌟 You started the adventure!', ach_world1:'🐉 You brought the wall to life!',
+    ach_world2:'🎨 You colored the wall!', ach_world3:'📖 You continued the story!', ach_world4:'🗺️ You found the heroes!',
+    dragon_phrases:['Hi! I\'m Vio! 👋','Let\'s play! 🎮','You found me! 🌟','I live on the wall! 🧱','You are my friend! ❤️','Hooray! 🎉']
   }
+};
+let currentLang = localStorage.getItem('viokrista_lang') || 'ru';
+function toggleLang(){ currentLang = currentLang==='ru'?'en':'ru'; localStorage.setItem('viokrista_lang',currentLang); applyLang(); }
+function applyLang(){
+  document.documentElement.lang = currentLang;
+  document.getElementById('langSwitch').textContent = '🌐 '+currentLang.toUpperCase();
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.dataset.i18n; if(translations[currentLang][k]) el.textContent=translations[currentLang][k]; });
+  updateProgress(); renderStory(); renderQuest(); updateQuestProgress();
+}
+function t(k){ return translations[currentLang][k]||k; }
 
-  function dragonSpeak() {
-    const phrases = translations[currentLang].dragon_phrases;
-    showToast(phrases[Math.floor(Math.random() * phrases.length)]);
-    if (navigator.vibrate) navigator.vibrate(30);
-  }
+/* ============ ЭКРАНЫ ============ */
+function goTo(id){
+  initAudio();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='screen-world1'){ earnBadge('world1'); updateProgress(); }
+  if(id==='screen-world2'){ earnBadge('world2'); initCanvas(); }
+  if(id==='screen-world3'){ earnBadge('world3'); renderStory(); }
+  if(id==='screen-world4'){ earnBadge('world4'); renderQuest(); }
+  if(id==='screen-menu') earnBadge('start');
+}
 
-  /* ============ ПРОГРЕСС МИРА 1 ============ */
-  function getWorld1Progress() {
-    return JSON.parse(localStorage.getItem('viokrista_world1') || '{"feed":false,"catch":false,"path":false}');
-  }
-
-  function setWorld1Progress(key) {
-    const p = getWorld1Progress();
-    p[key] = true;
-    localStorage.setItem('viokrista_world1', JSON.stringify(p));
-    updateProgress();
-  }
-
-  function updateProgress() {
-    const p = getWorld1Progress();
-    const done = [p.feed, p.catch, p.path].filter(Boolean).length;
-    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('done'));
-    if (p.feed) document.getElementById('task-feed').classList.add('done');
-    if (p.catch) document.getElementById('task-catch').classList.add('done');
-    if (p.path) document.getElementById('task-path').classList.add('done');
-    const fill = document.getElementById('progressFill');
-    const text = document.getElementById('progressText');
-    if (fill) fill.style.width = (done / 3 * 100) + '%';
-    if (text) text.textContent = t('progress') + ': ' + done + '/3';
-    if (done === 3) {
-      earnBadge('world1');
-      setTimeout(() => showWin('🎉', t('world_complete'), t('world_complete_text')), 500);
-    }
-  }
-
-  /* ============ ЗАПУСК ЗАДАНИЙ ============ */
-  let currentTask = null;
-  let catchTimer = null;
-  let catchTimeLeft = 0;
-  let catchScore = 0;
-  let catchSpawner = null;
-
-  function startTask(name) {
-    currentTask = name;
-    const screen = document.getElementById('taskScreen');
-    const content = document.getElementById('taskContent');
-    const hint = document.getElementById('taskHint');
-    const score = document.getElementById('taskScore');
-    content.innerHTML = '';
-    score.textContent = '';
-    if (name === 'feed') startFeed(content, hint, score);
-    if (name === 'catch') startCatch(content, hint, score);
-    if (name === 'path') startPath(content, hint, score);
-    screen.classList.add('active');
-  }
-
-  function closeTask() {
-    document.getElementById('taskScreen').classList.remove('active');
-    if (catchTimer) clearInterval(catchTimer);
-    if (catchSpawner) clearInterval(catchSpawner);
-    currentTask = null;
-  }
-
-  /* ============ ИГРА 1: ПОКОРМИ ============ */
-  function startFeed(content, hint, score) {
-    hint.textContent = t('feed_hint');
-    const foods = ['🍎', '🍌', '🍇', '🍓', '🍒', '🍑', '🥝', '🍊'];
-    let eaten = 0;
-    const max = 5;
-
-    function updateScore() {
-      score.textContent = t('feed_score').replace('{n}', eaten).replace('{max}', max);
-    }
-    updateScore();
-
-    content.innerHTML = `
-      <div class="feed-dragon" id="feedDragon">
-        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
-          <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
-          <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
-          <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
-          <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
-          <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
-          <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
-          <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
-          <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-          <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
-          <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-          <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
-          <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
-          <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
-          <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
-          <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
-          <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
-          <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
-          <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
-          <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
-          <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
-          <circle cx="133" cy="99" r="4" fill="#fff"/>
-          <circle cx="177" cy="99" r="4" fill="#fff"/>
-          <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
-          <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
-          <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <ellipse cx="145" cy="118" rx="4" ry="3" fill="#1E1B4B"/>
-          <ellipse cx="155" cy="118" rx="4" ry="3" fill="#1E1B4B"/>
-        </svg>
-      </div>
-    `;
-
-    const dragon = document.getElementById('feedDragon');
-
-    function spawnFood() {
-      if (eaten >= max) return;
-      const food = document.createElement('div');
-      food.className = 'food-item spawn';
-      food.textContent = foods[Math.floor(Math.random() * foods.length)];
-      const rect = dragon.getBoundingClientRect();
-      const x = Math.random() * (rect.width - 50);
-      const y = Math.random() * (rect.height - 80);
-      food.style.left = x + 'px';
-      food.style.top = y + 'px';
-      food.addEventListener('click', () => eatFood(food));
-      food.addEventListener('touchstart', (e) => { e.preventDefault(); eatFood(food); }, { passive: false });
-      dragon.appendChild(food);
-    }
-
-    function eatFood(food) {
-      if (food.classList.contains('eaten')) return;
-      food.classList.add('eaten');
-      eaten++;
-      updateScore();
-      if (navigator.vibrate) navigator.vibrate(20);
-      if (eaten >= max) {
-        setTimeout(() => {
-          setWorld1Progress('feed');
-          closeTask();
-          showWin('🍎', t('feed_win_title'), t('feed_win_text'));
-        }, 500);
-      } else {
-        setTimeout(spawnFood, 400);
-      }
-    }
-
-    spawnFood();
-    setTimeout(spawnFood, 300);
-    setTimeout(spawnFood, 600);
-  }
-
-  /* ============ ИГРА 2: ПОЙМАЙ ЗВЁЗДЫ ============ */
-  function startCatch(content, hint, score) {
-    hint.textContent = t('catch_hint');
-    catchScore = 0;
-    catchTimeLeft = 20;
-
-    content.innerHTML = `<div class="catch-area" id="catchArea"></div>`;
-    const area = document.getElementById('catchArea');
-
-    function updateScore() {
-      score.textContent = t('catch_score').replace('{n}', catchScore) + ' | ' + t('catch_time').replace('{t}', catchTimeLeft);
-    }
-    updateScore();
-
-    function spawnStar() {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.textContent = '⭐';
-      const x = Math.random() * (area.clientWidth - 50);
-      const y = Math.random() * (area.clientHeight - 50);
-      star.style.left = x + 'px';
-      star.style.top = y + 'px';
-      const catchStar = () => {
-        if (star.classList.contains('caught')) return;
-        star.classList.add('caught');
-        catchScore++;
-        updateScore();
-        if (navigator.vibrate) navigator.vibrate(15);
-        setTimeout(() => star.remove(), 300);
-      };
-      star.addEventListener('click', catchStar);
-      star.addEventListener('touchstart', (e) => { e.preventDefault(); catchStar(); }, { passive: false });
-      area.appendChild(star);
-      setTimeout(() => { if (!star.classList.contains('caught')) star.remove(); }, 3000);
-    }
-
-    catchSpawner = setInterval(spawnStar, 600);
-    spawnStar();
-    spawnStar();
-
-    catchTimer = setInterval(() => {
-      catchTimeLeft--;
-      updateScore();
-      if (catchTimeLeft <= 0) {
-        clearInterval(catchTimer);
-        clearInterval(catchSpawner);
-        setTimeout(() => {
-          setWorld1Progress('catch');
-          closeTask();
-          showWin('⭐', t('catch_win_title'), t('catch_win_text'));
-        }, 400);
-      }
-    }, 1000);
-  }
-
-  /* ============ ИГРА 3: ДОРОЖКА ============ */
-  function startPath(content, hint, score) {
-    hint.textContent = t('path_hint');
-    score.textContent = '';
-    const totalSteps = 5;
-    let currentStep = 0;
-
-    content.innerHTML = `<div class="path-area" id="pathArea"></div>`;
-    const area = document.getElementById('pathArea');
-
-    function render() {
-      area.innerHTML = '';
-      for (let i = 1; i <= totalSteps; i++) {
-        const step = document.createElement('div');
-        step.className = 'path-step';
-        if (i < currentStep) step.classList.add('done');
-        if (i === currentStep) step.textContent = t('path_step').replace('{n}', i) + ' 👆';
-        else if (i < currentStep) step.textContent = t('path_step').replace('{n}', i) + ' ✓';
-        else step.textContent = t('path_step').replace('{n}', i);
-        if (i > currentStep) step.classList.add('locked');
-        if (i === currentStep) {
-          step.addEventListener('click', nextStep);
-          step.addEventListener('touchstart', (e) => { e.preventDefault(); nextStep(); }, { passive: false });
-        }
-        area.appendChild(step);
-      }
-      if (currentStep > totalSteps) {
-        const castle = document.createElement('div');
-        castle.className = 'castle-final';
-        castle.textContent = '🏰';
-        area.appendChild(castle);
-      }
-    }
-
-    function nextStep() {
-      currentStep++;
-      if (navigator.vibrate) navigator.vibrate(20);
-      render();
-      if (currentStep > totalSteps) {
-        setTimeout(() => {
-          setWorld1Progress('path');
-          closeTask();
-          showWin('🏰', t('path_win_title'), t('path_win_text'));
-        }, 800);
-      }
-    }
-
-    render();
-  }
-
-  /* ============ МОДАЛКА ПОБЕДЫ ============ */
-  function showWin(emoji, title, text) {
-    document.getElementById('winEmoji').textContent = emoji;
-    document.getElementById('winTitle').textContent = title;
-    document.getElementById('winText').textContent = text;
-    document.getElementById('winModal').classList.add('show');
-  }
-
-  function closeWin() {
-    document.getElementById('winModal').classList.remove('show');
-    if (currentTask === null) goTo('screen-world1');
-  }
-
-  /* ============ СТАРТ ============ */
-  window.addEventListener('load', () => {
-    applyLang();
+/* ============ АЧИВКИ ============ */
+function earnBadge(name){
+  const badges = JSON.parse(localStorage.getItem('viokrista_badges')||'[]');
+  if(!badges.includes(name)){
+    badges.push(name);
+    localStorage.setItem('viokrista_badges',JSON.stringify(badges));
     renderBadges();
-    updateProgress();
+    if(name!=='start'){ showToast(t('ach_'+name)); sfxWin(); burstConfetti(); }
+  }
+}
+function renderBadges(){
+  const badges = JSON.parse(localStorage.getItem('viokrista_badges')||'[]');
+  document.querySelectorAll('.badge').forEach(b=>{ if(badges.includes(b.dataset.ach)) b.classList.add('earned'); });
+}
+function showToast(text){
+  const toast = document.getElementById('toast');
+  toast.textContent = text; toast.classList.add('show');
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove('show'),2500);
+}
+function dragonSpeak(){
+  sfxClick();
+  const phrases = translations[currentLang].dragon_phrases;
+  showToast(phrases[Math.floor(Math.random()*phrases.length)]);
+  if(navigator.vibrate) navigator.vibrate(30);
+}
+
+/* ============ МИР 1: ПРОГРЕСС ============ */
+function getWorld1Progress(){ return JSON.parse(localStorage.getItem('viokrista_world1')||'{"feed":false,"catch":false,"path":false}'); }
+function setWorld1Progress(key){
+  const p = getWorld1Progress(); p[key]=true;
+  localStorage.setItem('viokrista_world1',JSON.stringify(p));
+  updateProgress();
+}
+function updateProgress(){
+  const p = getWorld1Progress();
+  const done = [p.feed,p.catch,p.path].filter(Boolean).length;
+  document.querySelectorAll('.task-card').forEach(c=>c.classList.remove('done'));
+  if(p.feed) document.getElementById('task-feed').classList.add('done');
+  if(p.catch) document.getElementById('task-catch').classList.add('done');
+  if(p.path) document.getElementById('task-path').classList.add('done');
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+  if(fill) fill.style.width = (done/3*100)+'%';
+  if(text) text.textContent = t('progress')+': '+done+'/3';
+  if(done===3){
+    earnBadge('world1');
+    setTimeout(()=>showWin('🎉',t('world_complete'),t('world_complete_text')),500);
+  }
+}
+
+/* ============ ЗАДАНИЯ МИРА 1 ============ */
+let currentTask = null, catchTimer = null, catchTimeLeft = 0, catchScore = 0, catchSpawner = null;
+
+function startTask(name){
+  initAudio(); sfxClick();
+  currentTask = name;
+  const screen = document.getElementById('taskScreen');
+  const content = document.getElementById('taskContent');
+  const hint = document.getElementById('taskHint');
+  const score = document.getElementById('taskScore');
+  content.innerHTML=''; score.textContent='';
+  if(name==='feed') startFeed(content,hint,score);
+  if(name==='catch') startCatch(content,hint,score);
+  if(name==='path') startPath(content,hint,score);
+  screen.classList.add('active');
+}
+function closeTask(){
+  document.getElementById('taskScreen').classList.remove('active');
+  if(catchTimer) clearInterval(catchTimer);
+  if(catchSpawner) clearInterval(catchSpawner);
+  currentTask=null;
+}
+
+/* --- ПОКОРМИ --- */
+function startFeed(content,hint,score){
+  hint.textContent = t('feed_hint');
+  const foods = ['🍎','🍌','🍇','🍓','🍒','🍑','🥝','🍊'];
+  let eaten=0; const max=5;
+  function update(){ score.textContent = t('feed_score').replace('{n}',eaten).replace('{max}',max); }
+  update();
+  content.innerHTML = `<div class="feed-dragon" id="feedDragon">
+    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
+      <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
+      <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
+      <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
+      <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
+      <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
+      <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
+      <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+      <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+      <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+      <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+      <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
+      <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
+      <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
+      <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
+      <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
+      <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
+      <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
+      <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
+      <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
+      <circle cx="133" cy="99" r="4" fill="#fff"/>
+      <circle cx="177" cy="99" r="4" fill="#fff"/>
+      <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
+      <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity=".7"/>
+      <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="145" cy="118" rx="4" ry="3" fill="#1E1B4B"/>
+      <ellipse cx="155" cy="118" rx="4" ry="3" fill="#1E1B4B"/>
+    </svg>
+  </div>`;
+  const dragon = document.getElementById('feedDragon');
+  function spawn(){
+    if(eaten>=max) return;
+    const f = document.createElement('div');
+    f.className='food-item spawn';
+    f.textContent = foods[Math.floor(Math.random()*foods.length)];
+    const r = dragon.getBoundingClientRect();
+    f.style.left = (Math.random()*(r.width-50))+'px';
+    f.style.top = (Math.random()*(r.height-80))+'px';
+    const eat = ()=>{
+      if(f.classList.contains('eaten')) return;
+      f.classList.add('eaten'); eaten++; update(); sfxEat();
+      const rect = f.getBoundingClientRect();
+      burstParticles(rect.left+20, rect.top+20, '#FBBF24', 8);
+      if(navigator.vibrate) navigator.vibrate(20);
+      if(eaten>=max){
+        setTimeout(()=>{ setWorld1Progress('feed'); closeTask(); sfxWin(); burstConfetti(); showWin('🍎',t('feed_win_title'),t('feed_win_text')); },500);
+      } else setTimeout(spawn,400);
+    };
+    f.addEventListener('click',eat);
+    f.addEventListener('touchstart',e=>{e.preventDefault();eat();},{passive:false});
+    dragon.appendChild(f);
+  }
+  spawn(); setTimeout(spawn,300); setTimeout(spawn,600);
+}
+
+/* --- ЗВЁЗДЫ --- */
+function startCatch(content,hint,score){
+  hint.textContent = t('catch_hint');
+  catchScore=0; catchTimeLeft=20;
+  content.innerHTML = `<div class="catch-area" id="catchArea"></div>`;
+  const area = document.getElementById('catchArea');
+  function update(){ score.textContent = t('catch_score').replace('{n}',catchScore)+' | '+t('catch_time').replace('{t}',catchTimeLeft); }
+  update();
+  function spawn(){
+    const s = document.createElement('div');
+    s.className='star'; s.textContent='⭐';
+    const x = Math.random()*(area.clientWidth-50);
+    const y = Math.random()*(area.clientHeight-50);
+    s.style.left=x+'px'; s.style.top=y+'px';
+    const catchIt = ()=>{
+      if(s.classList.contains('caught')) return;
+      s.classList.add('caught'); catchScore++; update(); sfxCatch();
+      const rect = s.getBoundingClientRect();
+      burstParticles(rect.left+18, rect.top+18, '#FBBF24', 6);
+      if(navigator.vibrate) navigator.vibrate(15);
+      setTimeout(()=>s.remove(),300);
+    };
+    s.addEventListener('click',catchIt);
+    s.addEventListener('touchstart',e=>{e.preventDefault();catchIt();},{passive:false});
+    area.appendChild(s);
+    setTimeout(()=>{ if(!s.classList.contains('caught')) s.remove(); },3000);
+  }
+  catchSpawner = setInterval(spawn,600);
+  spawn(); spawn();
+  catchTimer = setInterval(()=>{
+    catchTimeLeft--; update();
+    if(catchTimeLeft<=0){
+      clearInterval(catchTimer); clearInterval(catchSpawner);
+      setTimeout(()=>{ setWorld1Progress('catch'); closeTask(); sfxWin(); burstConfetti(); showWin('⭐',t('catch_win_title'),t('catch_win_text')); },400);
+    }
+  },1000);
+}
+
+/* --- ЗАМОК --- */
+function startPath(content,hint,score){
+  hint.textContent = t('path_hint');
+  score.textContent='';
+  const total=5; let current=0;
+  content.innerHTML = `<div class="path-area" id="pathArea"></div>`;
+  const area = document.getElementById('pathArea');
+  function render(){
+    area.innerHTML='';
+    for(let i=1;i<=total;i++){
+      const s = document.createElement('div');
+      s.className='path-step';
+      if(i<current) s.classList.add('done');
+      if(i>current) s.classList.add('locked');
+      if(i===current) s.textContent = t('path_step').replace('{n}',i)+' 👆';
+      else if(i<current) s.textContent = t('path_step').replace('{n}',i)+' ✓';
+      else s.textContent = t('path_step').replace('{n}',i);
+      if(i===current){
+        const next = ()=>{
+          current++; sfxClick();
+          const rect = s.getBoundingClientRect();
+          burstParticles(rect.left+rect.width/2, rect.top+rect.height/2, '#8B5CF6', 8);
+          if(navigator.vibrate) navigator.vibrate(20);
+          render();
+          if(current>total){
+            setTimeout(()=>{ setWorld1Progress('path'); closeTask(); sfxWin(); burstConfetti(); showWin('🏰',t('path_win_title'),t('path_win_text')); },800);
+          }
+        };
+        s.addEventListener('click',next);
+        s.addEventListener('touchstart',e=>{e.preventDefault();next();},{passive:false});
+      }
+      area.appendChild(s);
+    }
+    if(current>total){
+      const c = document.createElement('div');
+      c.className='castle-final'; c.textContent='🏰';
+      area.appendChild(c);
+    }
+  }
+  render();
+}
+
+/* ============ МОДАЛКИ ============ */
+function showWin(emoji,title,text){
+  document.getElementById('winEmoji').textContent = emoji;
+  document.getElementById('winTitle').textContent = title;
+  document.getElementById('winText').textContent = text;
+  document.getElementById('winModal').classList.add('show');
+}
+function closeWin(){
+  document.getElementById('winModal').classList.remove('show');
+  if(currentTask===null) goTo('screen-world1');
+}
+
+/* ============ МИР 2: РАСКРАСКА ============ */
+let canvas, ctx, currentColor='#8B5CF6', currentTool='brush', isDrawing=false, lastX=0, lastY=0;
+const paletteColors = ['#8B5CF6','#FBBF24','#F472B6','#22C55E','#38BDF8','#FF6B6B','#FB923C','#A78BFA','#FFFFFF','#1E1B4B','#84CC16','#EC4899'];
+function initCanvas(){
+  canvas = document.getElementById('colorCanvas');
+  if(!canvas) return;
+  ctx = canvas.getContext('2d');
+  if(!canvas.dataset.inited){
+    drawColoringTemplate();
+    canvas.dataset.inited='1';
+  }
+  const pal = document.getElementById('palette');
+  if(pal && !pal.dataset.inited){
+    paletteColors.forEach((c,i)=>{
+      const s = document.createElement('div');
+      s.className='color-swatch'+(i===0?' active':'');
+      s.style.background = c;
+      s.addEventListener('click',()=>{
+        currentColor = c; currentTool='brush';
+        document.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('active'));
+        s.classList.add('active');
+        document.getElementById('toolBrush').classList.add('active');
+        document.getElementById('toolEraser').classList.remove('active');
+        sfxClick();
+      });
+      pal.appendChild(s);
+    });
+    pal.dataset.inited='1';
+    canvas.addEventListener('mousedown',startDraw);
+    canvas.addEventListener('mousemove',draw);
+    canvas.addEventListener('mouseup',stopDraw);
+    canvas.addEventListener('mouseleave',stopDraw);
+    canvas.addEventListener('touchstart',e=>{e.preventDefault();startDraw(e.touches[0]);},{passive:false});
+    canvas.addEventListener('touchmove',e=>{e.preventDefault();draw(e.touches[0]);},{passive:false});
+    canvas.addEventListener('touchend',stopDraw);
+  }
+}
+function drawColoringTemplate(){
+  ctx.fillStyle='#FFFFFF';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle='#1E1B4B';
+  ctx.lineWidth = 4;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  // Солнце
+  ctx.beginPath(); ctx.arc(80,80,45,0,Math.PI*2); ctx.stroke();
+  for(let i=0;i<8;i++){
+    const a = i*Math.PI/4;
+    ctx.beginPath();
+    ctx.moveTo(80+Math.cos(a)*55, 80+Math.sin(a)*55);
+    ctx.lineTo(80+Math.cos(a)*75, 80+Math.sin(a)*75);
+    ctx.stroke();
+  }
+  // Дом
+  ctx.strokeRect(180,180,140,140);
+  ctx.beginPath();
+  ctx.moveTo(170,180); ctx.lineTo(250,110); ctx.lineTo(330,180);
+  ctx.closePath(); ctx.stroke();
+  // Дверь
+  ctx.strokeRect(230,250,40,70);
+  // Окно
+  ctx.strokeRect(200,205,30,30);
+  ctx.strokeRect(290,205,30,30);
+  // Облако
+  ctx.beginPath();
+  ctx.arc(370,80,25,0,Math.PI*2);
+  ctx.arc(400,70,30,0,Math.PI*2);
+  ctx.arc(430,80,25,0,Math.PI*2);
+  ctx.stroke();
+  // Дерево
+  ctx.beginPath();
+  ctx.moveTo(100,380); ctx.lineTo(100,280);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(100,250,50,0,Math.PI*2);
+  ctx.stroke();
+  // Трава
+  ctx.beginPath();
+  ctx.moveTo(0,380); ctx.lineTo(500,380);
+  ctx.stroke();
+}
+function getPos(e){
+  const r = canvas.getBoundingClientRect();
+  const scaleX = canvas.width/r.width;
+  const scaleY = canvas.height/r.height;
+  return { x:(e.clientX-r.left)*scaleX, y:(e.clientY-r.top)*scaleY };
+}
+function startDraw(e){
+  initAudio();
+  isDrawing = true;
+  const p = getPos(e);
+  lastX = p.x; lastY = p.y;
+  draw(e);
+}
+function draw(e){
+  if(!isDrawing) return;
+  const p = getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(lastX,lastY);
+  ctx.lineTo(p.x,p.y);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  if(currentTool==='eraser'){
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 30;
+  } else {
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 14;
+  }
+  ctx.stroke();
+  lastX = p.x; lastY = p.y;
+}
+function stopDraw(){ isDrawing = false; }
+function setTool(tool){
+  currentTool = tool;
+  document.getElementById('toolBrush').classList.toggle('active',tool==='brush');
+  document.getElementById('toolEraser').classList.toggle('active',tool==='eraser');
+  sfxClick();
+}
+function clearDrawing(){
+  if(!ctx) return;
+  drawColoringTemplate();
+  sfxClick();
+}
+function saveDrawing(){
+  if(!canvas) return;
+  const link = document.createElement('a');
+  link.download = 'viokrista-drawing.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast(currentLang==='ru'?'Рисунок сохранён! 💾':'Drawing saved! 💾');
+  sfxWin(); burstConfetti();
+  earnBadge('world2');
+}
+
+/* ============ МИР 3: ИСТОРИЯ ============ */
+const storyData = {
+  ru: [
+    { text:'Вио проснулся на стене и увидел, что все краски исчезли. Куда ему идти?', choices:[
+      { text:'🌲 В тёмный лес', next:1 },
+      { text:'🏰 К старому замку', next:2 }
+    ]},
+    { text:'В лесу Вио встретил грустного лисёнка. Он потерял свой хвост.', choices:[
+      { text:'🔍 Помочь найти хвост', next:3 },
+      { text:'➡️ Идти дальше одному', next:4 }
+    ]},
+    { text:'В замке Вио нашёл волшебную кисть. Она может вернуть цвета!', choices:[
+      { text:'🖌 Взять кисть', next:5 },
+      { text:'🚪 Оставить и уйти', next:4 }
+    ]},
+    { text:'Вио помог лисёнку, и они стали друзьями. Лисёнок показал тайную тропу к радуге!', choices:[
+      { text:'🌈 Пойти к радуге', next:5 },
+      { text:'🏠 Вернуться на стену', next:6 }
+    ]},
+    { text:'Вио вернулся на стену ни с чем. Краски так и не вернулись...', choices:[
+      { text:'🔄 Начать заново', next:0 }
+    ]},
+    { text:'Вио взмахнул кистью — и стена засияла всеми цветами! Краски вернулись!', choices:[
+      { text:'🎉 Конец!', next:6 }
+    ]},
+    { text:'Вио стал героем стены. Теперь дети приходят к нему и раскрашивают мир вместе с ним!', choices:[
+      { text:'🔄 Играть снова', next:0 }
+    ]}
+  ],
+  en: [
+    { text:'Vio woke up on the wall and saw that all colors had disappeared. Where should he go?', choices:[
+      { text:'🌲 Into the dark forest', next:1 },
+      { text:'🏰 To the old castle', next:2 }
+    ]},
+    { text:'In the forest Vio met a sad fox who lost his tail.', choices:[
+      { text:'🔍 Help find the tail', next:3 },
+      { text:'➡️ Go on alone', next:4 }
+    ]},
+    { text:'In the castle Vio found a magic brush. It can bring colors back!', choices:[
+      { text:'🖌 Take the brush', next:5 },
+      { text:'🚪 Leave it and go', next:4 }
+    ]},
+    { text:'Vio helped the fox and they became friends. The fox showed a secret path to the rainbow!', choices:[
+      { text:'🌈 Go to the rainbow', next:5 },
+      { text:'🏠 Return to the wall', next:6 }
+    ]},
+    { text:'Vio returned to the wall with nothing. The colors never came back...', choices:[
+      { text:'🔄 Start over', next:0 }
+    ]},
+    { text:'Vio waved the brush — and the wall shone with all colors! The colors are back!', choices:[
+      { text:'🎉 The end!', next:6 }
+    ]},
+    { text:'Vio became the hero of the wall. Now children come to him and color the world together!', choices:[
+      { text:'🔄 Play again', next:0 }
+    ]}
+  ]
+};
+function renderStory(){
+  const area = document.getElementById('storyArea');
+  if(!area) return;
+  if(!area.dataset.node) area.dataset.node = '0';
+  const node = parseInt(area.dataset.node);
+  const data = storyData[currentLang][node];
+  area.innerHTML = `
+    <div class="story-text">${data.text}</div>
+    <div class="story-choices" id="storyChoices"></div>
+  `;
+  const choices = document.getElementById('storyChoices');
+  data.choices.forEach(c=>{
+    const b = document.createElement('button');
+    b.className='choice-btn';
+    b.textContent = c.text;
+    b.addEventListener('click',()=>{
+      sfxClick();
+      if(c.next===0){ area.dataset.node='0'; renderStory(); }
+      else if(c.next===6 && node===5){
+        area.dataset.node='6'; renderStory();
+        sfxWin(); burstConfetti();
+        earnBadge('world3');
+        showWin('📖', currentLang==='ru'?'История завершена!':'Story complete!', currentLang==='ru'?'Ты прошёл историю и вернул краски! 🎉':'You finished the story and brought colors back! 🎉');
+      } else {
+        area.dataset.node = String(c.next);
+        renderStory();
+      }
+    });
+    choices.appendChild(b);
   });
+}
+
+/* ============ МИР 4: КВЕСТ ============ */
+const heroes = [
+  { id:'fox', emoji:'🦊', ru:'Лисёнок', en:'Fox', ruDesc:'Живёт на стене у парка. Любит играть с листьями.', enDesc:'Lives on the wall near the park. Loves playing with leaves.', wall:'🏞️', wallRu:'Парк', wallEn:'Park' },
+  { id:'owl', emoji:'🦉', ru:'Сова', en:'Owl', ruDesc:'Мудрая сова на стене библиотеки. Знает все сказки.', enDesc:'Wise owl on the library wall. Knows all fairy tales.', wall:'📚', wallRu:'Библиотека', wallEn:'Library' },
+  { id:'cat', emoji:'🐱', ru:'Кот', en:'Cat', ruDesc:'Рыжий кот на стене у кафе. Любит спать на солнце.', enDesc:'Ginger cat on the cafe wall. Loves sleeping in the sun.', wall:'☕', wallRu:'Кафе', wallEn:'Cafe' },
+  { id:'turtle', emoji:'🐢', ru:'Черепаха', en:'Turtle', ruDesc:'Черепаха на стене у пруда. Самая мудрая в городе.', enDesc:'Turtle on the wall near the pond. The wisest in town.', wall:'🌊', wallRu:'Пруд', wallEn:'Pond' },
+  { id:'butterfly', emoji:'🦋', ru:'Бабочка', en:'Butterfly', ruDesc:'Бабочка на стене у сада. Любит цветы и нектар.', enDesc:'Butterfly on the garden wall. Loves flowers and nectar.', wall:'🌷', wallRu:'Сад', wallEn:'Garden' },
+  { id:'star', emoji:'⭐', ru:'Звёздочка', en:'Star', ruDesc:'Звёздочка на стене у школы. Светит по ночам.', enDesc:'Star on the school wall. Shines at night.', wall:'🏫', wallRu:'Школа', wallEn:'School' }
+];
+function renderQuest(){
+  const map = document.getElementById('questMap');
+  if(!map) return;
+  const found = JSON.parse(localStorage.getItem('viokrista_quest')||'[]');
+  map.innerHTML='';
+  heroes.forEach(h=>{
+    const card = document.createElement('div');
+    card.className='wall-card'+(found.includes(h.id)?' found':'');
+    card.innerHTML = `<div class="wall-icon">${h.wall}</div><div class="wall-label">${currentLang==='ru'?h.wallRu:h.wallEn}</div>`;
+    card.addEventListener('click',()=>{
+      if(found.includes(h.id)) return;
+      openHero(h);
+    });
+    map.appendChild(card);
+  });
+  updateQuestProgress();
+}
+function openHero(h){
+  sfxClick();
+  document.getElementById('heroEmoji').textContent = h.emoji;
+  document.getElementById('heroName').textContent = currentLang==='ru'?h.ru:h.en;
+  document.getElementById('heroDesc').textContent = currentLang==='ru'?h.ruDesc:h.enDesc;
+  document.getElementById('heroModal').classList.add('show');
+  const found = JSON.parse(localStorage.getItem('viokrista_quest')||'[]');
+  if(!found.includes(h.id)){
+    found.push(h.id);
+    localStorage.setItem('viokrista_quest',JSON.stringify(found));
+    renderQuest();
+    sfxWin(); burstConfetti();
+    if(found.length===heroes.length){
+      earnBadge('world4');
+      setTimeout(()=>{
+        closeHero();
+        showWin('🏆',t('quest_complete'),t('quest_complete_text'));
+      },2000);
+    } else {
+      showToast(t('quest_found')+' '+h.emoji);
+    }
+  }
+}
+function closeHero(){ document.getElementById('heroModal').classList.remove('show'); }
+function updateQuestProgress(){
+  const found = JSON.parse(localStorage.getItem('viokrista_quest')||'[]');
+  const fill = document.getElementById('questFill');
+  const text = document.getElementById('questText');
+  if(fill) fill.style.width = (found.length/heroes.length*100)+'%';
+  if(text) text.textContent = found.length+'/'+heroes.length;
+}
+
+/* ============ СТАРТ ============ */
+window.addEventListener('load',()=>{
+  applyLang();
+  renderBadges();
+  updateProgress();
+  initCanvas();
+});
 </script>
 </body>
 </html>
