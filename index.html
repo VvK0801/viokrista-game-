@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VioKrista — Оживи стену</title>
+<title>VioKrista: Приключения Вио</title>
 <style>
   * {
     margin: 0;
@@ -13,286 +13,683 @@
     user-select: none;
   }
 
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 20px;
     touch-action: manipulation;
   }
 
+  /* ===== ЗВЁЗДЫ НА ФОНЕ ===== */
   .stars {
     position: fixed;
     inset: 0;
     pointer-events: none;
+    z-index: 0;
     background-image:
       radial-gradient(2px 2px at 20% 30%, #fff, transparent),
       radial-gradient(1px 1px at 60% 70%, #fff, transparent),
       radial-gradient(1px 1px at 80% 20%, #fff, transparent),
       radial-gradient(2px 2px at 40% 80%, #fff, transparent),
-      radial-gradient(1px 1px at 90% 50%, #fff, transparent);
-    opacity: 0.6;
+      radial-gradient(1px 1px at 90% 50%, #fff, transparent),
+      radial-gradient(1px 1px at 15% 65%, #fff, transparent),
+      radial-gradient(2px 2px at 75% 85%, #fff, transparent);
+    opacity: 0.5;
     animation: twinkle 4s infinite alternate;
   }
 
   @keyframes twinkle {
     from { opacity: 0.3; }
-    to { opacity: 0.8; }
+    to { opacity: 0.7; }
   }
 
-  .title {
-    font-size: clamp(20px, 6vw, 32px);
-    font-weight: 800;
-    letter-spacing: 1px;
+  /* ===== ОБЩИЕ ЭКРАНЫ ===== */
+  .screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1;
+    overflow-y: auto;
+  }
+
+  .screen.active {
+    display: flex;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ===== ЛОГО VIOKRISTA ===== */
+  .logo {
+    font-size: clamp(28px, 8vw, 48px);
+    font-weight: 900;
+    letter-spacing: 2px;
     background: linear-gradient(90deg, #ffd93d, #ff6b6b, #a29bfe);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 10px;
-    z-index: 2;
+    text-align: center;
   }
 
   .subtitle {
-    font-size: clamp(12px, 3.5vw, 16px);
-    opacity: 0.7;
-    margin-bottom: 30px;
-    z-index: 2;
-  }
-
-  .character-wrap {
-    position: relative;
-    width: min(70vw, 320px);
-    height: min(70vw, 320px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-  }
-
-  .glow {
-    position: absolute;
-    inset: -20px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(162, 155, 254, 0.4), transparent 70%);
-    animation: pulse 2s infinite ease-in-out;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.15); opacity: 1; }
-  }
-
-  .character {
-    font-size: min(50vw, 200px);
-    line-height: 1;
-    transition: transform 0.15s ease;
-    filter: drop-shadow(0 10px 30px rgba(162, 155, 254, 0.6));
-    animation: float 3s infinite ease-in-out;
-    position: relative;
-    z-index: 1;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-  }
-
-  .character.jump {
-    animation: jump 0.4s ease;
-  }
-
-  @keyframes jump {
-    0% { transform: translateY(0) scale(1); }
-    40% { transform: translateY(-40px) scale(1.15); }
-    70% { transform: translateY(0) scale(0.95); }
-    100% { transform: translateY(0) scale(1); }
-  }
-
-  .speech {
-    position: absolute;
-    top: -10px;
-    background: #fff;
-    color: #1a1a2e;
-    padding: 12px 20px;
-    border-radius: 20px;
-    font-size: clamp(14px, 4vw, 18px);
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    pointer-events: none;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    z-index: 3;
-  }
-
-  .speech::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: #fff;
-    border-bottom: 0;
-  }
-
-  .speech.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .counter {
-    margin-top: 30px;
-    font-size: clamp(14px, 4vw, 18px);
+    font-size: clamp(14px, 4vw, 20px);
     opacity: 0.8;
-    z-index: 2;
+    margin-bottom: 40px;
+    text-align: center;
+    color: #C4B5FD;
   }
 
-  .counter span {
-    color: #ffd93d;
-    font-weight: 800;
-    font-size: 1.3em;
-  }
-
-  .btn-next {
-    margin-top: 40px;
+  /* ===== КНОПКИ ===== */
+  .btn {
     padding: 16px 40px;
     font-size: clamp(16px, 4.5vw, 20px);
     font-weight: 700;
     border: none;
     border-radius: 50px;
-    background: linear-gradient(90deg, #ff6b6b, #ffd93d);
-    color: #1a1a2e;
+    background: linear-gradient(90deg, #8B5CF6, #A78BFA);
+    color: #fff;
     cursor: pointer;
-    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-    transition: transform 0.15s ease;
-    z-index: 2;
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    font-family: inherit;
   }
 
-  .btn-next:active {
+  .btn:active {
     transform: scale(0.95);
   }
 
-  .btn-next:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  .btn:hover {
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.6);
   }
 
-  .hint {
-    margin-top: 20px;
-    font-size: clamp(11px, 3vw, 14px);
-    opacity: 0.5;
+  .btn-gold {
+    background: linear-gradient(90deg, #FBBF24, #F59E0B);
+    color: #1a1a2e;
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+  }
+
+  /* ===== КНОПКА ЯЗЫКА ===== */
+  .lang-switch {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 100;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    background: rgba(26, 26, 46, 0.7);
+    color: #fff;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .lang-switch:hover {
+    background: rgba(139, 92, 246, 0.5);
+    border-color: #8B5CF6;
+  }
+
+  /* ===== ГЛАВНОЕ МЕНЮ ===== */
+  .menu-title {
+    font-size: clamp(20px, 6vw, 32px);
+    font-weight: 800;
+    margin-bottom: 20px;
     text-align: center;
-    z-index: 2;
+    background: linear-gradient(90deg, #ffd93d, #ff6b6b, #a29bfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dragon-wrap {
+    width: min(40vw, 200px);
+    height: min(40vw, 200px);
+    margin-bottom: 20px;
+    cursor: pointer;
+    animation: float 3s infinite ease-in-out;
+    filter: drop-shadow(0 10px 30px rgba(139, 92, 246, 0.6));
+  }
+
+  .dragon-wrap svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+  }
+
+  .menu-card {
+    background: rgba(139, 92, 246, 0.15);
+    border: 2px solid rgba(139, 92, 246, 0.4);
+    border-radius: 20px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .menu-card:hover, .menu-card:active {
+    background: rgba(139, 92, 246, 0.35);
+    border-color: #A78BFA;
+    transform: scale(1.03);
+  }
+
+  .menu-card .icon {
+    font-size: clamp(28px, 8vw, 40px);
+  }
+
+  .menu-card .label {
+    font-size: clamp(12px, 3.5vw, 15px);
+    font-weight: 700;
+    color: #E9D5FF;
+  }
+
+  /* ===== ЭКРАН МИРА ===== */
+  .world-header {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+
+  .btn-back {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .btn-back:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .world-title {
+    font-size: clamp(18px, 5vw, 24px);
+    font-weight: 800;
+    color: #FBBF24;
+  }
+
+  .placeholder {
+    background: rgba(139, 92, 246, 0.15);
+    border: 2px dashed rgba(139, 92, 246, 0.5);
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    max-width: 500px;
+    color: #C4B5FD;
+    font-size: clamp(14px, 4vw, 18px);
+    line-height: 1.6;
+  }
+
+  /* ===== АЧИВКИ ===== */
+  .achievements {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .badge {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(139, 92, 246, 0.2);
+    border: 2px solid rgba(139, 92, 246, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+  }
+
+  .badge.earned {
+    opacity: 1;
+    background: linear-gradient(135deg, #FBBF24, #F59E0B);
+    border-color: #FBBF24;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.5); }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* ===== ТОСТ (уведомление) ===== */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(90deg, #FBBF24, #F59E0B);
+    color: #1a1a2e;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 16px;
+    box-shadow: 0 10px 30px rgba(251, 191, 36, 0.5);
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.4s ease;
+    pointer-events: none;
+    text-align: center;
+    max-width: 90vw;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ===== ЗАГРУЗКА ===== */
+  .loader-dragon {
+    width: min(50vw, 250px);
+    height: min(50vw, 250px);
+    animation: float 2s infinite ease-in-out;
+    filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.8));
+    margin-bottom: 30px;
+  }
+
+  .loader-dragon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .loading-hint {
+    font-size: clamp(14px, 4vw, 18px);
+    color: #C4B5FD;
+    margin-top: 20px;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== АДАПТИВ ===== */
+  @media (max-width: 400px) {
+    .menu-grid {
+      gap: 8px;
+    }
+    .menu-card {
+      padding: 14px 8px;
+    }
   }
 </style>
 </head>
 <body>
   <div class="stars"></div>
 
-  <h1 class="title">VioKrista</h1>
-  <p class="subtitle">Оживи стену ✨</p>
+  <!-- Кнопка переключения языка -->
+  <button class="lang-switch" id="langSwitch" onclick="toggleLang()">🌐 RU</button>
 
-  <div class="character-wrap" id="characterWrap">
-    <div class="glow"></div>
-    <div class="speech" id="speech"></div>
-    <div class="character" id="character">🐉</div>
+  <!-- ========== ЭКРАН 0: ЗАГРУЗКА ========== -->
+  <div class="screen active" id="screen-load">
+    <div class="loader-dragon">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
+        <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
+        <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
+        <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
+        <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
+        <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
+        <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
+        <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+        <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+        <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+        <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+        <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
+        <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
+        <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
+        <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
+        <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
+        <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
+        <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
+        <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
+        <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
+        <circle cx="133" cy="99" r="4" fill="#fff"/>
+        <circle cx="177" cy="99" r="4" fill="#fff"/>
+        <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
+        <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
+        <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
+        <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
+        <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity="0.8"/>
+        <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity="0.8"/>
+      </svg>
+    </div>
+    <div class="logo">VioKrista</div>
+    <div class="subtitle" data-i18n="welcome">Приключения Вио</div>
+    <button class="btn btn-gold" onclick="goTo('screen-menu')" data-i18n="start">Начать</button>
+    <div class="loading-hint" data-i18n="tap">Тапни, чтобы начать ✨</div>
   </div>
 
-  <div class="counter">Ты разбудил меня <span id="count">0</span> раз!</div>
+  <!-- ========== ЭКРАН 1: ГЛАВНОЕ МЕНЮ ========== -->
+  <div class="screen" id="screen-menu">
+    <div class="menu-title" data-i18n="menu_title">Выбери приключение</div>
 
-  <button class="btn-next" id="btnNext" disabled>Дальше →</button>
+    <div class="dragon-wrap" onclick="dragonSpeak()">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="70" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(-30 70 140)"/>
+        <ellipse cx="230" cy="140" rx="35" ry="20" fill="#6D28D9" transform="rotate(30 230 140)"/>
+        <ellipse cx="65" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(-30 65 135)"/>
+        <ellipse cx="235" cy="135" rx="25" ry="12" fill="#A78BFA" transform="rotate(30 235 135)"/>
+        <path d="M100 230 Q60 250 50 220 Q45 205 60 200" stroke="#8B5CF6" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M50 220 L40 210 L55 205 Z" fill="#FBBF24"/>
+        <ellipse cx="150" cy="170" rx="80" ry="85" fill="#8B5CF6"/>
+        <ellipse cx="150" cy="195" rx="50" ry="55" fill="#C4B5FD"/>
+        <ellipse cx="115" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+        <ellipse cx="185" cy="245" rx="20" ry="12" fill="#7C3AED"/>
+        <ellipse cx="85" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+        <ellipse cx="215" cy="180" rx="15" ry="12" fill="#8B5CF6"/>
+        <ellipse cx="150" cy="105" rx="65" ry="60" fill="#8B5CF6"/>
+        <path d="M110 60 Q105 30 120 25 Q115 45 125 55 Z" fill="#FBBF24"/>
+        <path d="M190 60 Q195 30 180 25 Q185 45 175 55 Z" fill="#FBBF24"/>
+        <path d="M90 90 Q70 75 75 100 Q80 105 90 100 Z" fill="#A78BFA"/>
+        <path d="M210 90 Q230 75 225 100 Q220 105 210 100 Z" fill="#A78BFA"/>
+        <ellipse cx="128" cy="100" rx="18" ry="20" fill="#fff"/>
+        <ellipse cx="172" cy="100" rx="18" ry="20" fill="#fff"/>
+        <circle cx="130" cy="103" r="10" fill="#1E1B4B"/>
+        <circle cx="174" cy="103" r="10" fill="#1E1B4B"/>
+        <circle cx="133" cy="99" r="4" fill="#fff"/>
+        <circle cx="177" cy="99" r="4" fill="#fff"/>
+        <ellipse cx="110" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
+        <ellipse cx="190" cy="120" rx="10" ry="6" fill="#F472B6" opacity="0.7"/>
+        <path d="M130 130 Q150 148 170 130" stroke="#1E1B4B" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="150" cy="50" r="6" fill="#FBBF24"/>
+        <path d="M150 55 Q150 45 150 40" stroke="#FBBF24" stroke-width="3"/>
+        <circle cx="60" cy="80" r="3" fill="#FBBF24" opacity="0.8"/>
+        <circle cx="240" cy="70" r="4" fill="#FBBF24" opacity="0.8"/>
+      </svg>
+    </div>
 
-  <p class="hint">Нажимай на персонажа пальцем 👆</p>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="goTo('screen-world1')">
+        <div class="icon">🌟</div>
+        <div class="label" data-i18n="world1">Оживи стену</div>
+      </div>
+      <div class="menu-card" onclick="goTo('screen-world2')">
+        <div class="icon">🎨</div>
+        <div class="label" data-i18n="world2">Раскрась стену</div>
+      </div>
+      <div class="menu-card" onclick="goTo('screen-world3')">
+        <div class="icon">📖</div>
+        <div class="label" data-i18n="world3">Продолжи историю</div>
+      </div>
+      <div class="menu-card" onclick="goTo('screen-world4')">
+        <div class="icon">🗺️</div>
+        <div class="label" data-i18n="world4">Найди героев</div>
+      </div>
+    </div>
+
+    <div class="achievements" id="achievements">
+      <div class="badge" data-ach="start">🌟</div>
+      <div class="badge" data-ach="world1">🐉</div>
+      <div class="badge" data-ach="world2">🎨</div>
+      <div class="badge" data-ach="world3">📖</div>
+      <div class="badge" data-ach="world4">🗺️</div>
+    </div>
+
+    <div style="font-size:13px; opacity:0.5; margin-top:15px; text-align:center;" data-i18n="hint_dragon">
+      Нажми на Вио, чтобы он заговорил 👆
+    </div>
+  </div>
+
+  <!-- ========== ЭКРАН 2: МИР 1 ========== -->
+  <div class="screen" id="screen-world1">
+    <div class="world-header">
+      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+      <div class="world-title" data-i18n="world1">Оживи стену</div>
+      <div style="width:70px;"></div>
+    </div>
+    <div class="placeholder">
+      <div style="font-size:60px; margin-bottom:20px;">🌟</div>
+      <div data-i18n="soon1">Здесь будет игра «Оживи стену»:</div>
+      <div style="margin-top:10px;">• <span data-i18n="soon1a">Покорми Вио</span><br>• <span data-i18n="soon1b">Поиграй с ним</span><br>• <span data-i18n="soon1c">Доберись до замка</span></div>
+    </div>
+  </div>
+
+  <!-- ========== ЭКРАН 3: МИР 2 ========== -->
+  <div class="screen" id="screen-world2">
+    <div class="world-header">
+      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+      <div class="world-title" data-i18n="world2">Раскрась стену</div>
+      <div style="width:70px;"></div>
+    </div>
+    <div class="placeholder">
+      <div style="font-size:60px; margin-bottom:20px;">🎨</div>
+      <div data-i18n="soon2">Здесь будет раскраска:</div>
+      <div style="margin-top:10px;" data-i18n="soon2a">Ребёнок раскрашивает картинку пальцем и сохраняет её.</div>
+    </div>
+  </div>
+
+  <!-- ========== ЭКРАН 4: МИР 3 ========== -->
+  <div class="screen" id="screen-world3">
+    <div class="world-header">
+      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+      <div class="world-title" data-i18n="world3">Продолжи историю</div>
+      <div style="width:70px;"></div>
+    </div>
+    <div class="placeholder">
+      <div style="font-size:60px; margin-bottom:20px;">📖</div>
+      <div data-i18n="soon3">Здесь будет интерактивная история:</div>
+      <div style="margin-top:10px;" data-i18n="soon3a">Ребёнок выбирает, что случится дальше, и получает свой финал.</div>
+    </div>
+  </div>
+
+  <!-- ========== ЭКРАН 5: МИР 4 ========== -->
+  <div class="screen" id="screen-world4">
+    <div class="world-header">
+      <button class="btn-back" onclick="goTo('screen-menu')">← <span data-i18n="back">Назад</span></button>
+      <div class="world-title" data-i18n="world4">Найди героев</div>
+      <div style="width:70px;"></div>
+    </div>
+    <div class="placeholder">
+      <div style="font-size:60px; margin-bottom:20px;">🗺️</div>
+      <div data-i18n="soon4">Здесь будет квест по стенам:</div>
+      <div style="margin-top:10px;" data-i18n="soon4a">Ребёнок находит героев на разных стенах и собирает их всех.</div>
+    </div>
+  </div>
+
+  <!-- Тост -->
+  <div class="toast" id="toast"></div>
 
 <script>
-  const character = document.getElementById('character');
-  const speech = document.getElementById('speech');
-  const countEl = document.getElementById('count');
-  const btnNext = document.getElementById('btnNext');
-  const characterWrap = document.getElementById('characterWrap');
+  /* ============ ЯЗЫКИ ============ */
+  const translations = {
+    ru: {
+      welcome: 'Приключения Вио',
+      start: 'Начать',
+      tap: 'Тапни, чтобы начать ✨',
+      menu_title: 'Выбери приключение',
+      world1: 'Оживи стену',
+      world2: 'Раскрась стену',
+      world3: 'Продолжи историю',
+      world4: 'Найди героев',
+      back: 'Назад',
+      soon1: 'Здесь будет игра «Оживи стену»:',
+      soon1a: 'Покорми Вио',
+      soon1b: 'Поиграй с ним',
+      soon1c: 'Доберись до замка',
+      soon2: 'Здесь будет раскраска:',
+      soon2a: 'Ребёнок раскрашивает картинку пальцем и сохраняет её.',
+      soon3: 'Здесь будет интерактивная история:',
+      soon3a: 'Ребёнок выбирает, что случится дальше, и получает свой финал.',
+      soon4: 'Здесь будет квест по стенам:',
+      soon4a: 'Ребёнок находит героев на разных стенах и собирает их всех.',
+      hint_dragon: 'Нажми на Вио, чтобы он заговорил 👆',
+      ach_start: '🌟 Ты начал приключение!',
+      ach_world1: '🐉 Ты оживил стену!',
+      ach_world2: '🎨 Ты раскрасил стену!',
+      ach_world3: '📖 Ты продолжил историю!',
+      ach_world4: '🗺️ Ты нашёл героев!',
+      dragon_phrases: [
+        'Привет! Я Вио! 👋',
+        'Давай играть! 🎮',
+        'Ты меня нашёл! 🌟',
+        'Я живу на стене! 🧱',
+        'Ты мой друг! ❤️',
+        'Ура! 🎉'
+      ]
+    },
+    en: {
+      welcome: 'Vio\'s Adventures',
+      start: 'Start',
+      tap: 'Tap to start ✨',
+      menu_title: 'Choose an adventure',
+      world1: 'Bring the wall to life',
+      world2: 'Color the wall',
+      world3: 'Continue the story',
+      world4: 'Find the heroes',
+      back: 'Back',
+      soon1: 'Here will be "Bring the wall to life":',
+      soon1a: 'Feed Vio',
+      soon1b: 'Play with him',
+      soon1c: 'Reach the castle',
+      soon2: 'Here will be the coloring:',
+      soon2a: 'Child colors the picture with finger and saves it.',
+      soon3: 'Here will be interactive story:',
+      soon3a: 'Child chooses what happens next and gets their own ending.',
+      soon4: 'Here will be the wall quest:',
+      soon4a: 'Child finds heroes on different walls and collects them all.',
+      hint_dragon: 'Tap Vio to make him talk 👆',
+      ach_start: '🌟 You started the adventure!',
+      ach_world1: '🐉 You brought the wall to life!',
+      ach_world2: '🎨 You colored the wall!',
+      ach_world3: '📖 You continued the story!',
+      ach_world4: '🗺️ You found the heroes!',
+      dragon_phrases: [
+        'Hi! I\'m Vio! 👋',
+        'Let\'s play! 🎮',
+        'You found me! 🌟',
+        'I live on the wall! 🧱',
+        'You are my friend! ❤️',
+        'Hooray! 🎉'
+      ]
+    }
+  };
 
-  const phrases = [
-    'Привет! Я Vio! 👋',
-    'Щекотно! 😄',
-    'Давай играть! 🎮',
-    'Ты меня нашёл! 🌟',
-    'Ура! 🎉',
-    'Ещё раз! 🔁',
-    'Как тебя зовут? 💫',
-    'Я живу на стене! 🧱',
-    'Ты мой друг! ❤️',
-    'Погладь ещё! ✋'
-  ];
+  let currentLang = localStorage.getItem('viokrista_lang') || 'ru';
 
-  const emotions = ['🐉', '😄', '😲', '🥳', '😊', '🤩', '😎', '🐲'];
-
-  let count = 0;
-  let lastPhrase = -1;
-  let lastEmotion = -1;
-
-  function randomDifferent(arr, lastIndex) {
-    let i;
-    do {
-      i = Math.floor(Math.random() * arr.length);
-    } while (i === lastIndex && arr.length > 1);
-    return i;
+  function toggleLang() {
+    currentLang = currentLang === 'ru' ? 'en' : 'ru';
+    localStorage.setItem('viokrista_lang', currentLang);
+    applyLang();
   }
 
-  function react() {
-    count++;
-    countEl.textContent = count;
+  function applyLang() {
+    document.documentElement.lang = currentLang;
+    document.getElementById('langSwitch').textContent = '🌐 ' + currentLang.toUpperCase();
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (translations[currentLang][key]) {
+        el.textContent = translations[currentLang][key];
+      }
+    });
+  }
 
-    // Прыжок
-    character.classList.remove('jump');
-    void character.offsetWidth;
-    character.classList.add('jump');
+  /* ============ ЭКРАНЫ ============ */
+  function goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
 
-    // Смена эмоции
-    const eIdx = randomDifferent(emotions, lastEmotion);
-    lastEmotion = eIdx;
-    setTimeout(() => {
-      character.textContent = emotions[eIdx];
-    }, 200);
+    // Ачивка за вход в мир
+    if (screenId === 'screen-world1') earnBadge('world1');
+    if (screenId === 'screen-world2') earnBadge('world2');
+    if (screenId === 'screen-world3') earnBadge('world3');
+    if (screenId === 'screen-world4') earnBadge('world4');
+    if (screenId === 'screen-menu') earnBadge('start');
+  }
 
-    // Фраза
-    const pIdx = randomDifferent(phrases, lastPhrase);
-    lastPhrase = pIdx;
-    speech.textContent = phrases[pIdx];
-    speech.classList.add('show');
-
-    clearTimeout(window.speechTimer);
-    window.speechTimer = setTimeout(() => {
-      speech.classList.remove('show');
-    }, 1500);
-
-    // Вибрация (если поддерживается)
-    if (navigator.vibrate) {
-      navigator.vibrate(30);
-    }
-
-    // Активация кнопки после 5 касаний
-    if (count >= 5) {
-      btnNext.disabled = false;
+  /* ============ АЧИВКИ ============ */
+  function earnBadge(name) {
+    const badges = JSON.parse(localStorage.getItem('viokrista_badges') || '[]');
+    if (!badges.includes(name)) {
+      badges.push(name);
+      localStorage.setItem('viokrista_badges', JSON.stringify(badges));
+      renderBadges();
+      if (name !== 'start') {
+        showToast(translations[currentLang]['ach_' + name]);
+      }
     }
   }
 
-  characterWrap.addEventListener('click', react);
-  characterWrap.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    react();
-  }, { passive: false });
+  function renderBadges() {
+    const badges = JSON.parse(localStorage.getItem('viokrista_badges') || '[]');
+    document.querySelectorAll('.badge').forEach(b => {
+      if (badges.includes(b.dataset.ach)) {
+        b.classList.add('earned');
+      }
+    });
+  }
 
-  btnNext.addEventListener('click', () => {
-    alert('🎨 Скоро тут будет раскраска!\n\nА потом — история про VioKrista.\n\nСпасибо, что играешь! ❤️');
+  /* ============ ТОСТ ============ */
+  function showToast(text) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2500);
+  }
+
+  /* ============ ДРАКОН ГОВОРИТ ============ */
+  function dragonSpeak() {
+    const phrases = translations[currentLang].dragon_phrases;
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    showToast(phrase);
+    if (navigator.vibrate) navigator.vibrate(30);
+  }
+
+  /* ============ СТАРТ ============ */
+  window.addEventListener('load', () => {
+    applyLang();
+    renderBadges();
   });
 </script>
 </body>
