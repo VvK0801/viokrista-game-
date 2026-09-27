@@ -3,1132 +3,535 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Последний Свет · VioKrista</title>
+<title>Попутчик</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#050510;color:#fff}
-#app{position:fixed;inset:0;overflow:hidden}
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body {
+    height:100%; width:100%;
+    background:#000;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    color:#e8e8e8;
+    overflow:hidden;
+    user-select:none;
+  }
+  #game {
+    position:relative;
+    width:100%; height:100%;
+    max-width:480px;
+    margin:0 auto;
+    background:linear-gradient(180deg,#0a0a12 0%, #12121c 100%);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
 
-/* ФОН */
-#stars{position:absolute;inset:0;z-index:1}
-.star{position:absolute;border-radius:50%;background:#fff}
-@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.85;transform:scale(1.15)}}
-.fog{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:2}
-.fog-1{width:500px;height:500px;background:#4C1D95;top:-100px;left:-100px;animation:drift1 25s infinite ease-in-out}
-.fog-2{width:600px;height:600px;background:#1E1B4B;bottom:-200px;right:-200px;animation:drift2 30s infinite ease-in-out}
-.fog-3{width:400px;height:400px;background:#5B21B6;top:30%;left:40%;animation:drift3 20s infinite ease-in-out}
-@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
-@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,-80px)}}
-@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,100px)}}
-.vignette{position:absolute;inset:0;pointer-events:none;z-index:3;
-  background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,16,.95) 100%)}
+  /* Фон поезда */
+  #trainBg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(80,60,120,0.25), transparent 60%),
+      repeating-linear-gradient(90deg, transparent 0 40px, rgba(255,255,255,0.015) 40px 42px);
+    pointer-events:none;
+  }
 
-/* ЭКРАНЫ */
-.screen{position:absolute;inset:0;display:none;flex-direction:column;z-index:10;overflow:hidden}
-.screen.active{display:flex;animation:fadeIn .6s ease}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  /* Верхняя панель */
+  #topBar {
+    position:relative; z-index:5;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px;
+    font-size:13px;
+    background:rgba(0,0,0,0.55);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  #signal { color:#7a7a8a; }
+  #batteryWrap {
+    display:flex; align-items:center; gap:6px;
+  }
+  #batteryIcon {
+    width:26px; height:13px;
+    border:1.5px solid #7a7a8a;
+    border-radius:3px;
+    position:relative;
+    padding:1.5px;
+  }
+  #batteryIcon::after {
+    content:''; position:absolute; right:-4px; top:3px;
+    width:2px; height:5px; background:#7a7a8a; border-radius:0 2px 2px 0;
+  }
+  #batteryFill {
+    height:100%; width:60%;
+    background:#7affa0;
+    border-radius:1px;
+    transition:width 0.4s, background 0.4s;
+  }
+  #batteryText { font-size:12px; color:#a0a0b0; min-width:32px; }
 
-/* ВЕРХНИЕ КНОПКИ */
-.top-btns{position:absolute;top:16px;right:16px;z-index:100;display:flex;gap:8px}
-.icon-btn{padding:9px 14px;background:rgba(20,17,45,.7);border:1.5px solid rgba(139,92,246,.45);
-  border-radius:50px;color:#C4B5FD;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
-  backdrop-filter:blur(10px);letter-spacing:.5px;transition:all .2s;min-width:44px}
-.icon-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
-.icon-btn.off{opacity:.4}
-.back-btn{position:absolute;top:16px;left:16px;z-index:100;padding:9px 16px;
-  background:rgba(20,17,45,.7);border:1.5px solid rgba(139,92,246,.45);border-radius:50px;
-  color:#C4B5FD;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
-  backdrop-filter:blur(10px);letter-spacing:.5px;transition:all .2s;display:flex;align-items:center;gap:6px}
-.back-btn:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
+  /* Чат */
+  #chat {
+    position:relative; z-index:4;
+    flex:1;
+    overflow-y:auto;
+    padding:16px 14px 10px;
+    display:flex; flex-direction:column; gap:10px;
+    scroll-behavior:smooth;
+  }
+  #chat::-webkit-scrollbar { width:0; }
 
-/* ============ ЭКРАН 1: ЗАСТАВКА ============ */
-#screen-load{align-items:center;justify-content:center;padding:20px}
-.load-content{display:flex;flex-direction:column;align-items:center;gap:14px;z-index:20;text-align:center}
-.star-logo{width:clamp(70px,20vw,110px);height:clamp(70px,20vw,110px);position:relative;margin-bottom:10px}
-.star-logo svg{width:100%;height:100%;animation:spin 40s linear infinite;opacity:.95;
-  filter:drop-shadow(0 0 20px rgba(251,191,36,.5))}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.star-pulse{position:absolute;inset:-20px;border-radius:50%;
-  background:radial-gradient(circle,rgba(251,191,36,.25),transparent 70%);animation:starPulse 4s infinite ease-in-out}
-@keyframes starPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.25);opacity:.9}}
-.title-main{font-size:clamp(34px,10vw,68px);font-weight:900;letter-spacing:6px;color:#F5E6C8;
-  line-height:1;text-shadow:0 0 25px rgba(251,191,36,.3),0 0 50px rgba(251,191,36,.15);
-  animation:titleBreath 5s infinite ease-in-out}
-@keyframes titleBreath{
-  0%,100%{text-shadow:0 0 25px rgba(251,191,36,.25),0 0 50px rgba(251,191,36,.1)}
-  50%{text-shadow:0 0 35px rgba(251,191,36,.45),0 0 70px rgba(251,191,36,.2)}}
-.title-sub{font-size:clamp(10px,2.8vw,13px);letter-spacing:8px;color:#A78BFA;
-  font-weight:500;text-transform:uppercase;opacity:.75}
-.city-name{font-size:clamp(12px,3.5vw,15px);letter-spacing:8px;font-weight:600;
-  color:#C4B5FD;text-transform:uppercase;text-shadow:0 0 15px rgba(167,139,250,.4);opacity:.85;margin-top:-4px}
-.divider-line{width:70px;height:1px;background:linear-gradient(90deg,transparent,rgba(251,191,36,.6),transparent);margin:22px 0}
-.btn-main{padding:17px 44px;font-size:clamp(14px,3.8vw,16px);font-weight:800;border:none;border-radius:50px;
-  cursor:pointer;font-family:inherit;letter-spacing:2px;color:#FFF8DC;text-transform:uppercase;
-  background:linear-gradient(135deg,#B45309 0%,#92400E 50%,#78350F 100%);
-  border:1.5px solid rgba(251,191,36,.6);
-  box-shadow:0 8px 30px rgba(180,83,9,.5),inset 0 1px 0 rgba(251,191,36,.4);
-  text-shadow:0 0 10px rgba(251,191,36,.4);
-  transition:transform .2s,box-shadow .3s}
-.btn-main:hover{box-shadow:0 10px 45px rgba(251,191,36,.6),inset 0 1px 0 rgba(251,191,36,.6)}
-.btn-main:active{transform:scale(.96)}
-@keyframes softPulse{
-  0%,100%{box-shadow:0 8px 30px rgba(180,83,9,.4),inset 0 1px 0 rgba(251,191,36,.4)}
-  50%{box-shadow:0 8px 40px rgba(251,191,36,.7),inset 0 1px 0 rgba(251,191,36,.6),0 0 50px rgba(251,191,36,.3)}}
-.soft-pulse{animation:softPulse 3s infinite ease-in-out}
+  .msg {
+    max-width:82%;
+    padding:10px 14px;
+    border-radius:16px;
+    font-size:15px;
+    line-height:1.45;
+    animation:pop 0.35s ease-out;
+    word-wrap:break-word;
+  }
+  @keyframes pop {
+    from { opacity:0; transform:translateY(12px) scale(0.96); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+  }
+  .msg.left {
+    align-self:flex-start;
+    background:rgba(60,55,90,0.9);
+    border-bottom-left-radius:4px;
+  }
+  .msg.right {
+    align-self:flex-end;
+    background:rgba(35,90,140,0.9);
+    border-bottom-right-radius:4px;
+  }
+  .msg.sys {
+    align-self:center;
+    background:transparent;
+    color:#8a8a9a;
+    font-size:12.5px;
+    font-style:italic;
+    text-align:center;
+    max-width:95%;
+  }
 
-/* ============ ЭКРАН 2: ГЛАВНОЕ МЕНЮ ============ */
-#screen-menu{align-items:center;justify-content:center;padding:30px 20px}
-.menu-logo{font-size:clamp(24px,7vw,44px);font-weight:900;letter-spacing:5px;color:#F5E6C8;
-  text-align:center;margin-bottom:8px;text-shadow:0 0 20px rgba(251,191,36,.3)}
-.menu-tagline{font-size:clamp(11px,3vw,13px);color:#A78BFA;letter-spacing:3px;
-  text-transform:uppercase;margin-bottom:40px;text-align:center;opacity:.8}
-.menu-buttons{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;z-index:20}
-.menu-item{padding:18px 24px;background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.45);
-  border-radius:16px;color:#E9D5FF;font-size:clamp(15px,4vw,17px);font-weight:700;
-  cursor:pointer;font-family:inherit;text-align:left;transition:all .25s;
-  backdrop-filter:blur(12px);display:flex;align-items:center;gap:16px;letter-spacing:.5px;
-  box-shadow:0 6px 22px rgba(0,0,0,.4)}
-.menu-item:hover,.menu-item:active{background:rgba(139,92,246,.35);border-color:rgba(251,191,36,.7);
-  transform:translateX(6px);color:#fff;box-shadow:0 6px 28px rgba(251,191,36,.25)}
-.menu-item .ico{font-size:24px;flex-shrink:0}
-.menu-item .lbl{flex:1}
-.menu-item .lbl small{display:block;font-size:11px;color:#A78BFA;font-weight:400;
-  letter-spacing:1px;margin-top:3px;opacity:.85}
-.menu-version{position:absolute;bottom:20px;left:0;right:0;text-align:center;
-  font-size:10px;color:#5B21B6;letter-spacing:3px;opacity:.6;font-weight:600}
+  /* Мигание света */
+  #flash {
+    position:absolute; inset:0;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+    z-index:9;
+  }
+  #flash.on { animation: flashAnim 0.5s; }
+  @keyframes flashAnim {
+    0% { opacity:0; }
+    40% { opacity:0.7; }
+    100% { opacity:0; }
+  }
 
-/* ============ ЭКРАН 3: ГЛАВЫ ============ */
-#screen-chapters{padding:70px 20px 30px;overflow-y:auto;align-items:center}
-.chapters-head{text-align:center;margin-bottom:28px}
-.chapters-title{font-size:clamp(22px,6vw,34px);font-weight:900;letter-spacing:6px;
-  color:#F5E6C8;text-shadow:0 0 20px rgba(251,191,36,.3);margin-bottom:6px}
-.chapters-sub{font-size:12px;color:#A78BFA;letter-spacing:3px;text-transform:uppercase;opacity:.75}
-.chapters-list{width:100%;max-width:520px;display:flex;flex-direction:column;gap:10px}
-.chapter-card{display:flex;align-items:center;gap:16px;padding:16px 18px;
-  background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.4);border-radius:16px;
-  cursor:pointer;transition:all .25s;backdrop-filter:blur(12px);
-  box-shadow:0 4px 18px rgba(0,0,0,.35);text-align:left;font-family:inherit;color:inherit;width:100%}
-.chapter-card:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.6);transform:translateX(5px)}
-.chapter-card.locked{opacity:.45;cursor:not-allowed}
-.chapter-card.locked:hover{transform:none;background:rgba(20,17,45,.75);border-color:rgba(139,92,246,.4)}
-.ch-num{width:52px;height:52px;border-radius:14px;flex-shrink:0;
-  background:linear-gradient(135deg,#B45309,#78350F);border:1.5px solid rgba(251,191,36,.6);
-  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;
-  color:#F5E6C8;text-shadow:0 0 12px rgba(251,191,36,.5)}
-.chapter-card.locked .ch-num{background:rgba(20,17,45,.8);border-color:rgba(139,92,246,.3);
-  color:#6D28D9;text-shadow:none}
-.ch-info{flex:1;min-width:0}
-.ch-name{font-size:clamp(14px,3.8vw,16px);font-weight:700;color:#E9D5FF;letter-spacing:.5px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ch-sub{font-size:11px;color:#A78BFA;margin-top:4px;letter-spacing:1px;opacity:.8;text-transform:uppercase}
-.ch-status{font-size:20px;opacity:.85;flex-shrink:0}
+  /* Панель кнопок */
+  #choices {
+    position:relative; z-index:6;
+    padding:12px 14px 22px;
+    display:flex; flex-direction:column; gap:8px;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,0.85) 30%);
+    min-height:60px;
+  }
+  .btn {
+    padding:13px 16px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(30,30,50,0.85);
+    color:#e8e8e8;
+    font-size:15px;
+    cursor:pointer;
+    transition:all 0.2s;
+    text-align:center;
+  }
+  .btn:active {
+    background:rgba(60,60,100,0.95);
+    transform:scale(0.98);
+  }
+  .btn.primary {
+    background:rgba(80,60,140,0.9);
+    border-color:rgba(140,120,220,0.4);
+  }
+  .btn.primary:active { background:rgba(110,85,180,1); }
 
-/* ============ ЭКРАН 4: ПЕРСОНАЖИ ============ */
-#screen-chars{padding:70px 20px 30px;overflow-y:auto;align-items:center}
-.chars-head{text-align:center;margin-bottom:26px}
-.chars-list{width:100%;max-width:520px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.char-card{background:rgba(20,17,45,.75);border:1.5px solid rgba(139,92,246,.4);
-  border-radius:18px;padding:16px;text-align:center;cursor:pointer;transition:all .25s;
-  backdrop-filter:blur(12px);box-shadow:0 4px 18px rgba(0,0,0,.35)}
-.char-card:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.6);transform:scale(1.03)}
-.char-avatar{width:80px;height:80px;border-radius:50%;margin:0 auto 10px;
-  display:flex;align-items:center;justify-content:center;font-size:42px;
-  background:radial-gradient(circle,rgba(251,191,36,.2),rgba(76,29,149,.3));
-  border:2px solid rgba(251,191,36,.4);box-shadow:0 0 20px rgba(251,191,36,.2)}
-.char-name{font-size:14px;font-weight:800;color:#F5E6C8;letter-spacing:.5px;margin-bottom:3px}
-.char-desc{font-size:11px;color:#A78BFA;letter-spacing:.5px;opacity:.8}
-.char-card.locked{opacity:.5;cursor:not-allowed}
-.char-card.locked:hover{transform:none}
+  .tapHint {
+    align-self:center;
+    color:#5a5a6a;
+    font-size:12px;
+    margin-top:4px;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:0.4; }
+    50% { opacity:1; }
+  }
 
-/* ============ ЭКРАН 5: СОЗДАНИЕ ГЕРОЯ ============ */
-#screen-creator{padding:70px 20px 30px;overflow-y:auto;align-items:center;justify-content:center}
-.creator-wrap{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:16px}
-.creator-step-text{font-size:11px;color:#A78BFA;letter-spacing:3px;font-weight:600;
-  text-transform:uppercase;margin-bottom:6px;text-align:center}
-.preview-box{width:100%;height:clamp(220px,45vh,320px);
-  background:radial-gradient(ellipse at center,rgba(76,29,149,.35),transparent 75%);
-  border:1.5px solid rgba(139,92,246,.4);border-radius:20px;
-  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
-.preview-glow{position:absolute;width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(251,191,36,.2),transparent 70%);
-  animation:starPulse 5s infinite ease-in-out;pointer-events:none}
-.hero-container{position:relative;height:95%;max-height:300px;display:flex;align-items:flex-end;
-  justify-content:center;animation:heroFloat 5s infinite ease-in-out;z-index:2}
-@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.hero-container.happy{animation:heroHappy .6s ease}
-@keyframes heroHappy{0%{transform:translateY(0)}30%{transform:translateY(-20px) rotate(-3deg)}
-  60%{transform:translateY(-10px) rotate(3deg)}100%{transform:translateY(0)}}
-.hero-img{height:100%;width:auto;object-fit:contain;
-  filter:drop-shadow(0 15px 40px rgba(139,92,246,.6))}
-.hero-aura{position:absolute;inset:-30px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(251,191,36,.15),transparent 70%);
-  animation:auraPulse 4s infinite ease-in-out}
-@keyframes auraPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.9;transform:scale(1.1)}}
-.creator-label{font-size:13px;color:#C4B5FD;letter-spacing:2px;font-weight:600;
-  text-transform:uppercase;text-align:center;width:100%}
-.input-name{width:100%;padding:16px 20px;background:rgba(20,17,45,.7);
-  border:1.5px solid rgba(139,92,246,.5);border-radius:14px;color:#fff;font-size:17px;
-  font-family:inherit;font-weight:600;letter-spacing:2px;text-align:center;outline:none;transition:all .2s}
-.input-name:focus{border-color:rgba(251,191,36,.7);background:rgba(20,17,45,.9);
-  box-shadow:0 0 20px rgba(251,191,36,.25)}
-.input-name::placeholder{color:#6D28D9;font-weight:400;letter-spacing:1px}
-.age-slider{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px}
-.age-value{font-size:28px;font-weight:900;color:#F5E6C8;letter-spacing:2px;
-  text-shadow:0 0 20px rgba(251,191,36,.4)}
-input[type=range]{width:100%;-webkit-appearance:none;height:6px;background:rgba(139,92,246,.25);
-  border-radius:6px;outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;
-  background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
-  box-shadow:0 0 18px rgba(251,191,36,.7);border:2px solid #F5E6C8}
-input[type=range]::-moz-range-thumb{width:26px;height:26px;
-  background:linear-gradient(135deg,#FBBF24,#B45309);border-radius:50%;cursor:pointer;
-  box-shadow:0 0 18px rgba(251,191,36,.7);border:2px solid #F5E6C8}
-.creator-actions{display:flex;gap:10px;width:100%;margin-top:6px}
-.creator-actions button{flex:1;padding:14px 20px;font-size:14px}
-.btn-ghost{padding:12px 24px;background:rgba(139,92,246,.15);border:1.5px solid rgba(139,92,246,.5);
-  color:#E9D5FF;font-size:14px;font-weight:700;border-radius:50px;cursor:pointer;font-family:inherit;
-  letter-spacing:1.5px;transition:all .2s;text-transform:uppercase}
-.btn-ghost:hover{background:rgba(139,92,246,.3);border-color:rgba(251,191,36,.5);color:#fff}
-.creator-dots{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
-.cdot{width:8px;height:8px;border-radius:50%;background:rgba(167,139,250,.3);transition:all .3s}
-.cdot.active{background:#FBBF24;width:24px;border-radius:4px}
-
-/* ============ ЭКРАН 6: ИГРОВАЯ СЦЕНА (VN) ============ */
-#screen-game{padding:0}
-.game-bg{position:absolute;inset:0;z-index:1;transition:opacity 1.5s ease;
-  background-size:cover;background-position:center}
-.game-bg.overlay{opacity:0}
-.game-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:radial-gradient(ellipse at center,transparent 30%,rgba(5,5,16,.85) 100%)}
-
-/* Персонаж на сцене */
-.game-character{position:absolute;bottom:170px;right:5%;height:60vh;max-height:520px;
-  z-index:3;opacity:0;transition:opacity 1s ease,transform 1.5s ease;pointer-events:none;
-  filter:drop-shadow(0 20px 40px rgba(0,0,0,.7))}
-.game-character.show{opacity:1}
-.game-character.talking{animation:charTalk .8s infinite ease-in-out}
-@keyframes charTalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.game-character img{height:100%;width:auto;object-fit:contain}
-
-/* Диалоговое окно */
-.dialogue-box{position:absolute;bottom:0;left:0;right:0;z-index:10;
-  padding:20px 20px 26px;
-  background:linear-gradient(to top,rgba(5,5,16,.98) 0%,rgba(5,5,16,.95) 60%,rgba(5,5,16,.7) 90%,transparent 100%);
-  transform:translateY(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);opacity:0}
-.dialogue-box.show{transform:translateY(0);opacity:1}
-.dialogue-inner{max-width:780px;margin:0 auto;position:relative}
-.dialogue-speaker{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.dialogue-avatar{width:54px;height:54px;border-radius:50%;
-  background:linear-gradient(135deg,#8B5CF6,#A78BFA);
-  display:flex;align-items:center;justify-content:center;font-size:26px;
-  border:2px solid #FBBF24;box-shadow:0 0 22px rgba(251,191,36,.5);flex-shrink:0;
-  position:relative;transition:transform .3s}
-.dialogue-avatar.speaking{animation:avatarSpeak 1s infinite}
-@keyframes avatarSpeak{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.dialogue-name{font-size:17px;font-weight:800;color:#FBBF24;letter-spacing:1px}
-.dialogue-name.thought{color:#A78BFA;font-style:italic}
-.dialogue-name.narrator{color:#A78BFA;letter-spacing:3px;font-size:12px;text-transform:uppercase}
-.dialogue-text{font-size:clamp(15px,4.2vw,18px);line-height:1.6;color:#E9D5FF;
-  min-height:70px;letter-spacing:.3px;padding:0 5px}
-.dialogue-text.thought{color:#C4B5FD;font-style:italic;opacity:.92}
-.dialogue-text.narrator{color:#A78BFA;font-style:italic;opacity:.85;font-size:clamp(14px,4vw,17px)}
-.dialogue-next{position:absolute;right:20px;bottom:-4px;color:#FBBF24;font-size:20px;
-  opacity:0;transition:opacity .3s;pointer-events:none;animation:bounceDown 1.2s infinite}
-.dialogue-next.show{opacity:1}
-@keyframes bounceDown{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-
-/* Выборы */
-.choices-overlay{position:absolute;inset:0;z-index:15;display:none;flex-direction:column;
-  align-items:center;justify-content:center;padding:30px 20px;
-  background:radial-gradient(ellipse at center,rgba(5,5,16,.7),rgba(5,5,16,.95));
-  backdrop-filter:blur(3px)}
-.choices-overlay.show{display:flex;animation:fadeIn .5s ease}
-.choices-title{font-size:13px;color:#A78BFA;letter-spacing:4px;text-transform:uppercase;
-  margin-bottom:20px;font-weight:600;text-align:center}
-.choices-list{display:flex;flex-direction:column;gap:12px;width:100%;max-width:460px}
-.choice-item{padding:18px 24px;background:rgba(20,17,45,.85);
-  border:1.5px solid rgba(139,92,246,.55);border-radius:16px;color:#E9D5FF;
-  font-family:inherit;font-size:clamp(14px,4vw,16px);font-weight:600;cursor:pointer;
-  text-align:left;transition:all .25s;backdrop-filter:blur(10px);letter-spacing:.5px;
-  box-shadow:0 4px 22px rgba(0,0,0,.4);display:flex;align-items:center;gap:14px}
-.choice-item:hover,.choice-item:active{background:rgba(139,92,246,.4);
-  border-color:rgba(251,191,36,.8);transform:translateX(6px);color:#fff;
-  box-shadow:0 4px 28px rgba(251,191,36,.3)}
-.choice-letter{width:34px;height:34px;border-radius:50%;background:rgba(251,191,36,.15);
-  border:1.5px solid rgba(251,191,36,.5);color:#F5E6C8;display:flex;align-items:center;
-  justify-content:center;font-weight:900;font-size:15px;flex-shrink:0}
-.choice-text{flex:1}
-
-/* Интро главы */
-.chapter-intro{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;background:#050510;
-  transition:opacity 1.5s ease;padding:30px;text-align:center}
-.chapter-intro.hidden{opacity:0;pointer-events:none}
-.chapter-intro-num{font-size:clamp(13px,3.8vw,17px);color:#A78BFA;letter-spacing:8px;
-  text-transform:uppercase;margin-bottom:16px;font-weight:600;opacity:.85}
-.chapter-intro-name{font-size:clamp(26px,7vw,46px);font-weight:900;letter-spacing:4px;
-  color:#F5E6C8;line-height:1.15;text-shadow:0 0 35px rgba(251,191,36,.5);
-  animation:chapterAppear 3s ease;padding:0 20px}
-@keyframes chapterAppear{0%{opacity:0;transform:translateY(20px)}
-  30%,80%{opacity:1;transform:translateY(0)}100%{opacity:1}}
-
-/* Финал главы */
-.chapter-end{position:absolute;inset:0;z-index:55;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:30px;text-align:center;
-  background:radial-gradient(ellipse at center,#1a1040,#050510);
-  opacity:0;transition:opacity 1.5s ease;pointer-events:none}
-.chapter-end.show{opacity:1;pointer-events:auto}
-.chapter-end-title{font-size:clamp(20px,6vw,32px);font-weight:900;color:#F5E6C8;
-  letter-spacing:4px;margin-bottom:14px;text-shadow:0 0 25px rgba(251,191,36,.5)}
-.chapter-end-text{font-size:clamp(13px,3.8vw,16px);color:#C4B5FD;letter-spacing:1px;
-  line-height:1.7;max-width:440px;margin-bottom:30px}
-
-/* Падающая звезда */
-.shooting-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;
-  box-shadow:0 0 12px 3px #FBBF24,0 0 40px 8px rgba(251,191,36,.4);z-index:6;pointer-events:none}
-.shooting-star::after{content:'';position:absolute;top:50%;left:0;width:80px;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(251,191,36,.8));transform:translateY(-50%)}
-@keyframes shoot{
-  0%{opacity:0;transform:translate(0,0)}
-  10%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translate(-70vw,70vh)}}
-
-/* ТОСТ */
-#toastEl{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
-  background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#F5E6C8;padding:14px 26px;
-  border-radius:50px;font-weight:600;font-size:14px;box-shadow:0 8px 30px rgba(76,29,149,.6);
-  z-index:200;opacity:0;transition:all .4s;pointer-events:none;text-align:center;max-width:88vw;
-  letter-spacing:.5px;font-family:inherit;border:1px solid rgba(167,139,250,.4)}
-#toastEl.show{transform:translateX(-50%) translateY(0);opacity:1}
-
-/* ЗВЁЗДЫ В ИГРЕ */
-.sky-view{position:absolute;inset:0;z-index:0;
-  background:radial-gradient(ellipse at 50% 30%,#1a1040 0%,#050510 80%);transition:opacity 1.5s}
-.sky-view.hidden{opacity:0}
-.star.dim{animation:dimStar 1.5s ease forwards}
-@keyframes dimStar{
-  0%{opacity:.9;transform:scale(1.3);box-shadow:0 0 12px #FBBF24}
-  60%{opacity:.4;box-shadow:0 0 20px #FBBF24}
-  100%{opacity:0;transform:scale(.3);box-shadow:0 0 40px rgba(251,191,36,0)}}
+  /* Экран конца игры */
+  #endScreen {
+    position:absolute; inset:0;
+    background:rgba(0,0,0,0.94);
+    z-index:20;
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+    text-align:center;
+    gap:20px;
+  }
+  #endScreen.show { display:flex; }
+  #endTitle { font-size:24px; font-weight:600; }
+  #endText { font-size:15px; color:#a0a0b0; line-height:1.6; }
+  #restart {
+    margin-top:10px;
+    padding:14px 32px;
+    border-radius:30px;
+    background:rgba(120,90,220,0.9);
+    border:none;
+    color:#fff;
+    font-size:15px;
+    cursor:pointer;
+  }
 </style>
 </head>
 <body>
+<div id="game">
+  <div id="trainBg"></div>
 
-<div id="app">
-  <!-- ФОН -->
-  <div id="stars"></div>
-  <div class="fog fog-1"></div>
-  <div class="fog fog-2"></div>
-  <div class="fog fog-3"></div>
-  <div class="vignette"></div>
-
-  <!-- КНОПКИ ВВЕРХУ -->
-  <div class="top-btns">
-    <button class="icon-btn" id="soundBtn" onclick="toggleSound()">🔊</button>
-    <button class="icon-btn" id="voiceBtn" onclick="toggleVoice()">🎙</button>
-    <button class="icon-btn" id="langBtn" onclick="toggleLang()">🌐 RU</button>
-  </div>
-
-  <!-- ========== 1. ЗАСТАВКА ========== -->
-  <div class="screen active" id="screen-load">
-    <div class="load-content">
-      <div class="star-logo">
-        <div class="star-pulse"></div>
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs><radialGradient id="starG"><stop offset="0%" stop-color="#FFF8DC"/>
-            <stop offset="60%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#B45309"/></radialGradient></defs>
-          <polygon points="50,8 60,40 94,40 66,60 76,92 50,74 24,92 34,60 6,40 40,40" fill="url(#starG)"/>
-        </svg>
-      </div>
-      <div class="title-main">ПОСЛЕДНИЙ СВЕТ</div>
-      <div class="title-sub">Интерактивная история</div>
-      <div class="city-name">Город VioKrista</div>
-      <div class="divider-line"></div>
-      <button class="btn-main soft-pulse" onclick="goToMenu()">Войти в историю</button>
+  <div id="topBar">
+    <div id="signal">📵 нет сети</div>
+    <div id="batteryWrap">
+      <div id="batteryIcon"><div id="batteryFill"></div></div>
+      <div id="batteryText">60%</div>
     </div>
   </div>
 
-  <!-- ========== 2. МЕНЮ ========== -->
-  <div class="screen" id="screen-menu">
-    <div class="menu-logo">ПОСЛЕДНИЙ СВЕТ</div>
-    <div class="menu-tagline">VioKrista · Сезон 1</div>
-    <div class="menu-buttons">
-      <button class="menu-item" onclick="goToChapters()">
-        <span class="ico">📚</span>
-        <span class="lbl"><span data-i18n="menu_chapters">Главы</span><small data-i18n="menu_chapters_sub">Все главы сезона</small></span>
-      </button>
-      <button class="menu-item" onclick="goToChars()">
-        <span class="ico">👥</span>
-        <span class="lbl"><span data-i18n="menu_chars">Персонажи</span><small data-i18n="menu_chars_sub">Луна, Элиан, Флик…</small></span>
-      </button>
-      <button class="menu-item" onclick="notReady('collect')">
-        <span class="ico">📖</span>
-        <span class="lbl"><span data-i18n="menu_collect">Коллекция</span><small data-i18n="menu_collect_sub">Воспоминания и находки</small></span>
-      </button>
-      <button class="menu-item" onclick="notReady('settings')">
-        <span class="ico">⚙️</span>
-        <span class="lbl"><span data-i18n="menu_settings">Настройки</span><small data-i18n="menu_settings_sub">Звук, язык, озвучка</small></span>
-      </button>
-    </div>
-    <div class="menu-version">VIOKRISTA · 2026</div>
+  <div id="chat"></div>
+  <div id="choices"></div>
+  <div id="flash"></div>
+
+  <div id="endScreen">
+    <div id="endTitle"></div>
+    <div id="endText"></div>
+    <button id="restart">Играть заново</button>
   </div>
-
-  <!-- ========== 3. ГЛАВЫ ========== -->
-  <div class="screen" id="screen-chapters">
-    <button class="back-btn" onclick="goToMenu()">← <span data-i18n="back">Назад</span></button>
-    <div class="chapters-head">
-      <div class="chapters-title" data-i18n="chapters_title">ГЛАВЫ</div>
-      <div class="chapters-sub" data-i18n="chapters_sub">Сезон 1 · Город VioKrista</div>
-    </div>
-    <div class="chapters-list" id="chaptersList"></div>
-  </div>
-
-  <!-- ========== 4. ПЕРСОНАЖИ ============ -->
-  <div class="screen" id="screen-chars">
-    <button class="back-btn" onclick="goToMenu()">← <span data-i18n="back">Назад</span></button>
-    <div class="chars-head">
-      <div class="chapters-title" data-i18n="chars_title">ПЕРСОНАЖИ</div>
-      <div class="chapters-sub" data-i18n="chars_sub">Те, кого ты встретишь</div>
-    </div>
-    <div class="chars-list" id="charsList"></div>
-  </div>
-
-  <!-- ========== 5. СОЗДАНИЕ ГЕРОЯ =========== -->
-  <div class="screen" id="screen-creator">
-    <button class="back-btn" onclick="goToMenu()">← <span data-i18n="back">Назад</span></button>
-    <div class="creator-wrap" style="padding-top:60px">
-      <div class="creator-dots" id="creatorDots"></div>
-      <div class="creator-step-text" id="creatorStepText">ШАГ 1/2</div>
-      <div class="preview-box">
-        <div class="preview-glow"></div>
-        <div class="hero-container" id="heroContainer">
-          <div class="hero-aura"></div>
-          <img src="hero.png" alt="Hero" class="hero-img" onerror="this.style.display='none'">
-        </div>
-      </div>
-      <div class="creator-block" id="block-name">
-        <div class="creator-label" data-i18n="c_name">Как тебя зовут?</div>
-        <input class="input-name" type="text" id="heroName" maxlength="14" placeholder="Имя" data-i18n-ph="c_name_ph">
-      </div>
-      <div class="creator-block" id="block-age" style="display:none">
-        <div class="creator-label" data-i18n="c_age">Сколько тебе лет?</div>
-        <div class="age-slider">
-          <div class="age-value" id="ageValue">10</div>
-          <input type="range" id="ageRange" min="6" max="16" value="10" step="1" oninput="setAge(this.value)">
-        </div>
-      </div>
-      <div class="creator-actions">
-        <button class="btn-ghost" id="prevStep" onclick="prevStep()" style="display:none" data-i18n="c_prev">← Назад</button>
-        <button class="btn-main" id="nextStep" onclick="nextStep()" data-i18n="c_next">Далее →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== 6. ИГРОВАЯ СЦЕНА =========== -->
-  <div class="screen" id="screen-game">
-    <div class="sky-view" id="skyView"></div>
-    <div class="game-bg" id="gameBg"></div>
-    <div class="game-vignette"></div>
-
-    <!-- Персонаж -->
-    <div class="game-character" id="gameChar">
-      <img src="hero.png" alt="Character" onerror="this.style.display='none'">
-    </div>
-
-    <!-- Диалог -->
-    <div class="dialogue-box" id="dialogueBox">
-      <div class="dialogue-inner">
-        <div class="dialogue-speaker">
-          <div class="dialogue-avatar" id="dlgAvatar">👤</div>
-          <div class="dialogue-name" id="dlgName"></div>
-        </div>
-        <div class="dialogue-text" id="dlgText"></div>
-        <div class="dialogue-next" id="dlgNext">▼</div>
-      </div>
-    </div>
-
-    <!-- Выборы -->
-    <div class="choices-overlay" id="choicesOverlay">
-      <div class="choices-title" id="choicesTitle" data-i18n="choices_title">Что ты сделаешь?</div>
-      <div class="choices-list" id="choicesList"></div>
-    </div>
-
-    <!-- Интро главы -->
-    <div class="chapter-intro" id="chapterIntro">
-      <div class="chapter-intro-num" id="chapterIntroNum">ГЛАВА 1</div>
-      <div class="chapter-intro-name" id="chapterIntroName">ЗВЕЗДА, КОТОРАЯ УПАЛА</div>
-    </div>
-
-    <!-- Финал главы -->
-    <div class="chapter-end" id="chapterEnd">
-      <div class="chapter-end-title" id="chapterEndTitle">Продолжение следует…</div>
-      <div class="chapter-end-text" id="chapterEndText">Ты сделал первый выбор. Игра запомнила его.</div>
-      <button class="btn-main" onclick="returnToChapters()" data-i18n="end_btn">К главам</button>
-    </div>
-  </div>
-
 </div>
 
 <script>
-/* ============ АУДИО ============ */
-let audioCtx = null;
-let soundOn = localStorage.getItem('ls_sound') !== 'off';
-let musicTimer = null;
-let currentMusic = null;
-
-function initAudio(){
-  if(!audioCtx){ try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){} }
-  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-}
-function playTone(freq, dur, type='sine', vol=0.05){
-  if(!soundOn || !audioCtx) return;
-  try{
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type; osc.frequency.value = freq;
-    const now = audioCtx.currentTime;
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(vol, now + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(now); osc.stop(now + dur);
-  }catch(e){}
-}
-function sfxClick(){ playTone(660,.08,'square',.08); }
-function sfxChoice(){ playTone(660,.12,'sine',.08); setTimeout(()=>playTone(880,.15,'sine',.06),100); }
-function sfxDing(){ [1500,2000,2500].forEach((f,i)=>setTimeout(()=>playTone(f,.6,'sine',.04),i*60)); }
-function sfxMagic(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.3,'sine',.07),i*120)); }
-
-const MusicThemes = {
-  menu: { notes:[220,261.63,329.63,392,329.63,261.63,220,196], tempo:900, type:'sine', vol:.035, harmony:'fifth' },
-  creator: { notes:[261.63,329.63,392,523.25,440,392,329.63,293.66], tempo:800, type:'triangle', vol:.04, harmony:'octave' },
-  scene: { notes:[196,233.08,293.66,349.23,293.66,233.08,196,174.61], tempo:1100, type:'sine', vol:.03, harmony:'fifth' },
-  dramatic: { notes:[174.61,196,220,196,174.61,155.56,174.61,196], tempo:1300, type:'sine', vol:.028, harmony:'octave' }
+/* ================== СОСТОЯНИЕ ================== */
+const S = {
+  battery: 60,
+  trust: 0,     // уровень доверия
+  flashes: 0,   // сколько раз мигал свет
+  named: false, // назвал ли имя
+  step: 0
 };
-function playMusic(themeName){
-  stopMusic();
-  if(!soundOn || !audioCtx) return;
-  const cfg = MusicThemes[themeName]; if(!cfg) return;
-  currentMusic = themeName; let idx = 0;
-  const playNote = () => {
-    if(!soundOn || !audioCtx || currentMusic !== themeName) return;
-    const note = cfg.notes[idx % cfg.notes.length];
-    playTone(note, cfg.tempo/1000*.85, cfg.type, cfg.vol);
-    if(cfg.harmony==='fifth') playTone(note*1.5, cfg.tempo/1000*.85, 'sine', cfg.vol*.4);
-    if(cfg.harmony==='octave') playTone(note/2, cfg.tempo/1000*.85, 'sine', cfg.vol*.5);
-    if(idx%4===2) setTimeout(()=>playTone(note*2,.4,'sine',cfg.vol*.35), cfg.tempo/2);
-    idx++;
+
+const chat = document.getElementById('chat');
+const choicesEl = document.getElementById('choices');
+const batteryFill = document.getElementById('batteryFill');
+const batteryText = document.getElementById('batteryText');
+const flash = document.getElementById('flash');
+const endScreen = document.getElementById('endScreen');
+const endTitle = document.getElementById('endTitle');
+const endText = document.getElementById('endText');
+
+/* ================== УТИЛИТЫ ================== */
+function setBattery(v) {
+  S.battery = Math.max(0, Math.min(100, v));
+  batteryFill.style.width = S.battery + '%';
+  batteryText.textContent = S.battery + '%';
+  if (S.battery <= 15) batteryFill.style.background = '#ff5a5a';
+  else if (S.battery <= 40) batteryFill.style.background = '#ffcc5a';
+  else batteryFill.style.background = '#7affa0';
+}
+
+function addMsg(text, side = 'left', cb) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + side;
+  d.textContent = text;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+  if (cb) setTimeout(cb, 350);
+}
+
+function addSys(text) {
+  const d = document.createElement('div');
+  d.className = 'msg sys';
+  d.textContent = text;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function clearChoices() { choicesEl.innerHTML = ''; }
+
+function makeChoice(label, action, isPrimary=false) {
+  const b = document.createElement('button');
+  b.className = 'btn' + (isPrimary ? ' primary' : '');
+  b.textContent = label;
+  b.onclick = () => { clearChoices(); action(); };
+  choicesEl.appendChild(b);
+}
+
+function waitTap(cb) {
+  const hint = document.createElement('div');
+  hint.className = 'tapHint';
+  hint.textContent = 'нажми, чтобы продолжить';
+  choicesEl.appendChild(hint);
+  const handler = (e) => {
+    e.preventDefault();
+    choicesEl.removeEventListener('touchstart', handler);
+    choicesEl.removeEventListener('click', handler);
+    clearChoices();
+    cb();
   };
-  playNote();
-  musicTimer = setInterval(playNote, cfg.tempo);
-}
-function stopMusic(){ if(musicTimer){ clearInterval(musicTimer); musicTimer=null; } currentMusic=null; }
-
-/* ============ ЯЗЫКИ ============ */
-const translations = {
-  ru: {
-    menu_chapters:'Главы', menu_chapters_sub:'Все главы сезона',
-    menu_chars:'Персонажи', menu_chars_sub:'Луна, Элиан, Флик…',
-    menu_collect:'Коллекция', menu_collect_sub:'Воспоминания и находки',
-    menu_settings:'Настройки', menu_settings_sub:'Звук, язык, озвучка',
-    not_ready:'Скоро здесь появится этот раздел ✨',
-    back:'Назад',
-    chapters_title:'ГЛАВЫ', chapters_sub:'Сезон 1 · Город VioKrista',
-    chars_title:'ПЕРСОНАЖИ', chars_sub:'Те, кого ты встретишь',
-    c_name:'Как тебя зовут?', c_name_ph:'Введи имя',
-    c_age:'Сколько тебе лет?',
-    c_prev:'← Назад', c_next:'Далее →', c_finish:'✨ Начать',
-    need_name:'Пожалуйста, введи имя ✨', saved:'✨ Герой создан!',
-    choices_title:'Что ты сделаешь?',
-    end_btn:'К главам',
-    no_hero:'Сначала создай героя ✨',
-    locked_ch:'🔒 Скоро откроется'
-  },
-  en: {
-    menu_chapters:'Chapters', menu_chapters_sub:'All chapters of the season',
-    menu_chars:'Characters', menu_chars_sub:'Luna, Elian, Flick…',
-    menu_collect:'Collection', menu_collect_sub:'Memories and finds',
-    menu_settings:'Settings', menu_settings_sub:'Sound, language, voice',
-    not_ready:'This section will appear soon ✨',
-    back:'Back',
-    chapters_title:'CHAPTERS', chapters_sub:'Season 1 · City of VioKrista',
-    chars_title:'CHARACTERS', chars_sub:'Those you will meet',
-    c_name:'What is your name?', c_name_ph:'Enter name',
-    c_age:'How old are you?',
-    c_prev:'← Back', c_next:'Next →', c_finish:'✨ Start',
-    need_name:'Please enter your name ✨', saved:'✨ Hero created!',
-    choices_title:'What will you do?',
-    end_btn:'To chapters',
-    no_hero:'Create a hero first ✨',
-    locked_ch:'🔒 Coming soon'
-  }
-};
-let currentLang = localStorage.getItem('ls_lang') || 'ru';
-
-function toggleLang(){
-  currentLang = currentLang === 'ru' ? 'en' : 'ru';
-  localStorage.setItem('ls_lang', currentLang);
-  applyLang();
-  renderChapters(); renderChars();
-}
-function applyLang(){
-  document.documentElement.lang = currentLang;
-  document.getElementById('langBtn').textContent = '🌐 ' + currentLang.toUpperCase();
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.dataset.i18n;
-    if(translations[currentLang][k]) el.textContent = translations[currentLang][k];
-  });
-  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-    const k = el.dataset.i18nPh;
-    if(translations[currentLang][k]) el.placeholder = translations[currentLang][k];
-  });
-}
-function t(k){ return translations[currentLang][k] || k; }
-
-/* ЗВУК */
-function toggleSound(){
-  soundOn = !soundOn;
-  localStorage.setItem('ls_sound', soundOn ? 'on' : 'off');
-  updateSoundBtn();
-  if(!soundOn){ stopMusic(); stopSpeaking(); }
-  else { initAudio(); sfxClick(); resumeMusic(); }
-}
-function updateSoundBtn(){
-  const b = document.getElementById('soundBtn');
-  b.textContent = soundOn ? '🔊' : '🔇';
-  b.classList.toggle('off', !soundOn);
-}
-function resumeMusic(){
-  if(document.getElementById('screen-chapters').classList.contains('active')) playMusic('menu');
-  else if(document.getElementById('screen-chars').classList.contains('active')) playMusic('menu');
-  else if(document.getElementById('screen-creator').classList.contains('active')) playMusic('creator');
-  else if(document.getElementById('screen-menu').classList.contains('active')) playMusic('menu');
-  else if(document.getElementById('screen-game').classList.contains('active')) playMusic('scene');
+  choicesEl.addEventListener('touchstart', handler, {once:true});
+  choicesEl.addEventListener('click', handler, {once:true});
 }
 
-/* ОЗВУЧКА */
-let voiceOn = localStorage.getItem('ls_voice') !== 'off';
-let voices = [];
-function loadVoices(){ if(!('speechSynthesis' in window)) return; voices = speechSynthesis.getVoices(); }
-if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
-
-const VoiceProfiles = {
-  'Луна': { rate:0.95, pitch:1.15, lang:'ru' },
-  'Luna': { rate:0.95, pitch:1.15, lang:'en' },
-  'Бумажка': { rate:1.15, pitch:1.6, lang:'ru' },
-  'Paper': { rate:1.15, pitch:1.6, lang:'en' },
-  'Неизвестный': { rate:0.85, pitch:0.7, lang:'ru' },
-  'Stranger': { rate:0.85, pitch:0.7, lang:'en' },
-  '???': { rate:0.9, pitch:1.1, lang:'ru' },
-  'Элиан': { rate:0.95, pitch:0.95, lang:'ru' },
-  'Elian': { rate:0.95, pitch:0.95, lang:'en' },
-  'Нора': { rate:0.9, pitch:1.05, lang:'ru' },
-  'Nora': { rate:0.9, pitch:1.05, lang:'en' },
-  'Орин': { rate:0.85, pitch:0.8, lang:'ru' },
-  'Orin': { rate:0.85, pitch:0.8, lang:'en' }
-};
-
-function pickVoice(profile){
-  if(!voices.length) return null;
-  const langPrefix = profile.lang === 'en' ? 'en' : 'ru';
-  let candidates = voices.filter(v => v.lang.toLowerCase().startsWith(langPrefix));
-  if(!candidates.length) candidates = voices;
-  return candidates[0];
-}
-function speakText(text, speakerName){
-  if(!voiceOn || !soundOn || !('speechSynthesis' in window)) return;
-  if(!text) return;
-  try{ speechSynthesis.cancel(); }catch(e){}
-  const utter = new SpeechSynthesisUtterance(text);
-  const profile = VoiceProfiles[speakerName] || { rate:0.95, pitch:1.0, lang: currentLang };
-  utter.rate = profile.rate; utter.pitch = profile.pitch; utter.volume = 0.9;
-  const v = pickVoice(profile);
-  if(v) utter.voice = v;
-  utter.lang = (profile.lang === 'en' ? 'en-US' : 'ru-RU');
-  const av = document.getElementById('dlgAvatar');
-  utter.onstart = () => { if(av) av.classList.add('speaking'); };
-  utter.onend = () => { if(av) av.classList.remove('speaking'); };
-  utter.onerror = () => { if(av) av.classList.remove('speaking'); };
-  try{ speechSynthesis.speak(utter); }catch(e){}
-}
-function stopSpeaking(){
-  try{ speechSynthesis.cancel(); }catch(e){}
-  const a = document.getElementById('dlgAvatar');
-  if(a) a.classList.remove('speaking');
-}
-function toggleVoice(){
-  voiceOn = !voiceOn;
-  localStorage.setItem('ls_voice', voiceOn ? 'on' : 'off');
-  updateVoiceBtn();
-  if(!voiceOn) stopSpeaking();
-  else sfxClick();
-}
-function updateVoiceBtn(){
-  const b = document.getElementById('voiceBtn');
-  if(!b) return;
-  b.textContent = voiceOn ? '🎙' : '🔇';
-  b.classList.toggle('off', !voiceOn);
+function triggerFlash(cb) {
+  S.flashes++;
+  flash.classList.remove('on');
+  void flash.offsetWidth;
+  flash.classList.add('on');
+  addSys(`⚡ свет мигнул (${S.flashes}/3)`);
+  setTimeout(cb, 700);
 }
 
-/* ============ ЭКРАНЫ ============ */
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function goToMenu(){
-  initAudio();
-  showScreen('screen-menu');
-  launchFallingStar();
-  if(soundOn) playMusic('menu');
-}
-function goToChapters(){
-  initAudio();
-  showScreen('screen-chapters');
-  renderChapters();
-  if(soundOn) playMusic('menu');
-}
-function goToChars(){
-  initAudio();
-  showScreen('screen-chars');
-  renderChars();
-  if(soundOn) playMusic('menu');
-}
-function goToCreator(){
-  initAudio();
-  hero.step = 0;
-  renderCreator();
-  showScreen('screen-creator');
-  if(soundOn) playMusic('creator');
+function spend(n) {
+  setBattery(S.battery - n);
 }
 
-/* ============ ДАННЫЕ ============ */
-const chaptersData = [
-  { num:1, ru:'Звезда, которая упала', en:'The Star That Fell', available:true },
-  { num:2, ru:'Город, который забывает', en:'The City That Forgets', available:false },
-  { num:3, ru:'Комната, которой не было вчера', en:'The Room That Wasn\'t There Yesterday', available:false },
-  { num:4, ru:'Обсерватория', en:'The Observatory', available:false },
-  { num:5, ru:'Дверь', en:'The Door', available:false },
-  { num:6, ru:'То, что за дверью', en:'What\'s Behind the Door', available:false },
-  { num:7, ru:'Выбор', en:'The Choice', available:false },
-  { num:8, ru:'Кто ты?', en:'Who Are You?', available:false },
-  { num:9, ru:'Правда', en:'The Truth', available:false },
-  { num:10, ru:'Последний свет', en:'The Last Light', available:false },
-  { num:11, ru:'За пределами', en:'Beyond', available:false },
-  { num:12, ru:'Финал', en:'Finale', available:false }
-];
+/* ================== СЦЕНАРИЙ ================== */
 
-const charsData = [
-  { id:'hero', ru:'Ты', en:'You', avatar:'👤', ruDesc:'Проводник', enDesc:'The Guide', unlocked:true },
-  { id:'luna', ru:'Луна', en:'Luna', avatar:'🌙', ruDesc:'Девочка со звёздным кулоном', enDesc:'Girl with a star pendant', unlocked:false },
-  { id:'elian', ru:'Элиан', en:'Elian', avatar:'🔭', ruDesc:'Хранитель обсерватории', enDesc:'Keeper of the observatory', unlocked:false },
-  { id:'flick', ru:'Флик', en:'Flick', avatar:'✨', ruDesc:'Светящееся существо', enDesc:'A glowing creature', unlocked:false },
-  { id:'nora', ru:'Нора', en:'Nora', avatar:'🗝️', ruDesc:'Хозяйка гостиницы', enDesc:'Innkeeper', unlocked:false },
-  { id:'orin', ru:'Старик Орин', en:'Old Orin', avatar:'🕰️', ruDesc:'Смотритель башни', enDesc:'Tower keeper', unlocked:false },
-  { id:'paper', ru:'Бумажка', en:'Paper', avatar:'📄', ruDesc:'Потеряшка-кораблик', enDesc:'A lost paper boat', unlocked:false },
-  { id:'stranger', ru:'Неизвестный', en:'Stranger', avatar:'🌑', ruDesc:'Человек в тёмном пальто', enDesc:'Man in a dark coat', unlocked:false }
-];
+function start() {
+  S.battery = 60; S.trust = 0; S.flashes = 0; S.named = false;
+  chat.innerHTML = '';
+  endScreen.classList.remove('show');
+  setBattery(S.battery);
 
-function renderChapters(){
-  const list = document.getElementById('chaptersList');
-  if(!list) return;
-  list.innerHTML = '';
-  const hasHero = !!JSON.parse(localStorage.getItem('ls_hero') || 'null');
-
-  chaptersData.forEach(ch => {
-    const canPlay = ch.available && hasHero;
-    const card = document.createElement('button');
-    card.className = 'chapter-card' + (canPlay ? '' : ' locked');
-    const name = currentLang === 'ru' ? ch.ru : ch.en;
-    card.innerHTML = `
-      <div class="ch-num">${ch.num}</div>
-      <div class="ch-info">
-        <div class="ch-name">${name}</div>
-        <div class="ch-sub">${currentLang === 'ru' ? 'Глава' : 'Chapter'} ${ch.num}</div>
-      </div>
-      <div class="ch-status">${canPlay ? '▶' : '🔒'}</div>
-    `;
-    card.onclick = () => {
-      sfxClick();
-      if(!ch.available){ showToast(t('locked_ch')); return; }
-      if(!hasHero){ showToast(t('no_hero')); setTimeout(goToCreator, 900); return; }
-      startChapter(ch.num);
-    };
-    list.appendChild(card);
-  });
-}
-
-function renderChars(){
-  const list = document.getElementById('charsList');
-  if(!list) return;
-  list.innerHTML = '';
-  const flags = JSON.parse(localStorage.getItem('ls_flags') || '{}');
-  const unlockedChars = flags.unlockedChars || [];
-
-  charsData.forEach(c => {
-    const unlocked = c.unlocked || unlockedChars.includes(c.id);
-    const card = document.createElement('div');
-    card.className = 'char-card' + (unlocked ? '' : ' locked');
-    card.innerHTML = `
-      <div class="char-avatar">${unlocked ? c.avatar : '❓'}</div>
-      <div class="char-name">${unlocked ? (currentLang === 'ru' ? c.ru : c.en) : '???'}</div>
-      <div class="char-desc">${unlocked ? (currentLang === 'ru' ? c.ruDesc : c.enDesc) : (currentLang === 'ru' ? 'Не открыт' : 'Locked')}</div>
-    `;
-    list.appendChild(card);
-  });
-}
-
-/* ============ ГЕРОЙ ============ */
-const hero = { name:'', age:10, step:0, totalSteps:2 };
-function setAge(v){ hero.age = parseInt(v); document.getElementById('ageValue').textContent = v; heroHappy(); }
-function heroHappy(){
-  const c = document.getElementById('heroContainer'); if(!c) return;
-  c.classList.remove('happy'); void c.offsetWidth; c.classList.add('happy');
-  playTone(880,.15,'sine',.06);
-}
-function renderCreator(){
-  document.getElementById('block-name').style.display = hero.step === 0 ? 'block' : 'none';
-  document.getElementById('block-age').style.display = hero.step === 1 ? 'block' : 'none';
-  document.getElementById('prevStep').style.display = hero.step === 0 ? 'none' : 'inline-block';
-  document.getElementById('nextStep').textContent = hero.step === hero.totalSteps - 1 ? t('c_finish') : t('c_next');
-  const dots = document.getElementById('creatorDots');
-  if(dots && !dots.dataset.filled){
-    for(let i = 0; i < hero.totalSteps; i++){ const d = document.createElement('div'); d.className='cdot'; dots.appendChild(d); }
-    dots.dataset.filled = '1';
-  }
-  if(dots) Array.from(dots.children).forEach((d,i)=>d.classList.toggle('active', i <= hero.step));
-  document.getElementById('creatorStepText').textContent = (currentLang==='ru'?'ШАГ ':'STEP ') + (hero.step+1) + '/' + hero.totalSteps;
-}
-function nextStep(){
-  if(hero.step === 0){
-    const v = document.getElementById('heroName').value.trim();
-    if(!v){ showToast(t('need_name')); return; }
-    hero.name = v;
-  }
-  if(hero.step === hero.totalSteps - 1){
-    localStorage.setItem('ls_hero', JSON.stringify(hero));
-    showToast(t('saved'));
-    sfxMagic();
-    setTimeout(goToMenu, 1600);
-    return;
-  }
-  hero.step++; renderCreator();
-}
-function prevStep(){ if(hero.step === 0) return; hero.step--; renderCreator(); }
-
-/* ============ ИГРА ============ */
-let sceneFlags = JSON.parse(localStorage.getItem('ls_flags') || '{}');
-let skyStars = [];
-let starsDimming = false;
-
-function startChapter(num){
-  if(num === 1) startGame();
-}
-
-function startGame(){
-  initAudio();
-  showScreen('screen-game');
-  document.getElementById('chapterIntro').classList.remove('hidden');
-  document.getElementById('chapterEnd').classList.remove('show');
-  document.getElementById('dialogueBox').classList.remove('show');
-  document.getElementById('choicesOverlay').classList.remove('show');
-  document.getElementById('gameChar').classList.remove('show');
-  document.getElementById('skyView').classList.remove('hidden');
-
-  createSkyStars();
-  starsDimming = false;
+  addSys('Ночной поезд. Купе №7.');
+  addSys('Твой телефон почти разряжен. Зарядки нет.');
 
   setTimeout(() => {
-    document.getElementById('chapterIntro').classList.add('hidden');
-    if(soundOn) playMusic('scene');
-    setTimeout(runSkyScene, 800);
-  }, 3000);
-}
+    addMsg('Дверь купе открывается. Входит незнакомец и садится напротив.', 'sys');
+  }, 600);
 
-function runSkyScene(){
-  setTimeout(dimStarsProgressively, 1500);
   setTimeout(() => {
-    if(!document.getElementById('screen-game').classList.contains('active')) return;
-    showHeroScene();
-  }, 8000);
+    addMsg('Ты тоже не спишь?', 'left');
+    waitTap(scene1);
+  }, 1600);
 }
 
-function showHeroScene(){
-  document.getElementById('skyView').classList.add('hidden');
-  document.getElementById('gameChar').classList.add('show');
-  setTimeout(() => {
-    showDialogue({
-      avatar:'👤', name: currentLang === 'ru' ? 'Система' : 'System', narrator:true,
-      text: currentLang === 'ru'
-        ? 'Ты стоишь на улице VioKrista. Ночь. Над тобой — тысячи звёзд. Одна гаснет. Вторая. Третья.'
-        : 'You stand on a street of VioKrista. Night. Above you — thousands of stars. One dims. Then another. Then another.',
-      next: () => showFirstChoice()
-    });
-  }, 1500);
-}
+function scene1() {
+  addMsg('Похоже, у нас обоих проблемы с зарядкой.', 'left');
+  addMsg('Слушай… у тебя сколько процентов?', 'left');
 
-function showFirstChoice(){
-  showChoices(
-    currentLang === 'ru' ? 'Ты заметил это?' : 'Did you notice this?',
-    [
-      { letter:'A', text: currentLang==='ru'?'Посмотреть на небо':'Look at the sky', action:()=>choiceA() },
-      { letter:'B', text: currentLang==='ru'?'Сделать вид, что ничего не произошло':'Pretend nothing happened', action:()=>choiceB() },
-      { letter:'C', text: currentLang==='ru'?'Позвать кого-нибудь':'Call someone', action:()=>choiceC() }
-    ]
-  );
-}
-
-function choiceA(){
-  sceneFlags.firstChoice = 'A';
-  sceneFlags.unlockedChars = ['paper'];
-  localStorage.setItem('ls_flags', JSON.stringify(sceneFlags));
-  if(soundOn) playMusic('dramatic');
-  runDialogueSequence([
-    { avatar:'✨', name: currentLang==='ru'?'Рассказчик':'Narrator', narrator:true,
-      text: currentLang==='ru'?'Яркая точка срывается вниз — прямо на город. Вспышка. Золотые частицы.':
-        'A bright dot falls down — right onto the city. A flash. Golden particles.' },
-    { avatar:'📄', name: currentLang==='ru'?'Бумажка':'Paper',
-      text: currentLang==='ru'?'Ой! Ты... ты меня видишь?':'Oh! You... you can see me?',
-      char:'hero' },
-    { avatar:'👤', name: hero.name,
-      text: currentLang==='ru'?'Вижу. Ты кто?':'I see you. Who are you?' },
-    { avatar:'📄', name: currentLang==='ru'?'Бумажка':'Paper',
-      text: currentLang==='ru'?'Я Бумажка. Потеряшка. Я ждал тебя очень долго.':'I\'m Paper. A lost one. I\'ve waited for you a long time.' }
-  ], finishChapter);
-}
-
-function choiceB(){
-  sceneFlags.firstChoice = 'B';
-  sceneFlags.unlockedChars = ['luna'];
-  localStorage.setItem('ls_flags', JSON.stringify(sceneFlags));
-  if(soundOn) playMusic('dramatic');
-  runDialogueSequence([
-    { avatar:'🌃', name: currentLang==='ru'?'Рассказчик':'Narrator', narrator:true,
-      text: currentLang==='ru'?'Ты отворачиваешься. Через минуту слышишь: БУМ!' :
-        'You turn away. A minute later you hear: BOOM!' },
-    { avatar:'🌙', name: currentLang==='ru'?'Луна':'Luna',
-      text: currentLang==='ru'?'Ты тоже видел?':'Did you see it too?',
-      char:'hero' },
-    { avatar:'👤', name: hero.name,
-      text: currentLang==='ru'?'Что?':'What?' },
-    { avatar:'🌙', name: currentLang==='ru'?'Луна':'Luna',
-      text: currentLang==='ru'?'...Ничего. Забудь.':'...Nothing. Forget it.' }
-  ], finishChapter);
-}
-
-function choiceC(){
-  sceneFlags.firstChoice = 'C';
-  sceneFlags.unlockedChars = ['stranger'];
-  localStorage.setItem('ls_flags', JSON.stringify(sceneFlags));
-  if(soundOn) playMusic('dramatic');
-  runDialogueSequence([
-    { avatar:'🌃', name: currentLang==='ru'?'Рассказчик':'Narrator', narrator:true,
-      text: currentLang==='ru'?'Ты зовёшь. Но никто не отвечает. И вдруг — голос из темноты:':
-        'You call. But nobody answers. And then — a voice from the dark:' },
-    { avatar:'🌑', name: currentLang==='ru'?'Неизвестный':'Stranger',
-      text: currentLang==='ru'?'Не зови их. Они всё равно не придут.': 'Don\'t call them. They won\'t come anyway.',
-      char:'hero' },
-    { avatar:'👤', name: hero.name,
-      text: currentLang==='ru'?'Кто ты?':'Who are you?' },
-    { avatar:'🌑', name: currentLang==='ru'?'Неизвестный':'Stranger',
-      text: currentLang==='ru'?'Тот, кто помнит. Даже когда все забудут.':'The one who remembers. Even when everyone forgets.' }
-  ], finishChapter);
-}
-
-function finishChapter(){
-  document.getElementById('dialogueBox').classList.remove('show');
-  document.getElementById('gameChar').classList.remove('show');
-  setTimeout(() => {
-    document.getElementById('chapterEnd').classList.add('show');
-    sfxMagic();
-  }, 800);
-}
-
-function returnToChapters(){
-  document.getElementById('chapterEnd').classList.remove('show');
-  goToChapters();
-}
-
-/* ============ ДИАЛОГИ ============ */
-let dlgQueue = [];
-let dlgIndex = 0;
-let dlgTyping = false;
-let dlgTimer = null;
-let dlgFullText = '';
-let dlgCharIdx = 0;
-let dlgOnFinish = null;
-
-function runDialogueSequence(queue, onFinish){
-  dlgQueue = queue;
-  dlgIndex = 0;
-  dlgOnFinish = onFinish;
-  showDialogueNext();
-}
-function showDialogueNext(){
-  if(dlgIndex >= dlgQueue.length){
-    document.getElementById('dialogueBox').classList.remove('show');
-    if(dlgOnFinish) setTimeout(dlgOnFinish, 500);
-    return;
-  }
-  const step = dlgQueue[dlgIndex];
-  const dlg = document.getElementById('dialogueBox');
-  document.getElementById('dlgAvatar').textContent = step.avatar || '👤';
-  const nameEl = document.getElementById('dlgName');
-  nameEl.textContent = step.name || '';
-  nameEl.classList.toggle('narrator', !!step.narrator);
-  const textEl = document.getElementById('dlgText');
-  textEl.classList.toggle('narrator', !!step.narrator);
-  dlg.classList.add('show');
-
-  dlgFullText = step.text;
-  dlgCharIdx = 0;
-  dlgTyping = true;
-  textEl.textContent = '';
-  document.getElementById('dlgNext').classList.remove('show');
-  clearInterval(dlgTimer);
-  dlgTimer = setInterval(() => {
-    if(dlgCharIdx >= dlgFullText.length){
-      clearInterval(dlgTimer);
-      dlgTyping = false;
-      document.getElementById('dlgNext').classList.add('show');
-      speakText(step.text, step.narrator ? '' : (step.name || ''));
-      return;
-    }
-    textEl.textContent += dlgFullText[dlgCharIdx];
-    dlgCharIdx++;
-  }, 28);
-}
-function advanceDialogue(){
-  stopSpeaking();
-  if(dlgTyping){
-    clearInterval(dlgTimer);
-    document.getElementById('dlgText').textContent = dlgFullText;
-    dlgTyping = false;
-    document.getElementById('dlgNext').classList.add('show');
-    const step = dlgQueue[dlgIndex];
-    if(step) speakText(step.text, step.narrator ? '' : (step.name || ''));
-    return;
-  }
-  dlgIndex++;
-  showDialogueNext();
-}
-
-/* Показать один диалог */
-function showDialogue(step){
-  runDialogueSequence([step], step.next);
-}
-
-/* ВЫБОРЫ */
-function showChoices(title, options){
-  document.getElementById('choicesTitle').textContent = title;
-  const list = document.getElementById('choicesList');
-  list.innerHTML = '';
-  options.forEach(opt => {
-    const b = document.createElement('button');
-    b.className = 'choice-item';
-    b.innerHTML = `<span class="choice-letter">${opt.letter}</span><span class="choice-text">${opt.text}</span>`;
-    b.onclick = () => {
-      sfxChoice();
-      document.getElementById('choicesOverlay').classList.remove('show');
-      setTimeout(opt.action, 400);
-    };
-    list.appendChild(b);
-  });
-  document.getElementById('choicesOverlay').classList.add('show');
-}
-
-/* ЗВЁЗДЫ */
-function createSkyStars(){
-  const cont = document.getElementById('stars');
-  cont.innerHTML = '';
-  skyStars = [];
-  const count = Math.min(160, Math.floor(window.innerWidth / 5));
-  for(let i = 0; i < count; i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 2.2 + 0.6;
-    s.style.width = size+'px'; s.style.height = size+'px';
-    s.style.left = Math.random()*100+'%';
-    s.style.top = (Math.random()*70)+'%';
-    s.style.animation = `twinkle ${3+Math.random()*5}s infinite ease-in-out`;
-    s.style.animationDelay = (Math.random()*5)+'s';
-    if(Math.random() < 0.12){ s.style.background='#F5E6C8'; s.style.boxShadow='0 0 6px rgba(251,191,36,.6)'; }
-    cont.appendChild(s);
-    skyStars.push(s);
-  }
-}
-function dimStarsProgressively(){
-  if(starsDimming) return;
-  starsDimming = true;
-  const toDim = skyStars.map((s,i)=>({s,i,r:Math.random()})).sort((a,b)=>a.r-b.r).slice(0,8);
-  toDim.forEach((item, idx) => {
+  makeChoice('«60%. А у тебя?»', () => {
+    S.trust++;
+    addMsg('60%. А у тебя?', 'right');
+    spend(1);
     setTimeout(() => {
-      item.s.classList.add('dim');
-      sfxDing();
-      createShootingStar(item.s.style.left, item.s.style.top);
-    }, idx * 700);
+      addMsg('Два. Хватит, чтобы сказать главное.', 'left');
+      setTimeout(scene2, 900);
+    }, 700);
+  }, true);
+
+  makeChoice('Промолчать и отвернуться', () => {
+    addMsg('…', 'right');
+    spend(1);
+    setTimeout(() => {
+      addMsg('Не доверяешь. Правильно.', 'left');
+      addMsg('Но у нас мало времени.', 'left');
+      setTimeout(scene2, 1400);
+    }, 700);
   });
-  setTimeout(()=>stopMusic(), toDim.length*700+800);
 }
-function createShootingStar(leftStr, topStr){
-  const star = document.createElement('div');
-  star.className = 'shooting-star';
-  star.style.left = leftStr; star.style.top = topStr;
-  star.style.animation = 'shoot 1.8s ease-in forwards';
-  document.getElementById('app').appendChild(star);
-  setTimeout(()=>star.remove(), 2000);
-}
-function launchFallingStar(){
-  const star = document.createElement('div');
-  star.className = 'shooting-star';
-  star.style.left = (30 + Math.random()*40)+'%';
-  star.style.top = '10%';
-  star.style.animation = 'shoot 2.8s ease-in forwards';
-  document.getElementById('app').appendChild(star);
-  setTimeout(()=>star.remove(), 3000);
-}
-setInterval(()=>{
-  if(document.getElementById('screen-menu').classList.contains('active')) launchFallingStar();
-}, 9000);
 
-/* КЛИК ПО ЭКРАНУ = ПРОДВИЖЕНИЕ ДИАЛОГА */
-document.getElementById('screen-game').addEventListener('click', (e) => {
-  if(e.target.closest('.choice-item') || e.target.closest('.btn-main')) return;
-  if(document.getElementById('dialogueBox').classList.contains('show')) advanceDialogue();
-});
-document.getElementById('screen-game').addEventListener('touchstart', (e) => {
-  if(e.target.closest('.choice-item') || e.target.closest('.btn-main')) return;
-  e.preventDefault();
-  if(document.getElementById('dialogueBox').classList.contains('show')) advanceDialogue();
-}, { passive: false });
+function scene2() {
+  addMsg('Правила такие:', 'left');
+  addMsg('Если свет мигнёт три раза — хватай мой телефон и беги в тамбур. Не оглядывайся.', 'left');
 
-/* УТИЛИТЫ */
-function showToast(text){
-  let toast = document.getElementById('toastEl');
-  if(!toast){ toast = document.createElement('div'); toast.id='toastEl'; document.body.appendChild(toast); }
-  toast.textContent = text;
-  requestAnimationFrame(()=>toast.classList.add('show'));
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(()=>toast.classList.remove('show'), 2400);
+  makeChoice('«Почему я должен тебе верить?»', () => {
+    S.trust++;
+    addMsg('Почему я должен тебе верить?', 'right');
+    spend(1);
+    setTimeout(() => {
+      addMsg('Не должен. Просто запомни.', 'left');
+      setTimeout(scene3, 900);
+    }, 700);
+  }, true);
+
+  makeChoice('«Хорошо. Договорились.»', () => {
+    addMsg('Хорошо. Договорились.', 'right');
+    spend(1);
+    setTimeout(() => {
+      addMsg('Умница.', 'left');
+      setTimeout(scene3, 900);
+    }, 700);
+  });
+
+  makeChoice('«Мне это неинтересно.»', () => {
+    S.trust--;
+    addMsg('Мне это неинтересно.', 'right');
+    spend(1);
+    setTimeout(() => {
+      addMsg('Тогда пеняй на себя.', 'left');
+      setTimeout(scene3, 900);
+    }, 700);
+  });
 }
-function notReady(){ showToast(t('not_ready')); }
 
-/* СТАРТ */
-window.addEventListener('load', () => {
-  applyLang();
-  updateSoundBtn();
-  updateVoiceBtn();
-  renderCreator();
-  renderChapters();
-  renderChars();
-  createSkyStars();
-  setTimeout(launchFallingStar, 1800);
-  const unlockAudio = () => {
-    initAudio();
-    document.removeEventListener('touchstart', unlockAudio);
-    document.removeEventListener('click', unlockAudio);
-  };
-  document.addEventListener('touchstart', unlockAudio, { once:true });
-  document.addEventListener('click', unlockAudio, { once:true });
-});
+function scene3() {
+  addSys('Поезд замедляется. За окном — темнота.');
+  spend(2);
+
+  setTimeout(() => {
+    triggerFlash(() => {
+      addMsg('Ты это видел?', 'left');
+      makeChoice('«Да. Свет мигнул.»', () => {
+        S.trust++;
+        addMsg('Да. Свет мигнул.', 'right');
+        spend(1);
+        setTimeout(scene4, 800);
+      }, true);
+      makeChoice('«Показалось.»', () => {
+        addMsg('Показалось.', 'right');
+        spend(1);
+        setTimeout(() => {
+          addMsg('Нет. Это только начало.', 'left');
+          setTimeout(scene4, 900);
+        }, 600);
+      });
+    });
+  }, 1200);
+}
+
+function scene4() {
+  addMsg('Слушай… как тебя зовут?', 'left');
+  addSys('Внимание: имя — это ключ.');
+
+  makeChoice('Назвать своё имя', () => {
+    S.named = true;
+    addMsg('Меня зовут… (ты называешь имя)', 'right');
+    spend(2);
+    setTimeout(() => {
+      addMsg('Спасибо. Теперь я знаю, кого искать.', 'left');
+      addMsg('Прости.', 'left');
+      setTimeout(scene5, 1400);
+    }, 1000);
+  }, true);
+
+  makeChoice('«Сначала ты.»', () => {
+    S.trust++;
+    addMsg('Сначала ты.', 'right');
+    spend(1);
+    setTimeout(() => {
+      addMsg('Хитро. Мне нравится.', 'left');
+      addMsg('Но у меня нет имени. Я — просто попутчик.', 'left');
+      setTimeout(scene5, 1400);
+    }, 900);
+  });
+
+  makeChoice('Соврать', () => {
+    addMsg('Меня зовут Алекс.', 'right');
+    spend(1);
+    setTimeout(() => {
+      addMsg('Врёшь. Но это тоже ответ.', 'left');
+      S.trust--;
+      setTimeout(scene5, 1200);
+    }, 900);
+  });
+}
+
+function scene5() {
+  addSys('Свет мигает второй раз.');
+  triggerFlash(() => {
+    addMsg('В коридоре шаги.', 'sys');
+    spend(2);
+
+    makeChoice('Открыть дверь', () => {
+      addMsg('Ты открываешь дверь. Там пусто.', 'sys');
+      spend(3);
+      setTimeout(() => {
+        addMsg('Я же говорил — не открывай.', 'left');
+        S.trust--;
+        setTimeout(scene6, 1000);
+      }, 900);
+    });
+
+    makeChoice('Спрятаться под стол', () => {
+      addMsg('Ты прячешься. Шаги проходят мимо.', 'sys');
+      spend(1);
+      S.trust++;
+      setTimeout(scene6, 1200);
+    }, true);
+
+    makeChoice('Посмотреть в щель', () => {
+      addMsg('Ты видишь… себя. Идущего по коридору.', 'sys');
+      spend(4);
+      setTimeout(() => {
+        addMsg('Не смотри.', 'left');
+        setTimeout(scene6, 900);
+      }, 1000);
+    });
+  });
+}
+
+function scene6() {
+  addSys('Свет мигает третий раз.');
+  triggerFlash(() => {
+    addMsg('ВСЁ. БЕГИ.', 'left');
+    spend(2);
+
+    makeChoice('Схватить телефон и бежать', () => {
+      addMsg('Ты хватаешь телефон и бежишь в тамбур.', 'sys');
+      spend(3);
+      setTimeout(finish, 1200);
+    }, true);
+
+    makeChoice('Остаться с незнакомцем', () => {
+      addMsg('Ты остаёшься.', 'sys');
+      S.trust++;
+      spend(1);
+      setTimeout(finish, 1200);
+    });
+
+    makeChoice('Разбить телефон', () => {
+      addMsg('Ты бьёшь телефон об пол. Свет гаснет полностью.', 'sys');
+      spend(5);
+      setTimeout(finish, 1200);
+    });
+  });
+}
+
+function finish() {
+  let title, text;
+
+  if (S.battery <= 0) {
+    title = '🔋 Батарея мертва';
+    text = 'Экран погас. Ты остался в темноте один. Утром поезд приехал пустым.';
+  } else if (S.named && S.trust >= 3) {
+    title = '🌅 Рассвет';
+    text = 'Ты назвал имя — и незнакомец исчез. Но в твоём телефоне остался один контакт без имени. Ты знаешь, что это он. И что однажды он позвонит.';
+  } else if (S.trust >= 4) {
+    title = '🤝 Попутчики';
+    text = 'Вы вышли вместе на станции, которой нет на карте. Незнакомец улыбнулся и сказал: «Увидимся в следующем поезде». Ты поверил.';
+  } else if (S.trust <= 1) {
+    title = '🚪 Один';
+    text = 'Ты вышел на своей станции. Незнакомца в купе больше не было. Только его телефон на сиденье — с одним процентом заряда и твоим именем на экране.';
+  } else {
+    title = '🌫️ Туман';
+    text = 'Поезд остановился. Двери открылись. Ты не помнишь, как оказался на перроне. В кармане — чужой телефон. Он звонит.';
+  }
+
+  endTitle.textContent = title;
+  endText.textContent = text;
+  endScreen.classList.add('show');
+}
+
+/* ================== ЗАПУСК ================== */
+document.getElementById('restart').onclick = start;
+start();
 </script>
 </body>
 </html>
