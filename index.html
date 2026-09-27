@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Попутчик</title>
+<title>Случайный попутчик</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body {
     height:100%; width:100%;
     background:#000;
     font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    color:#e8e8e8;
+    color:#2b2b3a;
     overflow:hidden;
     user-select:none;
   }
@@ -19,58 +19,44 @@
     width:100%; height:100%;
     max-width:480px;
     margin:0 auto;
-    background:linear-gradient(180deg,#0a0a12 0%, #12121c 100%);
+    background:linear-gradient(180deg,#fff5ec 0%, #ffe8d6 50%, #ffd9c0 100%);
     display:flex; flex-direction:column;
     overflow:hidden;
   }
 
-  /* Фон поезда */
-  #trainBg {
-    position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 50% 30%, rgba(80,60,120,0.25), transparent 60%),
-      repeating-linear-gradient(90deg, transparent 0 40px, rgba(255,255,255,0.015) 40px 42px);
+  /* Декоративные сердечки на фоне */
+  .heart {
+    position:absolute;
+    color:rgba(255,120,150,0.15);
+    font-size:24px;
+    animation: float 6s ease-in-out infinite;
     pointer-events:none;
   }
+  @keyframes float {
+    0%,100% { transform:translateY(0) rotate(0deg); }
+    50% { transform:translateY(-20px) rotate(10deg); }
+  }
 
-  /* Верхняя панель */
+  /* Верхняя панель — как счётчик искры */
   #topBar {
     position:relative; z-index:5;
     display:flex; justify-content:space-between; align-items:center;
     padding:14px 16px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,180,180,0.3);
     font-size:13px;
-    background:rgba(0,0,0,0.55);
-    border-bottom:1px solid rgba(255,255,255,0.06);
   }
-  #signal { color:#7a7a8a; }
-  #batteryWrap {
-    display:flex; align-items:center; gap:6px;
-  }
-  #batteryIcon {
-    width:26px; height:13px;
-    border:1.5px solid #7a7a8a;
-    border-radius:3px;
-    position:relative;
-    padding:1.5px;
-  }
-  #batteryIcon::after {
-    content:''; position:absolute; right:-4px; top:3px;
-    width:2px; height:5px; background:#7a7a8a; border-radius:0 2px 2px 0;
-  }
-  #batteryFill {
-    height:100%; width:60%;
-    background:#7affa0;
-    border-radius:1px;
-    transition:width 0.4s, background 0.4s;
-  }
-  #batteryText { font-size:12px; color:#a0a0b0; min-width:32px; }
+  #stageName { color:#8a6a7a; font-weight:600; }
+  #sparkWrap { display:flex; align-items:center; gap:8px; }
+  #sparkHearts { font-size:16px; letter-spacing:2px; }
 
   /* Чат */
   #chat {
     position:relative; z-index:4;
     flex:1;
     overflow-y:auto;
-    padding:16px 14px 10px;
+    padding:18px 14px 10px;
     display:flex; flex-direction:column; gap:10px;
     scroll-behavior:smooth;
   }
@@ -78,8 +64,8 @@
 
   .msg {
     max-width:82%;
-    padding:10px 14px;
-    border-radius:16px;
+    padding:11px 15px;
+    border-radius:18px;
     font-size:15px;
     line-height:1.45;
     animation:pop 0.35s ease-out;
@@ -91,37 +77,27 @@
   }
   .msg.left {
     align-self:flex-start;
-    background:rgba(60,55,90,0.9);
+    background:#ffffff;
+    color:#2b2b3a;
     border-bottom-left-radius:4px;
+    box-shadow:0 2px 8px rgba(200,150,150,0.15);
   }
   .msg.right {
     align-self:flex-end;
-    background:rgba(35,90,140,0.9);
+    background:linear-gradient(135deg,#ff8fa8,#ff6b8a);
+    color:#fff;
     border-bottom-right-radius:4px;
+    box-shadow:0 2px 8px rgba(255,100,130,0.3);
   }
   .msg.sys {
     align-self:center;
-    background:transparent;
-    color:#8a8a9a;
+    background:rgba(255,255,255,0.6);
+    color:#8a6a7a;
     font-size:12.5px;
     font-style:italic;
     text-align:center;
     max-width:95%;
-  }
-
-  /* Мигание света */
-  #flash {
-    position:absolute; inset:0;
-    background:#fff;
-    opacity:0;
-    pointer-events:none;
-    z-index:9;
-  }
-  #flash.on { animation: flashAnim 0.5s; }
-  @keyframes flashAnim {
-    0% { opacity:0; }
-    40% { opacity:0.7; }
-    100% { opacity:0; }
+    padding:8px 14px;
   }
 
   /* Панель кнопок */
@@ -129,33 +105,36 @@
     position:relative; z-index:6;
     padding:12px 14px 22px;
     display:flex; flex-direction:column; gap:8px;
-    background:linear-gradient(180deg, transparent, rgba(0,0,0,0.85) 30%);
+    background:linear-gradient(180deg, transparent, rgba(255,240,235,0.95) 30%);
     min-height:60px;
   }
   .btn {
     padding:13px 16px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,0.12);
-    background:rgba(30,30,50,0.85);
-    color:#e8e8e8;
+    border-radius:16px;
+    border:1.5px solid rgba(255,140,170,0.4);
+    background:rgba(255,255,255,0.9);
+    color:#5a3a4a;
     font-size:15px;
     cursor:pointer;
     transition:all 0.2s;
     text-align:center;
+    font-weight:500;
   }
   .btn:active {
-    background:rgba(60,60,100,0.95);
+    background:rgba(255,200,215,0.95);
     transform:scale(0.98);
   }
   .btn.primary {
-    background:rgba(80,60,140,0.9);
-    border-color:rgba(140,120,220,0.4);
+    background:linear-gradient(135deg,#ff8fa8,#ff6b8a);
+    color:#fff;
+    border-color:transparent;
+    box-shadow:0 4px 12px rgba(255,100,130,0.3);
   }
-  .btn.primary:active { background:rgba(110,85,180,1); }
+  .btn.primary:active { transform:scale(0.97); }
 
   .tapHint {
     align-self:center;
-    color:#5a5a6a;
+    color:#b090a0;
     font-size:12px;
     margin-top:4px;
     animation:pulse 2s infinite;
@@ -165,10 +144,10 @@
     50% { opacity:1; }
   }
 
-  /* Экран конца игры */
+  /* Экран финала */
   #endScreen {
     position:absolute; inset:0;
-    background:rgba(0,0,0,0.94);
+    background:linear-gradient(180deg,#fff5ec,#ffe0d0);
     z-index:20;
     display:none;
     flex-direction:column;
@@ -176,82 +155,103 @@
     align-items:center;
     padding:30px;
     text-align:center;
-    gap:20px;
+    gap:18px;
+    overflow-y:auto;
   }
-  #endScreen.show { display:flex; }
-  #endTitle { font-size:24px; font-weight:600; }
-  #endText { font-size:15px; color:#a0a0b0; line-height:1.6; }
+  #endScreen.show { display:flex; animation:pop 0.6s; }
+  #endEmoji { font-size:64px; }
+  #endTitle { font-size:24px; font-weight:700; color:#5a3a4a; }
+  #endText { font-size:15px; color:#8a6a7a; line-height:1.6; max-width:340px; }
+  #album {
+    display:flex; gap:10px; margin:10px 0;
+    font-size:34px;
+  }
+  #album span { animation:pop 0.5s backwards; }
+  #album span:nth-child(1) { animation-delay:0.1s; }
+  #album span:nth-child(2) { animation-delay:0.3s; }
+  #album span:nth-child(3) { animation-delay:0.5s; }
+  #album span:nth-child(4) { animation-delay:0.7s; }
   #restart {
     margin-top:10px;
     padding:14px 32px;
     border-radius:30px;
-    background:rgba(120,90,220,0.9);
+    background:linear-gradient(135deg,#ff8fa8,#ff6b8a);
     border:none;
     color:#fff;
     font-size:15px;
+    font-weight:600;
     cursor:pointer;
+    box-shadow:0 4px 14px rgba(255,100,130,0.4);
   }
 </style>
 </head>
 <body>
 <div id="game">
-  <div id="trainBg"></div>
-
   <div id="topBar">
-    <div id="signal">📵 нет сети</div>
-    <div id="batteryWrap">
-      <div id="batteryIcon"><div id="batteryFill"></div></div>
-      <div id="batteryText">60%</div>
+    <div id="stageName">🚂 Поезд «Москва — Казань»</div>
+    <div id="sparkWrap">
+      <span id="sparkHearts">♡♡♡♡♡</span>
     </div>
   </div>
 
   <div id="chat"></div>
   <div id="choices"></div>
-  <div id="flash"></div>
 
   <div id="endScreen">
+    <div id="endEmoji"></div>
     <div id="endTitle"></div>
     <div id="endText"></div>
-    <button id="restart">Играть заново</button>
+    <div id="album"></div>
+    <button id="restart">Прожить ещё раз</button>
   </div>
 </div>
 
 <script>
 /* ================== СОСТОЯНИЕ ================== */
 const S = {
-  battery: 60,
-  trust: 0,     // уровень доверия
-  flashes: 0,   // сколько раз мигал свет
-  named: false, // назвал ли имя
-  step: 0
+  spark: 0,      // уровень искры (0..5)
+  stage: 0,
+  choicesMade: 0
 };
 
 const chat = document.getElementById('chat');
 const choicesEl = document.getElementById('choices');
-const batteryFill = document.getElementById('batteryFill');
-const batteryText = document.getElementById('batteryText');
-const flash = document.getElementById('flash');
+const sparkHearts = document.getElementById('sparkHearts');
 const endScreen = document.getElementById('endScreen');
+const endEmoji = document.getElementById('endEmoji');
 const endTitle = document.getElementById('endTitle');
 const endText = document.getElementById('endText');
+const album = document.getElementById('album');
 
-/* ================== УТИЛИТЫ ================== */
-function setBattery(v) {
-  S.battery = Math.max(0, Math.min(100, v));
-  batteryFill.style.width = S.battery + '%';
-  batteryText.textContent = S.battery + '%';
-  if (S.battery <= 15) batteryFill.style.background = '#ff5a5a';
-  else if (S.battery <= 40) batteryFill.style.background = '#ffcc5a';
-  else batteryFill.style.background = '#7affa0';
+/* ================== ФОН ================== */
+function spawnHearts() {
+  const emojis = ['♡','♥','✿','❀','♡'];
+  for (let i = 0; i < 8; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = emojis[i % emojis.length];
+    h.style.left = (Math.random() * 90 + 5) + '%';
+    h.style.top = (Math.random() * 80 + 5) + '%';
+    h.style.animationDelay = (Math.random() * 6) + 's';
+    h.style.fontSize = (18 + Math.random() * 20) + 'px';
+    document.getElementById('game').appendChild(h);
+  }
 }
 
-function addMsg(text, side = 'left', cb) {
+/* ================== УТИЛИТЫ ================== */
+function updateSpark() {
+  let s = '';
+  for (let i = 0; i < 5; i++) s += i < S.spark ? '❤' : '♡';
+  sparkHearts.textContent = s;
+  sparkHearts.style.color = S.spark >= 4 ? '#ff4a7a' : '#c090a0';
+}
+
+function addMsg(text, side = 'left') {
   const d = document.createElement('div');
   d.className = 'msg ' + side;
   d.textContent = text;
   chat.appendChild(d);
   chat.scrollTop = chat.scrollHeight;
-  if (cb) setTimeout(cb, 350);
 }
 
 function addSys(text) {
@@ -264,11 +264,15 @@ function addSys(text) {
 
 function clearChoices() { choicesEl.innerHTML = ''; }
 
-function makeChoice(label, action, isPrimary=false) {
+function makeChoice(label, action, isPrimary=false, spark=0) {
   const b = document.createElement('button');
   b.className = 'btn' + (isPrimary ? ' primary' : '');
   b.textContent = label;
-  b.onclick = () => { clearChoices(); action(); };
+  b.onclick = () => {
+    clearChoices();
+    if (spark) { S.spark = Math.min(5, S.spark + spark); updateSpark(); }
+    action();
+  };
   choicesEl.appendChild(b);
 }
 
@@ -288,249 +292,219 @@ function waitTap(cb) {
   choicesEl.addEventListener('click', handler, {once:true});
 }
 
-function triggerFlash(cb) {
-  S.flashes++;
-  flash.classList.remove('on');
-  void flash.offsetWidth;
-  flash.classList.add('on');
-  addSys(`⚡ свет мигнул (${S.flashes}/3)`);
-  setTimeout(cb, 700);
-}
-
-function spend(n) {
-  setBattery(S.battery - n);
-}
-
 /* ================== СЦЕНАРИЙ ================== */
 
 function start() {
-  S.battery = 60; S.trust = 0; S.flashes = 0; S.named = false;
+  S.spark = 0; S.stage = 0;
   chat.innerHTML = '';
   endScreen.classList.remove('show');
-  setBattery(S.battery);
+  updateSpark();
 
-  addSys('Ночной поезд. Купе №7.');
-  addSys('Твой телефон почти разряжен. Зарядки нет.');
-
-  setTimeout(() => {
-    addMsg('Дверь купе открывается. Входит незнакомец и садится напротив.', 'sys');
-  }, 600);
+  addSys('Вокзал. Ты опаздываешь на поезд.');
+  addSys('Последний вагон. Двери почти закрываются.');
 
   setTimeout(() => {
-    addMsg('Ты тоже не спишь?', 'left');
-    waitTap(scene1);
-  }, 1600);
+    addSys('Ты вбегаешь. Мест нет. Только одно — рядом с человеком у окна.');
+    setTimeout(scene1, 900);
+  }, 800);
 }
 
 function scene1() {
-  addMsg('Похоже, у нас обоих проблемы с зарядкой.', 'left');
-  addMsg('Слушай… у тебя сколько процентов?', 'left');
+  addMsg('Человек у окна смотрит на тебя. Молча подвигается.', 'sys');
+  addMsg('Проходите. Я не кусаюсь.', 'left');
 
-  makeChoice('«60%. А у тебя?»', () => {
-    S.trust++;
-    addMsg('60%. А у тебя?', 'right');
-    spend(1);
+  makeChoice('«Спасибо. Вы меня спасли.»', () => {
+    addMsg('Спасибо. Вы меня спасли.', 'right');
+    S.spark++; updateSpark();
     setTimeout(() => {
-      addMsg('Два. Хватит, чтобы сказать главное.', 'left');
-      setTimeout(scene2, 900);
-    }, 700);
-  }, true);
+      addMsg('Да ладно. Просто место было.', 'left');
+      addMsg('Вы тоже не любите жару?', 'left');
+      setTimeout(scene2, 1200);
+    }, 800);
+  }, true, 1);
 
-  makeChoice('Промолчать и отвернуться', () => {
+  makeChoice('Молча сесть и смотреть в окно', () => {
     addMsg('…', 'right');
-    spend(1);
     setTimeout(() => {
-      addMsg('Не доверяешь. Правильно.', 'left');
-      addMsg('Но у нас мало времени.', 'left');
-      setTimeout(scene2, 1400);
-    }, 700);
+      addMsg('Тяжёлый день?', 'left');
+      setTimeout(scene2, 1000);
+    }, 900);
+  });
+
+  makeChoice('«Я на минуту, потом уйду.»', () => {
+    addMsg('Я на минуту, потом уйду.', 'right');
+    S.spark--; updateSpark();
+    setTimeout(() => {
+      addMsg('Как хотите.', 'left');
+      setTimeout(scene2, 1000);
+    }, 900);
   });
 }
 
 function scene2() {
-  addMsg('Правила такие:', 'left');
-  addMsg('Если свет мигнёт три раза — хватай мой телефон и беги в тамбур. Не оглядывайся.', 'left');
+  addSys('Поезд тронулся. За окном мелькают поля.');
+  addMsg('Кстати, меня зовут Саша.', 'left');
 
-  makeChoice('«Почему я должен тебе верить?»', () => {
-    S.trust++;
-    addMsg('Почему я должен тебе верить?', 'right');
-    spend(1);
+  makeChoice('Назвать своё имя и улыбнуться', () => {
+    addMsg('Очень приятно. Я — (твоё имя).', 'right');
+    S.spark++; updateSpark();
     setTimeout(() => {
-      addMsg('Не должен. Просто запомни.', 'left');
-      setTimeout(scene3, 900);
-    }, 700);
-  }, true);
+      addMsg('Красивое имя. Редкое.', 'left');
+      setTimeout(scene3, 1200);
+    }, 900);
+  }, true, 1);
 
-  makeChoice('«Хорошо. Договорились.»', () => {
-    addMsg('Хорошо. Договорились.', 'right');
-    spend(1);
+  makeChoice('«А зачем вам моё имя?»', () => {
+    addMsg('А зачем вам моё имя?', 'right');
     setTimeout(() => {
-      addMsg('Умница.', 'left');
-      setTimeout(scene3, 900);
-    }, 700);
+      addMsg('Чтобы знать, кому я уступаю место.', 'left');
+      addMsg('И кого потом вспоминать.', 'left');
+      S.spark++; updateSpark();
+      setTimeout(scene3, 1400);
+    }, 900);
   });
 
-  makeChoice('«Мне это неинтересно.»', () => {
-    S.trust--;
-    addMsg('Мне это неинтересно.', 'right');
-    spend(1);
+  makeChoice('Промолчать', () => {
+    addMsg('…', 'right');
     setTimeout(() => {
-      addMsg('Тогда пеняй на себя.', 'left');
+      addMsg('Ладно. Бывает.', 'left');
       setTimeout(scene3, 900);
-    }, 700);
+    }, 900);
   });
 }
 
 function scene3() {
-  addSys('Поезд замедляется. За окном — темнота.');
-  spend(2);
+  addSys('Проходит час. Вы говорите обо всём.');
+  addMsg('Знаете, я обычно не разговариваю с попутчиками.', 'left');
+  addMsg('Но с вами почему-то хочется.', 'left');
 
-  setTimeout(() => {
-    triggerFlash(() => {
-      addMsg('Ты это видел?', 'left');
-      makeChoice('«Да. Свет мигнул.»', () => {
-        S.trust++;
-        addMsg('Да. Свет мигнул.', 'right');
-        spend(1);
-        setTimeout(scene4, 800);
-      }, true);
-      makeChoice('«Показалось.»', () => {
-        addMsg('Показалось.', 'right');
-        spend(1);
-        setTimeout(() => {
-          addMsg('Нет. Это только начало.', 'left');
-          setTimeout(scene4, 900);
-        }, 600);
-      });
-    });
-  }, 1200);
-}
-
-function scene4() {
-  addMsg('Слушай… как тебя зовут?', 'left');
-  addSys('Внимание: имя — это ключ.');
-
-  makeChoice('Назвать своё имя', () => {
-    S.named = true;
-    addMsg('Меня зовут… (ты называешь имя)', 'right');
-    spend(2);
+  makeChoice('«Мне тоже. Это странно, да?»', () => {
+    addMsg('Мне тоже. Это странно, да?', 'right');
+    S.spark++; updateSpark();
     setTimeout(() => {
-      addMsg('Спасибо. Теперь я знаю, кого искать.', 'left');
-      addMsg('Прости.', 'left');
-      setTimeout(scene5, 1400);
-    }, 1000);
-  }, true);
+      addMsg('Не странно. Судьба.', 'left');
+      setTimeout(scene4, 1200);
+    }, 900);
+  }, true, 1);
 
-  makeChoice('«Сначала ты.»', () => {
-    S.trust++;
-    addMsg('Сначала ты.', 'right');
-    spend(1);
+  makeChoice('«Просто вежливость.»', () => {
+    addMsg('Просто вежливость.', 'right');
+    S.spark--; updateSpark();
     setTimeout(() => {
-      addMsg('Хитро. Мне нравится.', 'left');
-      addMsg('Но у меня нет имени. Я — просто попутчик.', 'left');
-      setTimeout(scene5, 1400);
+      addMsg('Может быть.', 'left');
+      addMsg('Хотя я в вежливость не верю.', 'left');
+      setTimeout(scene4, 1200);
     }, 900);
   });
 
-  makeChoice('Соврать', () => {
-    addMsg('Меня зовут Алекс.', 'right');
-    spend(1);
+  makeChoice('Рассказать о себе что-то личное', () => {
+    addMsg('Знаете, я еду к бабушке. Она болеет.', 'right');
+    S.spark += 2; updateSpark();
     setTimeout(() => {
-      addMsg('Врёшь. Но это тоже ответ.', 'left');
-      S.trust--;
+      addMsg('Простите. Я… не знал.', 'left');
+      addMsg('Хотите, я с вами выйду? Провожу.', 'left');
+      setTimeout(scene4, 1400);
+    }, 900);
+  }, false, 2);
+}
+
+function scene4() {
+  addSys('Поезд подъезжает к станции.');
+  addMsg('Мне выходить через две остановки.', 'left');
+  addMsg('Может… обменяемся номерами?', 'left');
+
+  makeChoice('«Да. Я хочу вас увидеть снова.»', () => {
+    addMsg('Да. Я хочу вас увидеть снова.', 'right');
+    S.spark++; updateSpark();
+    setTimeout(() => {
+      addMsg('Тогда до встречи. Обязательно.', 'left');
+      setTimeout(scene5, 1200);
+    }, 900);
+  }, true, 1);
+
+  makeChoice('«Давайте. Но просто как друзья.»', () => {
+    addMsg('Давайте. Но просто как друзья.', 'right');
+    setTimeout(() => {
+      addMsg('Хорошо. Друзья — это тоже начало.', 'left');
+      setTimeout(scene5, 1200);
+    }, 900);
+  });
+
+  makeChoice('«Не думаю, что это нужно.»', () => {
+    addMsg('Не думаю, что это нужно.', 'right');
+    S.spark--; updateSpark();
+    setTimeout(() => {
+      addMsg('Понимаю. Тогда… удачи вам.', 'left');
       setTimeout(scene5, 1200);
     }, 900);
   });
 }
 
 function scene5() {
-  addSys('Свет мигает второй раз.');
-  triggerFlash(() => {
-    addMsg('В коридоре шаги.', 'sys');
-    spend(2);
+  addSys('Проходит год. Потом второй.');
+  addSys('Вы переписываетесь. Встречаетесь. Влюбляетесь.');
 
-    makeChoice('Открыть дверь', () => {
-      addMsg('Ты открываешь дверь. Там пусто.', 'sys');
-      spend(3);
-      setTimeout(() => {
-        addMsg('Я же говорил — не открывай.', 'left');
-        S.trust--;
-        setTimeout(scene6, 1000);
-      }, 900);
+  setTimeout(() => {
+    addMsg('Я хочу тебе кое-что сказать.', 'left');
+    addMsg('Помнишь тот поезд?', 'left');
+    addMsg('Я тогда понял, что не хочу, чтобы ты выходил(а).', 'left');
+    addMsg('Выходи за меня. Или дай мне выйти за тебя.', 'left');
+
+    makeChoice('«Да. Тысячу раз да.»', () => {
+      addMsg('Да. Тысячу раз да.', 'right');
+      S.spark++; updateSpark();
+      setTimeout(finish, 1000);
+    }, true, 1);
+
+    makeChoice('«Давай просто будем вместе.»', () => {
+      addMsg('Давай просто будем вместе.', 'right');
+      setTimeout(finish, 1000);
     });
 
-    makeChoice('Спрятаться под стол', () => {
-      addMsg('Ты прячешься. Шаги проходят мимо.', 'sys');
-      spend(1);
-      S.trust++;
-      setTimeout(scene6, 1200);
-    }, true);
-
-    makeChoice('Посмотреть в щель', () => {
-      addMsg('Ты видишь… себя. Идущего по коридору.', 'sys');
-      spend(4);
-      setTimeout(() => {
-        addMsg('Не смотри.', 'left');
-        setTimeout(scene6, 900);
-      }, 1000);
-    });
-  });
-}
-
-function scene6() {
-  addSys('Свет мигает третий раз.');
-  triggerFlash(() => {
-    addMsg('ВСЁ. БЕГИ.', 'left');
-    spend(2);
-
-    makeChoice('Схватить телефон и бежать', () => {
-      addMsg('Ты хватаешь телефон и бежишь в тамбур.', 'sys');
-      spend(3);
-      setTimeout(finish, 1200);
-    }, true);
-
-    makeChoice('Остаться с незнакомцем', () => {
-      addMsg('Ты остаёшься.', 'sys');
-      S.trust++;
-      spend(1);
-      setTimeout(finish, 1200);
-    });
-
-    makeChoice('Разбить телефон', () => {
-      addMsg('Ты бьёшь телефон об пол. Свет гаснет полностью.', 'sys');
-      spend(5);
-      setTimeout(finish, 1200);
-    });
-  });
+  }, 1200);
 }
 
 function finish() {
-  let title, text;
+  let emoji, title, text, photos;
 
-  if (S.battery <= 0) {
-    title = '🔋 Батарея мертва';
-    text = 'Экран погас. Ты остался в темноте один. Утром поезд приехал пустым.';
-  } else if (S.named && S.trust >= 3) {
-    title = '🌅 Рассвет';
-    text = 'Ты назвал имя — и незнакомец исчез. Но в твоём телефоне остался один контакт без имени. Ты знаешь, что это он. И что однажды он позвонит.';
-  } else if (S.trust >= 4) {
-    title = '🤝 Попутчики';
-    text = 'Вы вышли вместе на станции, которой нет на карте. Незнакомец улыбнулся и сказал: «Увидимся в следующем поезде». Ты поверил.';
-  } else if (S.trust <= 1) {
-    title = '🚪 Один';
-    text = 'Ты вышел на своей станции. Незнакомца в купе больше не было. Только его телефон на сиденье — с одним процентом заряда и твоим именем на экране.';
+  if (S.spark >= 4) {
+    emoji = '💍';
+    title = 'Семья';
+    text = 'Через год — свадьба. Через три — первый ребёнок. Через тридцать — внуки на коленях. Вы до сих пор ездите в поездах и уступаете друг другу место.';
+    photos = ['👰','🤵','👶','👨‍👩‍👧','🏡'];
+  } else if (S.spark >= 2) {
+    emoji = '🌷';
+    title = 'Долгая дорога';
+    text = 'Вы не поженились сразу. Но остались рядом. И однажды, спустя много лет, поняли, что уже семья — без всяких штампов.';
+    photos = ['🚂','💌','🌹','💒'];
+  } else if (S.spark >= 0) {
+    emoji = '📮';
+    title = 'Контакт в телефоне';
+    text = 'Вы обменялись номерами. Переписывались месяц. Потом реже. Потом совсем перестали. Но иногда ты видишь её/его имя в контактах — и улыбаешься.';
+    photos = ['📱','💬','🌙'];
   } else {
-    title = '🌫️ Туман';
-    text = 'Поезд остановился. Двери открылись. Ты не помнишь, как оказался на перроне. В кармане — чужой телефон. Он звонит.';
+    emoji = '🌫️';
+    title = 'Просто попутчик';
+    text = 'Вы вышли на разных станциях. И больше никогда не встретились. Но иногда, в поезде, ты смотришь в окно и вспоминаешь того человека у окна.';
+    photos = ['🚂','🌫️','🕰️'];
   }
 
+  endEmoji.textContent = emoji;
   endTitle.textContent = title;
   endText.textContent = text;
+  album.innerHTML = '';
+  photos.forEach((p, i) => {
+    const s = document.createElement('span');
+    s.textContent = p;
+    s.style.animationDelay = (i * 0.2) + 's';
+    album.appendChild(s);
+  });
   endScreen.classList.add('show');
 }
 
 /* ================== ЗАПУСК ================== */
 document.getElementById('restart').onclick = start;
+spawnHearts();
 start();
 </script>
 </body>
