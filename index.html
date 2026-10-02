@@ -2,510 +2,474 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Случайный попутчик</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Смета проекта</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html, body {
-    height:100%; width:100%;
-    background:#000;
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    color:#2b2b3a;
-    overflow:hidden;
-    user-select:none;
+  :root {
+    --bg: #f4f1ec; --card: #ffffff; --ink: #1a1a1a; --muted: #8a8580;
+    --line: #e8e4de; --accent: #1a1a1a; --accent-soft: #f0ebe4;
+    --radius: 16px; --radius-sm: 10px;
+    --font-heading: 'Inter', system-ui, sans-serif;
+    --heading-weight: 600;
   }
-  #game {
-    position:relative;
-    width:100%; height:100%;
-    max-width:480px;
-    margin:0 auto;
-    background:linear-gradient(180deg,#fff5ec 0%, #ffe8d6 50%, #ffd9c0 100%);
-    display:flex; flex-direction:column;
-    overflow:hidden;
+  [data-theme="classic"] {
+    --bg: #f7f3ec; --card: #fffdf9; --ink: #2d2418; --muted: #9a8a72;
+    --line: #e8ddc9; --accent: #8b6f47; --accent-soft: #f2ead9;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --heading-weight: 500;
+    --radius: 6px; --radius-sm: 4px;
   }
+  [data-theme="loft"] {
+    --bg: #1c1b19; --card: #262422; --ink: #f0ece6; --muted: #8f8880;
+    --line: #34312e; --accent: #d97a4a; --accent-soft: #2f2c29;
+    --radius: 8px; --radius-sm: 6px;
+  }
+  [data-theme="scandi"] {
+    --bg: #eef2f5; --card: #ffffff; --ink: #1f2b33; --muted: #7d8a94;
+    --line: #dde5ea; --accent: #4a7c94; --accent-soft: #e3ecf1;
+    --radius: 20px; --radius-sm: 12px;
+  }
+  [data-theme="boho"] {
+    --bg: #f3ece0; --card: #fffaf0; --ink: #3d2e1f; --muted: #9c8266;
+    --line: #e6d6bd; --accent: #a0522d; --accent-soft: #f0e2cd;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --heading-weight: 500;
+    --radius: 24px; --radius-sm: 14px;
+  }
+  [data-theme="hitech"] {
+    --bg: #f2f2f4; --card: #ffffff; --ink: #0f0f12; --muted: #767680;
+    --line: #e2e2e8; --accent: #1e3a8a; --accent-soft: #e8ebf5;
+    --radius: 10px; --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg); color: var(--ink);
+    line-height: 1.5; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    transition: background .3s, color .3s;
+  }
+  h1, h2 { font-family: var(--font-heading); font-weight: var(--heading-weight); letter-spacing: -0.02em; }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
 
-  /* Декоративные сердечки на фоне */
-  .heart {
-    position:absolute;
-    color:rgba(255,120,150,0.15);
-    font-size:24px;
-    animation: float 6s ease-in-out infinite;
-    pointer-events:none;
+  /* ===== Верхняя панель ===== */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0 24px; gap: 12px; flex-wrap: wrap;
   }
-  @keyframes float {
-    0%,100% { transform:translateY(0) rotate(0deg); }
-    50% { transform:translateY(-20px) rotate(10deg); }
-  }
-
-  /* Верхняя панель — как счётчик искры */
-  #topBar {
-    position:relative; z-index:5;
-    display:flex; justify-content:space-between; align-items:center;
-    padding:14px 16px;
-    background:rgba(255,255,255,0.7);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid rgba(255,180,180,0.3);
-    font-size:13px;
-  }
-  #stageName { color:#8a6a7a; font-weight:600; }
-  #sparkWrap { display:flex; align-items:center; gap:8px; }
-  #sparkHearts { font-size:16px; letter-spacing:2px; }
-
-  /* Чат */
-  #chat {
-    position:relative; z-index:4;
-    flex:1;
-    overflow-y:auto;
-    padding:18px 14px 10px;
-    display:flex; flex-direction:column; gap:10px;
-    scroll-behavior:smooth;
-  }
-  #chat::-webkit-scrollbar { width:0; }
-
-  .msg {
-    max-width:82%;
-    padding:11px 15px;
-    border-radius:18px;
-    font-size:15px;
-    line-height:1.45;
-    animation:pop 0.35s ease-out;
-    word-wrap:break-word;
-  }
-  @keyframes pop {
-    from { opacity:0; transform:translateY(12px) scale(0.96); }
-    to { opacity:1; transform:translateY(0) scale(1); }
-  }
-  .msg.left {
-    align-self:flex-start;
-    background:#ffffff;
-    color:#2b2b3a;
-    border-bottom-left-radius:4px;
-    box-shadow:0 2px 8px rgba(200,150,150,0.15);
-  }
-  .msg.right {
-    align-self:flex-end;
-    background:linear-gradient(135deg,#ff8fa8,#ff6b8a);
-    color:#fff;
-    border-bottom-right-radius:4px;
-    box-shadow:0 2px 8px rgba(255,100,130,0.3);
-  }
-  .msg.sys {
-    align-self:center;
-    background:rgba(255,255,255,0.6);
-    color:#8a6a7a;
-    font-size:12.5px;
-    font-style:italic;
-    text-align:center;
-    max-width:95%;
-    padding:8px 14px;
-  }
-
-  /* Панель кнопок */
-  #choices {
-    position:relative; z-index:6;
-    padding:12px 14px 22px;
-    display:flex; flex-direction:column; gap:8px;
-    background:linear-gradient(180deg, transparent, rgba(255,240,235,0.95) 30%);
-    min-height:60px;
-  }
+  .logo { font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
   .btn {
-    padding:13px 16px;
-    border-radius:16px;
-    border:1.5px solid rgba(255,140,170,0.4);
-    background:rgba(255,255,255,0.9);
-    color:#5a3a4a;
-    font-size:15px;
-    cursor:pointer;
-    transition:all 0.2s;
-    text-align:center;
-    font-weight:500;
+    background: var(--accent); color: #fff; border: 0;
+    padding: 10px 18px; border-radius: 999px; cursor: pointer;
+    font: inherit; font-size: 13px; font-weight: 500;
+    text-decoration: none; display: inline-block;
+    transition: .18s; white-space: nowrap;
   }
-  .btn:active {
-    background:rgba(255,200,215,0.95);
-    transform:scale(0.98);
-  }
-  .btn.primary {
-    background:linear-gradient(135deg,#ff8fa8,#ff6b8a);
-    color:#fff;
-    border-color:transparent;
-    box-shadow:0 4px 12px rgba(255,100,130,0.3);
-  }
-  .btn.primary:active { transform:scale(0.97); }
+  .btn:hover { opacity: .85; }
+  .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn-outline:hover { background: var(--accent-soft); opacity: 1; }
+  .btn-sm { padding: 8px 14px; font-size: 12px; }
 
-  .tapHint {
-    align-self:center;
-    color:#b090a0;
-    font-size:12px;
-    margin-top:4px;
-    animation:pulse 2s infinite;
+  /* ===== Паспорт ===== */
+  .passport { margin-bottom: 24px; }
+  .passport-title { font-size: 36px; line-height: 1.15; margin-bottom: 8px; }
+  .passport-meta {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    color: var(--muted); font-size: 14px;
   }
-  @keyframes pulse {
-    0%,100% { opacity:0.4; }
-    50% { opacity:1; }
+  .passport-meta strong { color: var(--ink); font-weight: 500; }
+
+  /* ===== Визуализация ===== */
+  .hero {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    aspect-ratio: 16/9;
+    position: relative;
+  }
+  .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-empty {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--muted); gap: 10px; font-size: 14px;
+    background: var(--accent-soft);
+  }
+  .hero-empty .icon { font-size: 42px; opacity: .6; }
+
+  /* ===== Чертежи — одна кнопка ===== */
+  .drawings-bar {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .drawings-bar-left { display: flex; align-items: center; gap: 14px; }
+  .drawings-bar-icon { font-size: 28px; }
+  .drawings-bar-title { font-size: 16px; font-weight: 500; }
+  .drawings-bar-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* ===== Смета ===== */
+  .estimate {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 24px;
+  }
+  .estimate-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+  }
+  .estimate-title { font-size: 22px; }
+  .estimate-count { color: var(--muted); font-size: 13px; }
+
+  .items { display: flex; flex-direction: column; }
+
+  .item {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 16px; align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .item:last-child { border-bottom: 0; }
+  .item-photo {
+    width: 72px; height: 72px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; overflow: hidden;
+    flex-shrink: 0;
+  }
+  .item-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .item-info { min-width: 0; }
+  .item-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .item-cat {
+    display: inline-block;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .item-note { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .item-links { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; }
+  .item-links a {
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1px;
+    transition: .15s;
+  }
+  .item-links a:hover { border-color: var(--ink); }
+  .item-price { text-align: right; white-space: nowrap; }
+  .item-price-value { font-size: 16px; font-weight: 600; }
+  .item-price-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ===== Итого ===== */
+  .total-card {
+    background: var(--accent); color: #fff;
+    border-radius: var(--radius);
+    padding: 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 20px; flex-wrap: wrap;
+  }
+  .total-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; opacity: .65; margin-bottom: 4px; }
+  .total-value { font-size: 38px; font-weight: 600; font-family: var(--font-heading); line-height: 1.1; }
+  .total-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ===== Подвал ===== */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 40px 0 0;
+  }
+  .footer strong { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 640px) {
+    .container { padding: 20px 16px 48px; }
+    .passport-title { font-size: 26px; }
+    .item { grid-template-columns: 60px 1fr; }
+    .item-photo { width: 60px; height: 60px; font-size: 22px; }
+    .item-price { grid-column: 1 / -1; text-align: left; padding-top: 8px; }
+    .total-value { font-size: 30px; }
+    .total-card { padding: 24px; }
   }
 
-  /* Экран финала */
-  #endScreen {
-    position:absolute; inset:0;
-    background:linear-gradient(180deg,#fff5ec,#ffe0d0);
-    z-index:20;
-    display:none;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    padding:30px;
-    text-align:center;
-    gap:18px;
-    overflow-y:auto;
-  }
-  #endScreen.show { display:flex; animation:pop 0.6s; }
-  #endEmoji { font-size:64px; }
-  #endTitle { font-size:24px; font-weight:700; color:#5a3a4a; }
-  #endText { font-size:15px; color:#8a6a7a; line-height:1.6; max-width:340px; }
-  #album {
-    display:flex; gap:10px; margin:10px 0;
-    font-size:34px;
-  }
-  #album span { animation:pop 0.5s backwards; }
-  #album span:nth-child(1) { animation-delay:0.1s; }
-  #album span:nth-child(2) { animation-delay:0.3s; }
-  #album span:nth-child(3) { animation-delay:0.5s; }
-  #album span:nth-child(4) { animation-delay:0.7s; }
-  #restart {
-    margin-top:10px;
-    padding:14px 32px;
-    border-radius:30px;
-    background:linear-gradient(135deg,#ff8fa8,#ff6b8a);
-    border:none;
-    color:#fff;
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    box-shadow:0 4px 14px rgba(255,100,130,0.4);
+  @media print {
+    body { background: #fff; }
+    .topbar, .total-actions { display: none; }
+    .total-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 </style>
 </head>
 <body>
-<div id="game">
-  <div id="topBar">
-    <div id="stageName">🚂 Поезд «Москва — Казань»</div>
-    <div id="sparkWrap">
-      <span id="sparkHearts">♡♡♡♡♡</span>
+<div class="container">
+
+  <!-- Верхняя панель -->
+  <div class="topbar">
+    <div class="logo" id="logo">—</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="window.print()">Сохранить в PDF</button>
+      <a class="btn btn-sm" id="contactBtn" href="#">Написать дизайнеру</a>
     </div>
   </div>
 
-  <div id="chat"></div>
-  <div id="choices"></div>
-
-  <div id="endScreen">
-    <div id="endEmoji"></div>
-    <div id="endTitle"></div>
-    <div id="endText"></div>
-    <div id="album"></div>
-    <button id="restart">Прожить ещё раз</button>
+  <!-- Паспорт проекта -->
+  <div class="passport">
+    <h1 class="passport-title" id="pTitle">—</h1>
+    <div class="passport-meta" id="pMeta"></div>
   </div>
+
+  <!-- Визуализация -->
+  <div class="hero" id="hero"></div>
+
+  <!-- Ссылка на чертежи -->
+  <div class="drawings-bar">
+    <div class="drawings-bar-left">
+      <div class="drawings-bar-icon">📐</div>
+      <div>
+        <div class="drawings-bar-title">Чертежи проекта</div>
+        <div class="drawings-bar-sub" id="drawingsSub">Планировка, электрика, развёртки, ведомости</div>
+      </div>
+    </div>
+    <a class="btn" id="drawingsBtn" href="#" target="_blank" rel="noopener">Открыть чертежи ↗</a>
+  </div>
+
+  <!-- Смета -->
+  <div class="estimate">
+    <div class="estimate-header">
+      <h2 class="estimate-title">Смета</h2>
+      <div class="estimate-count" id="itemsCount">—</div>
+    </div>
+    <div class="items" id="items"></div>
+  </div>
+
+  <!-- Итого -->
+  <div class="total-card">
+    <div>
+      <div class="total-label">Итого по проекту</div>
+      <div class="total-value" id="grandTotal">0 ₽</div>
+    </div>
+    <div class="total-actions">
+      <button class="btn btn-outline btn-sm" onclick="window.print()" style="background:#fff">Сохранить в PDF</button>
+    </div>
+  </div>
+
+  <!-- Подвал -->
+  <div class="footer">
+    <span id="footerText">—</span>
+  </div>
+
 </div>
 
 <script>
-/* ================== СОСТОЯНИЕ ================== */
-const S = {
-  spark: 0,      // уровень искры (0..5)
-  stage: 0,
-  choicesMade: 0
+/* ================================================================
+   ЗАПОЛНИТЕ ПОД СВОЙ ПРОЕКТ
+   ================================================================ */
+const DATA = {
+
+  /* Тема: minimal | classic | loft | scandi | boho | hitech */
+  theme: 'minimal',
+
+  /* Паспорт проекта */
+  project: {
+    title: 'Квартира на Ленинском, 45',
+    client: 'Сергей Петров',
+    designer: 'Анна Иванова',
+    contact: 'https://t.me/anna_design',
+    dates: '15.03 — 30.06.2026',
+    area: '78 м²',
+    style: 'Современный минимализм',
+    status: 'На согласовании'
+  },
+
+  /* Одна ссылка на все чертежи (папка Яндекс.Диск, Google Drive или PDF) */
+  drawingsUrl: '',   // вставьте сюда ссылку — кнопка станет активной
+  drawingsNote: 'Планировка, электрика, развёртки, ведомости',
+
+  /* Фото проекта (визуализация). Одна ссылка на картинку. */
+  heroImage: '',
+
+  /* Смета — просто список позиций подряд, без разбивки на комнаты */
+  items: [
+    { name: 'Диван 3-местный Copenhagen', category: 'Гостиная · Мебель',
+      icon: '🛋', photo: '', price: 89000, qty: 1,
+      note: 'Акцентная вещь, вокруг неё строим всё',
+      shopLink: '',        // ссылка на товар
+      materialLink: ''     // ссылка на материал/цвет/образец (если есть)
+    },
+    { name: 'Журнальный столик Oslo', category: 'Гостиная · Мебель',
+      icon: '🪑', photo: '', price: 24500, qty: 1,
+      note: '', shopLink: '', materialLink: ''
+    },
+    { name: 'Люстра подвесная Ambit', category: 'Гостиная · Свет',
+      icon: '💡', photo: '', price: 38000, qty: 1,
+      note: 'Под заказ 6 недель', shopLink: '', materialLink: ''
+    },
+    { name: 'Ковёр шерстяной 200×300', category: 'Гостиная · Декор',
+      icon: '🧶', photo: '', price: 32000, qty: 1,
+      note: '', shopLink: '', materialLink: ''
+    },
+    { name: 'Кровать 160×200', category: 'Спальня · Мебель',
+      icon: '🛏', photo: '', price: 62000, qty: 1,
+      note: '', shopLink: '', materialLink: ''
+    },
+    { name: 'Тумба прикроватная', category: 'Спальня · Мебель',
+      icon: '🪑', photo: '', price: 12500, qty: 2,
+      note: '', shopLink: '', materialLink: ''
+    },
+    { name: 'Краска для стен Little Greene', category: 'Отделка · Материал',
+      icon: '🎨', photo: '', price: 4200, qty: 8,
+      note: 'Цвет: Sage Green 240',
+      shopLink: '', materialLink: ''   // во второе поле — ссылку на цвет
+    },
+    { name: 'Монтаж освещения', category: 'Работы',
+      icon: '🔧', photo: '', price: 8500, qty: 1,
+      note: '', shopLink: '', materialLink: ''
+    }
+  ],
+
+  /* Данные дизайнера для подвала */
+  footerNote: 'Если что-то нужно уточнить — пишите в Telegram'
 };
+/* ================================================================ */
 
-const chat = document.getElementById('chat');
-const choicesEl = document.getElementById('choices');
-const sparkHearts = document.getElementById('sparkHearts');
-const endScreen = document.getElementById('endScreen');
-const endEmoji = document.getElementById('endEmoji');
-const endTitle = document.getElementById('endTitle');
-const endText = document.getElementById('endText');
-const album = document.getElementById('album');
+const fmt = n => new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* ================== ФОН ================== */
-function spawnHearts() {
-  const emojis = ['♡','♥','✿','❀','♡'];
-  for (let i = 0; i < 8; i++) {
-    const h = document.createElement('div');
-    h.className = 'heart';
-    h.textContent = emojis[i % emojis.length];
-    h.style.left = (Math.random() * 90 + 5) + '%';
-    h.style.top = (Math.random() * 80 + 5) + '%';
-    h.style.animationDelay = (Math.random() * 6) + 's';
-    h.style.fontSize = (18 + Math.random() * 20) + 'px';
-    document.getElementById('game').appendChild(h);
-  }
+/* Тема */
+function applyTheme(p) {
+  const map = { minimal: null, classic: 'classic', loft: 'loft', scandi: 'scandi', boho: 'boho', hitech: 'hitech' };
+  const t = map[p];
+  if (t) document.documentElement.setAttribute('data-theme', t);
+  else document.documentElement.removeAttribute('data-theme');
 }
 
-/* ================== УТИЛИТЫ ================== */
-function updateSpark() {
-  let s = '';
-  for (let i = 0; i < 5; i++) s += i < S.spark ? '❤' : '♡';
-  sparkHearts.textContent = s;
-  sparkHearts.style.color = S.spark >= 4 ? '#ff4a7a' : '#c090a0';
+/* Паспорт */
+function renderPassport() {
+  document.getElementById('logo').textContent = DATA.project.designer || '';
+
+  document.getElementById('pTitle').textContent = DATA.project.title;
+
+  const meta = [
+    ['Клиент', DATA.project.client],
+    ['Дизайнер', DATA.project.designer],
+    ['Срок', DATA.project.dates],
+    ['Площадь', DATA.project.area],
+    ['Стиль', DATA.project.style]
+  ].filter(([, v]) => v);
+
+  document.getElementById('pMeta').innerHTML = meta.map(([label, val]) =>
+    `<span>${label}: <strong>${esc(val)}</strong></span>`
+  ).join('');
+
+  const c = DATA.project.contact || '#';
+  document.getElementById('contactBtn').href = c;
+
+  document.getElementById('footerText').innerHTML =
+    `${esc(DATA.footerNote || '')} · <strong>${esc(DATA.project.designer || '')}</strong>`;
 }
 
-function addMsg(text, side = 'left') {
-  const d = document.createElement('div');
-  d.className = 'msg ' + side;
-  d.textContent = text;
-  chat.appendChild(d);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function addSys(text) {
-  const d = document.createElement('div');
-  d.className = 'msg sys';
-  d.textContent = text;
-  chat.appendChild(d);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function clearChoices() { choicesEl.innerHTML = ''; }
-
-function makeChoice(label, action, isPrimary=false, spark=0) {
-  const b = document.createElement('button');
-  b.className = 'btn' + (isPrimary ? ' primary' : '');
-  b.textContent = label;
-  b.onclick = () => {
-    clearChoices();
-    if (spark) { S.spark = Math.min(5, S.spark + spark); updateSpark(); }
-    action();
-  };
-  choicesEl.appendChild(b);
-}
-
-function waitTap(cb) {
-  const hint = document.createElement('div');
-  hint.className = 'tapHint';
-  hint.textContent = 'нажми, чтобы продолжить';
-  choicesEl.appendChild(hint);
-  const handler = (e) => {
-    e.preventDefault();
-    choicesEl.removeEventListener('touchstart', handler);
-    choicesEl.removeEventListener('click', handler);
-    clearChoices();
-    cb();
-  };
-  choicesEl.addEventListener('touchstart', handler, {once:true});
-  choicesEl.addEventListener('click', handler, {once:true});
-}
-
-/* ================== СЦЕНАРИЙ ================== */
-
-function start() {
-  S.spark = 0; S.stage = 0;
-  chat.innerHTML = '';
-  endScreen.classList.remove('show');
-  updateSpark();
-
-  addSys('Вокзал. Ты опаздываешь на поезд.');
-  addSys('Последний вагон. Двери почти закрываются.');
-
-  setTimeout(() => {
-    addSys('Ты вбегаешь. Мест нет. Только одно — рядом с человеком у окна.');
-    setTimeout(scene1, 900);
-  }, 800);
-}
-
-function scene1() {
-  addMsg('Человек у окна смотрит на тебя. Молча подвигается.', 'sys');
-  addMsg('Проходите. Я не кусаюсь.', 'left');
-
-  makeChoice('«Спасибо. Вы меня спасли.»', () => {
-    addMsg('Спасибо. Вы меня спасли.', 'right');
-    S.spark++; updateSpark();
-    setTimeout(() => {
-      addMsg('Да ладно. Просто место было.', 'left');
-      addMsg('Вы тоже не любите жару?', 'left');
-      setTimeout(scene2, 1200);
-    }, 800);
-  }, true, 1);
-
-  makeChoice('Молча сесть и смотреть в окно', () => {
-    addMsg('…', 'right');
-    setTimeout(() => {
-      addMsg('Тяжёлый день?', 'left');
-      setTimeout(scene2, 1000);
-    }, 900);
-  });
-
-  makeChoice('«Я на минуту, потом уйду.»', () => {
-    addMsg('Я на минуту, потом уйду.', 'right');
-    S.spark--; updateSpark();
-    setTimeout(() => {
-      addMsg('Как хотите.', 'left');
-      setTimeout(scene2, 1000);
-    }, 900);
-  });
-}
-
-function scene2() {
-  addSys('Поезд тронулся. За окном мелькают поля.');
-  addMsg('Кстати, меня зовут Саша.', 'left');
-
-  makeChoice('Назвать своё имя и улыбнуться', () => {
-    addMsg('Очень приятно. Я — (твоё имя).', 'right');
-    S.spark++; updateSpark();
-    setTimeout(() => {
-      addMsg('Красивое имя. Редкое.', 'left');
-      setTimeout(scene3, 1200);
-    }, 900);
-  }, true, 1);
-
-  makeChoice('«А зачем вам моё имя?»', () => {
-    addMsg('А зачем вам моё имя?', 'right');
-    setTimeout(() => {
-      addMsg('Чтобы знать, кому я уступаю место.', 'left');
-      addMsg('И кого потом вспоминать.', 'left');
-      S.spark++; updateSpark();
-      setTimeout(scene3, 1400);
-    }, 900);
-  });
-
-  makeChoice('Промолчать', () => {
-    addMsg('…', 'right');
-    setTimeout(() => {
-      addMsg('Ладно. Бывает.', 'left');
-      setTimeout(scene3, 900);
-    }, 900);
-  });
-}
-
-function scene3() {
-  addSys('Проходит час. Вы говорите обо всём.');
-  addMsg('Знаете, я обычно не разговариваю с попутчиками.', 'left');
-  addMsg('Но с вами почему-то хочется.', 'left');
-
-  makeChoice('«Мне тоже. Это странно, да?»', () => {
-    addMsg('Мне тоже. Это странно, да?', 'right');
-    S.spark++; updateSpark();
-    setTimeout(() => {
-      addMsg('Не странно. Судьба.', 'left');
-      setTimeout(scene4, 1200);
-    }, 900);
-  }, true, 1);
-
-  makeChoice('«Просто вежливость.»', () => {
-    addMsg('Просто вежливость.', 'right');
-    S.spark--; updateSpark();
-    setTimeout(() => {
-      addMsg('Может быть.', 'left');
-      addMsg('Хотя я в вежливость не верю.', 'left');
-      setTimeout(scene4, 1200);
-    }, 900);
-  });
-
-  makeChoice('Рассказать о себе что-то личное', () => {
-    addMsg('Знаете, я еду к бабушке. Она болеет.', 'right');
-    S.spark += 2; updateSpark();
-    setTimeout(() => {
-      addMsg('Простите. Я… не знал.', 'left');
-      addMsg('Хотите, я с вами выйду? Провожу.', 'left');
-      setTimeout(scene4, 1400);
-    }, 900);
-  }, false, 2);
-}
-
-function scene4() {
-  addSys('Поезд подъезжает к станции.');
-  addMsg('Мне выходить через две остановки.', 'left');
-  addMsg('Может… обменяемся номерами?', 'left');
-
-  makeChoice('«Да. Я хочу вас увидеть снова.»', () => {
-    addMsg('Да. Я хочу вас увидеть снова.', 'right');
-    S.spark++; updateSpark();
-    setTimeout(() => {
-      addMsg('Тогда до встречи. Обязательно.', 'left');
-      setTimeout(scene5, 1200);
-    }, 900);
-  }, true, 1);
-
-  makeChoice('«Давайте. Но просто как друзья.»', () => {
-    addMsg('Давайте. Но просто как друзья.', 'right');
-    setTimeout(() => {
-      addMsg('Хорошо. Друзья — это тоже начало.', 'left');
-      setTimeout(scene5, 1200);
-    }, 900);
-  });
-
-  makeChoice('«Не думаю, что это нужно.»', () => {
-    addMsg('Не думаю, что это нужно.', 'right');
-    S.spark--; updateSpark();
-    setTimeout(() => {
-      addMsg('Понимаю. Тогда… удачи вам.', 'left');
-      setTimeout(scene5, 1200);
-    }, 900);
-  });
-}
-
-function scene5() {
-  addSys('Проходит год. Потом второй.');
-  addSys('Вы переписываетесь. Встречаетесь. Влюбляетесь.');
-
-  setTimeout(() => {
-    addMsg('Я хочу тебе кое-что сказать.', 'left');
-    addMsg('Помнишь тот поезд?', 'left');
-    addMsg('Я тогда понял, что не хочу, чтобы ты выходил(а).', 'left');
-    addMsg('Выходи за меня. Или дай мне выйти за тебя.', 'left');
-
-    makeChoice('«Да. Тысячу раз да.»', () => {
-      addMsg('Да. Тысячу раз да.', 'right');
-      S.spark++; updateSpark();
-      setTimeout(finish, 1000);
-    }, true, 1);
-
-    makeChoice('«Давай просто будем вместе.»', () => {
-      addMsg('Давай просто будем вместе.', 'right');
-      setTimeout(finish, 1000);
-    });
-
-  }, 1200);
-}
-
-function finish() {
-  let emoji, title, text, photos;
-
-  if (S.spark >= 4) {
-    emoji = '💍';
-    title = 'Семья';
-    text = 'Через год — свадьба. Через три — первый ребёнок. Через тридцать — внуки на коленях. Вы до сих пор ездите в поездах и уступаете друг другу место.';
-    photos = ['👰','🤵','👶','👨‍👩‍👧','🏡'];
-  } else if (S.spark >= 2) {
-    emoji = '🌷';
-    title = 'Долгая дорога';
-    text = 'Вы не поженились сразу. Но остались рядом. И однажды, спустя много лет, поняли, что уже семья — без всяких штампов.';
-    photos = ['🚂','💌','🌹','💒'];
-  } else if (S.spark >= 0) {
-    emoji = '📮';
-    title = 'Контакт в телефоне';
-    text = 'Вы обменялись номерами. Переписывались месяц. Потом реже. Потом совсем перестали. Но иногда ты видишь её/его имя в контактах — и улыбаешься.';
-    photos = ['📱','💬','🌙'];
+/* Визуализация */
+function renderHero() {
+  const hero = document.getElementById('hero');
+  if (DATA.heroImage) {
+    hero.innerHTML = `<img src="${esc(DATA.heroImage)}" alt="${esc(DATA.project.title)}">`;
   } else {
-    emoji = '🌫️';
-    title = 'Просто попутчик';
-    text = 'Вы вышли на разных станциях. И больше никогда не встретились. Но иногда, в поезде, ты смотришь в окно и вспоминаешь того человека у окна.';
-    photos = ['🚂','🌫️','🕰️'];
+    hero.innerHTML = `
+      <div class="hero-empty">
+        <div class="icon">🖼</div>
+        <div>Здесь появится визуализация проекта</div>
+      </div>`;
   }
-
-  endEmoji.textContent = emoji;
-  endTitle.textContent = title;
-  endText.textContent = text;
-  album.innerHTML = '';
-  photos.forEach((p, i) => {
-    const s = document.createElement('span');
-    s.textContent = p;
-    s.style.animationDelay = (i * 0.2) + 's';
-    album.appendChild(s);
-  });
-  endScreen.classList.add('show');
 }
 
-/* ================== ЗАПУСК ================== */
-document.getElementById('restart').onclick = start;
-spawnHearts();
-start();
+/* Чертежи */
+function renderDrawings() {
+  const btn = document.getElementById('drawingsBtn');
+  const sub = document.getElementById('drawingsSub');
+
+  if (DATA.drawingsNote) sub.textContent = DATA.drawingsNote;
+
+  if (DATA.drawingsUrl) {
+    btn.href = DATA.drawingsUrl;
+    btn.textContent = 'Открыть чертежи ↗';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.removeAttribute('href');
+    btn.textContent = 'Чертежи пока не загружены';
+    btn.style.opacity = '.55';
+    btn.style.pointerEvents = 'none';
+    btn.style.background = 'var(--accent-soft)';
+    btn.style.color = 'var(--muted)';
+  }
+}
+
+/* Смета */
+function renderItems() {
+  const container = document.getElementById('items');
+  container.innerHTML = '';
+
+  const count = DATA.items.length;
+  document.getElementById('itemsCount').textContent =
+    count ? `${count} позиций` : 'Позиции ещё не добавлены';
+
+  if (!count) {
+    container.innerHTML = `<div style="color:var(--muted);text-align:center;padding:32px 0;">Добавьте позиции в смету</div>`;
+    return;
+  }
+
+  let grand = 0;
+
+  DATA.items.forEach(item => {
+    const qty = item.qty || 1;
+    const price = item.price || 0;
+    const sum = price * qty;
+    grand += sum;
+
+    const photoHtml = item.photo
+      ? `<img src="${esc(item.photo)}" alt="">`
+      : (item.icon || '📦');
+
+    const links = [];
+    if (item.shopLink) links.push(`<a href="${esc(item.shopLink)}" target="_blank" rel="noopener">Ссылка на товар ↗</a>`);
+    if (item.materialLink) links.push(`<a href="${esc(item.materialLink)}" target="_blank" rel="noopener">Материал / цвет ↗</a>`);
+
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `
+      <div class="item-photo">${photoHtml}</div>
+      <div class="item-info">
+        ${item.category ? `<div class="item-cat">${esc(item.category)}</div>` : ''}
+        <div class="item-name">${esc(item.name)}</div>
+        ${item.note ? `<div class="item-note">${esc(item.note)}</div>` : ''}
+        ${links.length ? `<div class="item-links">${links.join('')}</div>` : ''}
+      </div>
+      <div class="item-price">
+        <div class="item-price-value">${fmt(sum)}</div>
+        ${qty > 1 ? `<div class="item-price-detail">${fmt(price)} × ${qty}</div>` : ''}
+      </div>
+    `;
+    container.appendChild(el);
+  });
+
+  document.getElementById('grandTotal').textContent = fmt(grand);
+}
+
+function init() {
+  applyTheme(DATA.theme);
+  renderPassport();
+  renderHero();
+  renderDrawings();
+  renderItems();
+}
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
