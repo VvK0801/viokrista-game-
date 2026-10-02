@@ -4,28 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Смета проекта</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f4f1ec; --card: #ffffff; --ink: #1a1a1a; --muted: #8a8580;
     --line: #e8e4de; --accent: #1a1a1a; --accent-soft: #f0ebe4;
     --radius: 16px; --radius-sm: 10px;
-    --font-heading: 'Inter', system-ui, sans-serif;
-    --heading-weight: 600;
+    --font-h: 'Inter', sans-serif;
   }
   [data-theme="classic"] {
     --bg: #f7f3ec; --card: #fffdf9; --ink: #2d2418; --muted: #9a8a72;
     --line: #e8ddc9; --accent: #8b6f47; --accent-soft: #f2ead9;
-    --font-heading: 'Cormorant Garamond', Georgia, serif;
-    --heading-weight: 500;
+    --font-h: 'Cormorant Garamond', serif;
     --radius: 6px; --radius-sm: 4px;
   }
   [data-theme="loft"] {
     --bg: #1c1b19; --card: #262422; --ink: #f0ece6; --muted: #8f8880;
     --line: #34312e; --accent: #d97a4a; --accent-soft: #2f2c29;
-    --radius: 8px; --radius-sm: 6px;
   }
   [data-theme="scandi"] {
     --bg: #eef2f5; --card: #ffffff; --ink: #1f2b33; --muted: #7d8a94;
@@ -35,14 +30,12 @@
   [data-theme="boho"] {
     --bg: #f3ece0; --card: #fffaf0; --ink: #3d2e1f; --muted: #9c8266;
     --line: #e6d6bd; --accent: #a0522d; --accent-soft: #f0e2cd;
-    --font-heading: 'Cormorant Garamond', Georgia, serif;
-    --heading-weight: 500;
+    --font-h: 'Cormorant Garamond', serif;
     --radius: 24px; --radius-sm: 14px;
   }
   [data-theme="hitech"] {
     --bg: #f2f2f4; --card: #ffffff; --ink: #0f0f12; --muted: #767680;
     --line: #e2e2e8; --accent: #1e3a8a; --accent-soft: #e8ebf5;
-    --radius: 10px; --radius-sm: 8px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -50,17 +43,15 @@
     background: var(--bg); color: var(--ink);
     line-height: 1.5; font-size: 15px;
     -webkit-font-smoothing: antialiased;
-    transition: background .3s, color .3s;
   }
-  h1, h2 { font-family: var(--font-heading); font-weight: var(--heading-weight); letter-spacing: -0.02em; }
+  h1, h2 { font-family: var(--font-h); font-weight: 600; letter-spacing: -0.02em; }
   .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
 
-  /* ===== Верхняя панель ===== */
   .topbar {
     display: flex; justify-content: space-between; align-items: center;
     padding: 8px 0 24px; gap: 12px; flex-wrap: wrap;
   }
-  .logo { font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
+  .logo { font-size: 14px; font-weight: 600; color: var(--muted); }
   .btn {
     background: var(--accent); color: #fff; border: 0;
     padding: 10px 18px; border-radius: 999px; cursor: pointer;
@@ -70,10 +61,8 @@
   }
   .btn:hover { opacity: .85; }
   .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-  .btn-outline:hover { background: var(--accent-soft); opacity: 1; }
   .btn-sm { padding: 8px 14px; font-size: 12px; }
 
-  /* ===== Паспорт ===== */
   .passport { margin-bottom: 24px; }
   .passport-title { font-size: 36px; line-height: 1.15; margin-bottom: 8px; }
   .passport-meta {
@@ -82,14 +71,10 @@
   }
   .passport-meta strong { color: var(--ink); font-weight: 500; }
 
-  /* ===== Визуализация ===== */
   .hero {
-    background: var(--card);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 24px;
-    aspect-ratio: 16/9;
-    position: relative;
+    background: var(--card); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 24px;
+    aspect-ratio: 16/9; position: relative;
   }
   .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .hero-empty {
@@ -100,12 +85,9 @@
   }
   .hero-empty .icon { font-size: 42px; opacity: .6; }
 
-  /* ===== Чертежи — одна кнопка ===== */
   .drawings-bar {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-bottom: 24px;
+    background: var(--card); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 24px;
     display: flex; justify-content: space-between; align-items: center;
     gap: 16px; flex-wrap: wrap;
   }
@@ -114,78 +96,60 @@
   .drawings-bar-title { font-size: 16px; font-weight: 500; }
   .drawings-bar-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
-  /* ===== Смета ===== */
   .estimate {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    margin-bottom: 24px;
+    background: var(--card); border-radius: var(--radius);
+    padding: 28px 24px; margin-bottom: 24px;
   }
   .estimate-header {
     display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 12px; gap: 12px; flex-wrap: wrap;
   }
   .estimate-title { font-size: 22px; }
   .estimate-count { color: var(--muted); font-size: 13px; }
 
   .items { display: flex; flex-direction: column; }
-
   .item {
-    display: grid;
-    grid-template-columns: 72px 1fr auto;
+    display: grid; grid-template-columns: 72px 1fr auto;
     gap: 16px; align-items: center;
     padding: 16px 0;
     border-bottom: 1px solid var(--line);
   }
   .item:last-child { border-bottom: 0; }
   .item-photo {
-    width: 72px; height: 72px;
-    border-radius: var(--radius-sm);
+    width: 72px; height: 72px; border-radius: var(--radius-sm);
     background: var(--accent-soft);
     display: flex; align-items: center; justify-content: center;
-    font-size: 28px; overflow: hidden;
-    flex-shrink: 0;
+    font-size: 28px; overflow: hidden; flex-shrink: 0;
   }
   .item-photo img { width: 100%; height: 100%; object-fit: cover; }
   .item-info { min-width: 0; }
-  .item-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
   .item-cat {
-    display: inline-block;
     font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
-    color: var(--muted); margin-bottom: 6px;
+    color: var(--muted); margin-bottom: 4px;
   }
+  .item-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
   .item-note { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
   .item-links { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; }
   .item-links a {
     color: var(--ink); text-decoration: none;
     border-bottom: 1px solid var(--line);
-    padding-bottom: 1px;
-    transition: .15s;
+    padding-bottom: 1px; transition: .15s;
   }
   .item-links a:hover { border-color: var(--ink); }
   .item-price { text-align: right; white-space: nowrap; }
   .item-price-value { font-size: 16px; font-weight: 600; }
   .item-price-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  /* ===== Итого ===== */
   .total-card {
     background: var(--accent); color: #fff;
-    border-radius: var(--radius);
-    padding: 32px;
+    border-radius: var(--radius); padding: 32px;
     display: flex; justify-content: space-between; align-items: center;
     gap: 20px; flex-wrap: wrap;
   }
   .total-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; opacity: .65; margin-bottom: 4px; }
-  .total-value { font-size: 38px; font-weight: 600; font-family: var(--font-heading); line-height: 1.1; }
-  .total-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .total-value { font-size: 38px; font-weight: 600; font-family: var(--font-h); line-height: 1.1; }
 
-  /* ===== Подвал ===== */
-  .footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    padding: 40px 0 0;
-  }
+  .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 0 0; }
   .footer strong { color: var(--ink); font-weight: 500; }
 
   @media (max-width: 640px) {
@@ -197,10 +161,9 @@
     .total-value { font-size: 30px; }
     .total-card { padding: 24px; }
   }
-
   @media print {
     body { background: #fff; }
-    .topbar, .total-actions { display: none; }
+    .topbar { display: none; }
     .total-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 </style>
@@ -208,7 +171,6 @@
 <body>
 <div class="container">
 
-  <!-- Верхняя панель -->
   <div class="topbar">
     <div class="logo" id="logo">—</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -217,16 +179,13 @@
     </div>
   </div>
 
-  <!-- Паспорт проекта -->
   <div class="passport">
     <h1 class="passport-title" id="pTitle">—</h1>
     <div class="passport-meta" id="pMeta"></div>
   </div>
 
-  <!-- Визуализация -->
   <div class="hero" id="hero"></div>
 
-  <!-- Ссылка на чертежи -->
   <div class="drawings-bar">
     <div class="drawings-bar-left">
       <div class="drawings-bar-icon">📐</div>
@@ -238,7 +197,6 @@
     <a class="btn" id="drawingsBtn" href="#" target="_blank" rel="noopener">Открыть чертежи ↗</a>
   </div>
 
-  <!-- Смета -->
   <div class="estimate">
     <div class="estimate-header">
       <h2 class="estimate-title">Смета</h2>
@@ -247,18 +205,16 @@
     <div class="items" id="items"></div>
   </div>
 
-  <!-- Итого -->
   <div class="total-card">
     <div>
       <div class="total-label">Итого по проекту</div>
       <div class="total-value" id="grandTotal">0 ₽</div>
     </div>
-    <div class="total-actions">
-      <button class="btn btn-outline btn-sm" onclick="window.print()" style="background:#fff">Сохранить в PDF</button>
+    <div>
+      <button class="btn btn-sm" onclick="window.print()" style="background:#fff;color:#1a1a1a">Сохранить в PDF</button>
     </div>
   </div>
 
-  <!-- Подвал -->
   <div class="footer">
     <span id="footerText">—</span>
   </div>
@@ -267,14 +223,12 @@
 
 <script>
 /* ================================================================
-   ЗАПОЛНИТЕ ПОД СВОЙ ПРОЕКТ
+   НАСТРОЙКИ ПРОЕКТА — меняете только здесь
    ================================================================ */
 const DATA = {
 
-  /* Тема: minimal | classic | loft | scandi | boho | hitech */
-  theme: 'minimal',
+  theme: 'minimal',   // minimal | classic | loft | scandi | boho | hitech
 
-  /* Паспорт проекта */
   project: {
     title: 'Квартира на Ленинском, 45',
     client: 'Сергей Петров',
@@ -282,57 +236,107 @@ const DATA = {
     contact: 'https://t.me/anna_design',
     dates: '15.03 — 30.06.2026',
     area: '78 м²',
-    style: 'Современный минимализм',
-    status: 'На согласовании'
+    style: 'Современный минимализм'
   },
 
-  /* Одна ссылка на все чертежи (папка Яндекс.Диск, Google Drive или PDF) */
-  drawingsUrl: '',   // вставьте сюда ссылку — кнопка станет активной
-  drawingsNote: 'Планировка, электрика, развёртки, ведомости',
+  /* Одна ссылка на все чертежи (папка Яндекс.Диск / PDF) */
+  drawingsUrl: '',
 
-  /* Фото проекта (визуализация). Одна ссылка на картинку. */
+  /* Одно фото проекта (визуализация) */
   heroImage: '',
 
-  /* Смета — просто список позиций подряд, без разбивки на комнаты */
+  /* Позиции сметы — просто список подряд */
   items: [
-    { name: 'Диван 3-местный Copenhagen', category: 'Гостиная · Мебель',
-      icon: '🛋', photo: '', price: 89000, qty: 1,
+    {
+      name: 'Диван 3-местный Copenhagen',
+      category: 'Гостиная · Мебель',
+      icon: '🛋',
+      photo: '',
+      price: 89000,
+      qty: 1,
       note: 'Акцентная вещь, вокруг неё строим всё',
-      shopLink: '',        // ссылка на товар
-      materialLink: ''     // ссылка на материал/цвет/образец (если есть)
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Журнальный столик Oslo', category: 'Гостиная · Мебель',
-      icon: '🪑', photo: '', price: 24500, qty: 1,
-      note: '', shopLink: '', materialLink: ''
+    {
+      name: 'Журнальный столик Oslo',
+      category: 'Гостиная · Мебель',
+      icon: '🪑',
+      photo: '',
+      price: 24500,
+      qty: 1,
+      note: '',
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Люстра подвесная Ambit', category: 'Гостиная · Свет',
-      icon: '💡', photo: '', price: 38000, qty: 1,
-      note: 'Под заказ 6 недель', shopLink: '', materialLink: ''
+    {
+      name: 'Люстра подвесная Ambit',
+      category: 'Гостиная · Свет',
+      icon: '💡',
+      photo: '',
+      price: 38000,
+      qty: 1,
+      note: 'Под заказ 6 недель',
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Ковёр шерстяной 200×300', category: 'Гостиная · Декор',
-      icon: '🧶', photo: '', price: 32000, qty: 1,
-      note: '', shopLink: '', materialLink: ''
+    {
+      name: 'Ковёр шерстяной 200×300',
+      category: 'Гостиная · Декор',
+      icon: '🧶',
+      photo: '',
+      price: 32000,
+      qty: 1,
+      note: '',
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Кровать 160×200', category: 'Спальня · Мебель',
-      icon: '🛏', photo: '', price: 62000, qty: 1,
-      note: '', shopLink: '', materialLink: ''
+    {
+      name: 'Кровать 160×200',
+      category: 'Спальня · Мебель',
+      icon: '🛏',
+      photo: '',
+      price: 62000,
+      qty: 1,
+      note: '',
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Тумба прикроватная', category: 'Спальня · Мебель',
-      icon: '🪑', photo: '', price: 12500, qty: 2,
-      note: '', shopLink: '', materialLink: ''
+    {
+      name: 'Тумба прикроватная',
+      category: 'Спальня · Мебель',
+      icon: '🪑',
+      photo: '',
+      price: 12500,
+      qty: 2,
+      note: '',
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Краска для стен Little Greene', category: 'Отделка · Материал',
-      icon: '🎨', photo: '', price: 4200, qty: 8,
+    {
+      name: 'Краска для стен Little Greene',
+      category: 'Отделка · Материал',
+      icon: '🎨',
+      photo: '',
+      price: 4200,
+      qty: 8,
       note: 'Цвет: Sage Green 240',
-      shopLink: '', materialLink: ''   // во второе поле — ссылку на цвет
+      shopLink: '',
+      materialLink: ''
     },
-    { name: 'Монтаж освещения', category: 'Работы',
-      icon: '🔧', photo: '', price: 8500, qty: 1,
-      note: '', shopLink: '', materialLink: ''
+    {
+      name: 'Монтаж освещения',
+      category: 'Работы',
+      icon: '🔧',
+      photo: '',
+      price: 8500,
+      qty: 1,
+      note: '',
+      shopLink: '',
+      materialLink: ''
     }
   ],
 
-  /* Данные дизайнера для подвала */
   footerNote: 'Если что-то нужно уточнить — пишите в Telegram'
 };
 /* ================================================================ */
@@ -341,16 +345,16 @@ const fmt = n => new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* Тема */
 function applyTheme(p) {
-  const map = { minimal: null, classic: 'classic', loft: 'loft', scandi: 'scandi', boho: 'boho', hitech: 'hitech' };
+  const map = { minimal: null, classic: 'classic', loft: 'loft',
+                scandi: 'scandi', boho: 'boho', hitech: 'hitech' };
   const t = map[p];
   if (t) document.documentElement.setAttribute('data-theme', t);
   else document.documentElement.removeAttribute('data-theme');
 }
 
-/* Паспорт */
-function renderPassport() {
+function render() {
+  /* Паспорт */
   document.getElementById('logo').textContent = DATA.project.designer || '';
 
   document.getElementById('pTitle').textContent = DATA.project.title;
@@ -361,68 +365,45 @@ function renderPassport() {
     ['Срок', DATA.project.dates],
     ['Площадь', DATA.project.area],
     ['Стиль', DATA.project.style]
-  ].filter(([, v]) => v);
+  ].filter(x => x[1]);
 
-  document.getElementById('pMeta').innerHTML = meta.map(([label, val]) =>
-    `<span>${label}: <strong>${esc(val)}</strong></span>`
-  ).join('');
+  document.getElementById('pMeta').innerHTML = meta
+    .map(x => `<span>${x[0]}: <strong>${esc(x[1])}</strong></span>`)
+    .join('');
 
-  const c = DATA.project.contact || '#';
-  document.getElementById('contactBtn').href = c;
+  document.getElementById('contactBtn').href = DATA.project.contact || '#';
 
-  document.getElementById('footerText').innerHTML =
-    `${esc(DATA.footerNote || '')} · <strong>${esc(DATA.project.designer || '')}</strong>`;
-}
-
-/* Визуализация */
-function renderHero() {
+  /* Визуализация */
   const hero = document.getElementById('hero');
   if (DATA.heroImage) {
-    hero.innerHTML = `<img src="${esc(DATA.heroImage)}" alt="${esc(DATA.project.title)}">`;
+    hero.innerHTML = `<img src="${esc(DATA.heroImage)}" alt="">`;
   } else {
-    hero.innerHTML = `
-      <div class="hero-empty">
-        <div class="icon">🖼</div>
-        <div>Здесь появится визуализация проекта</div>
-      </div>`;
+    hero.innerHTML = `<div class="hero-empty"><div class="icon">🖼</div><div>Здесь появится визуализация проекта</div></div>`;
   }
-}
 
-/* Чертежи */
-function renderDrawings() {
+  /* Чертежи */
   const btn = document.getElementById('drawingsBtn');
-  const sub = document.getElementById('drawingsSub');
-
-  if (DATA.drawingsNote) sub.textContent = DATA.drawingsNote;
-
   if (DATA.drawingsUrl) {
     btn.href = DATA.drawingsUrl;
     btn.textContent = 'Открыть чертежи ↗';
-    btn.style.opacity = '1';
-    btn.style.pointerEvents = 'auto';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.pointerEvents = '';
+    btn.style.opacity = '';
   } else {
     btn.removeAttribute('href');
     btn.textContent = 'Чертежи пока не загружены';
-    btn.style.opacity = '.55';
-    btn.style.pointerEvents = 'none';
     btn.style.background = 'var(--accent-soft)';
     btn.style.color = 'var(--muted)';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '.7';
   }
-}
 
-/* Смета */
-function renderItems() {
+  /* Смета */
   const container = document.getElementById('items');
   container.innerHTML = '';
-
-  const count = DATA.items.length;
   document.getElementById('itemsCount').textContent =
-    count ? `${count} позиций` : 'Позиции ещё не добавлены';
-
-  if (!count) {
-    container.innerHTML = `<div style="color:var(--muted);text-align:center;padding:32px 0;">Добавьте позиции в смету</div>`;
-    return;
-  }
+    DATA.items.length ? `${DATA.items.length} позиций` : 'Пусто';
 
   let grand = 0;
 
@@ -459,17 +440,16 @@ function renderItems() {
   });
 
   document.getElementById('grandTotal').textContent = fmt(grand);
-}
 
-function init() {
+  /* Подвал */
+  document.getElementById('footerText').innerHTML =
+    `${esc(DATA.footerNote || '')} · <strong>${esc(DATA.project.designer || '')}</strong>`;
+
+  /* Тема */
   applyTheme(DATA.theme);
-  renderPassport();
-  renderHero();
-  renderDrawings();
-  renderItems();
 }
 
-document.addEventListener('DOMContentLoaded', init);
+render();
 </script>
 </body>
 </html>
